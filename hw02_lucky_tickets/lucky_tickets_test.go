@@ -47,7 +47,9 @@ func TestLuckyTickets(t *testing.T) {
 			log.Fatal(err)
 		}
 		t.Run(fmt.Sprintf("N/2=%v", ts.n), func(t *testing.T) {
-			require.Equal(t, ts.tickets, LuckyTickets(ts.n))
+			tickets := LuckyTickets(ts.n)
+			fmt.Println(tickets)
+			require.Equal(t, ts.tickets, tickets)
 		})
 	}
 }
