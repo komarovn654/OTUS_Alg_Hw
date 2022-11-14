@@ -106,3 +106,28 @@ func PrimeErOpt(max int) (int, error) {
 func calcOffset(i int) int32 {
 	return 1 << (i - 32*(i/32))
 }
+
+func Er(max int) (int, error) {
+	if max <= 1 {
+		return 0, ErrPrimeGreaterOne
+	}
+	if max == 2 {
+		return 1, nil
+	}
+
+	li := max - 1 // last index
+	lp := make([]int, max)
+	primes := make([]int, max)
+	pPtr := li
+	for i := 2; i < max; i++ {
+		if lp[i] == 0 {
+			lp[i] = i
+			primes[pPtr] = i
+			pPtr--
+		}
+		for p := li; primes[p] <= lp[i] && primes[p]*i <= li && primes[p] != 0; p-- {
+			lp[i*primes[p]] = primes[p]
+		}
+	}
+	return li - pPtr, nil
+}

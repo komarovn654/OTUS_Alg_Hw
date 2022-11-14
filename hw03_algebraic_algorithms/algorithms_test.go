@@ -68,5 +68,5 @@ func TestBruteforcePrime(t *testing.T) {
 }
 
 func TestPrime(t *testing.T) {
-	fmt.Println(PrimeEr(2))
+	fmt.Println(Er(10))
 }
