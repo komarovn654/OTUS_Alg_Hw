@@ -1,6 +1,7 @@
 package hw03algebraicalgorithms
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -53,9 +54,19 @@ func TestBruteforcePrime(t *testing.T) {
 			require.Equal(t, tc.err, err)
 			require.Equal(t, tc.expected, v)
 		})
+		t.Run(tc.name+" er", func(t *testing.T) {
+			v, err := PrimeEr(tc.in)
+			require.Equal(t, tc.err, err)
+			require.Equal(t, tc.expected, v)
+		})
+		t.Run(tc.name+" er optimizations", func(t *testing.T) {
+			v, err := PrimeErOpt(tc.in)
+			require.Equal(t, tc.err, err)
+			require.Equal(t, tc.expected, v)
+		})
 	}
 }
 
 func TestPrime(t *testing.T) {
-	PrimeErOpt(100)
+	fmt.Println(PrimeEr(2))
 }

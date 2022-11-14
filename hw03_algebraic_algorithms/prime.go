@@ -2,7 +2,6 @@ package hw03algebraicalgorithms
 
 import (
 	"errors"
-	"fmt"
 	"math"
 )
 
@@ -60,7 +59,14 @@ func isPrimeOpt(v int, primes []int) bool {
 	return true
 }
 
-func PrimeEr(max int) int {
+func PrimeEr(max int) (int, error) {
+	if max <= 1 {
+		return 0, ErrPrimeGreaterOne
+	}
+	if max == 2 {
+		return 1, nil
+	}
+
 	primesCount := 0
 	isntPrime := make([]bool, max+1)
 	ptr := 2
@@ -72,28 +78,31 @@ func PrimeEr(max int) int {
 		}
 		primesCount++
 	}
-	return primesCount
+	return primesCount, nil
 }
 
-// 0	 1	   2	 3	   4	 5	   6	 7	   8	 9	   10
-// false false false false false false false false false false false
-// false false false false true  false true  false true  false true
-// false false false false true  false true  false true  true  true
-// false false false false true  false true  false true  true  true
-// false false false false true  false true  false true  true  true
+func PrimeErOpt(max int) (int, error) {
+	if max <= 1 {
+		return 0, ErrPrimeGreaterOne
+	}
+	if max == 2 {
+		return 1, nil
+	}
 
-func PrimeErOpt(max int) int {
 	primesCount := 0
 	isntPrime := make([]int32, max/32+1)
 	ptr := 2
 	for ptr < max {
 		for i := ptr + ptr; i < max; i += ptr {
-			isntPrime[i/32] |= 1 << i
+			isntPrime[i/32] |= calcOffset(i)
 		}
-		for ptr++; isntPrime[ptr/32]&(1<<ptr) != 0 && ptr < max; ptr++ {
+		for ptr++; isntPrime[ptr/32]&calcOffset(ptr) != 0 && ptr < max; ptr++ {
 		}
 		primesCount++
 	}
-	fmt.Println(primesCount)
-	return primesCount
+	return primesCount, nil
+}
+
+func calcOffset(i int) int32 {
+	return 1 << (i - 32*(i/32))
 }
