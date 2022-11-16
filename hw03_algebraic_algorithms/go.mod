@@ -1,4 +1,4 @@
-module github.com/komarovn654/OTUS_Alg_Hw/hw03_algebraic_algorithms
+module github.com/komarovn654/OTUS_Alg_Hw/hw03alg
 
 go 1.18
 
