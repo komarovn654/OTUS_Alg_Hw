@@ -1,6 +1,7 @@
 package hw03alg
 
 import (
+	"math"
 	"math/big"
 )
 
@@ -36,18 +37,18 @@ func FibIterative(n int) *big.Int {
 
 // Calculate fibonacci num with golden ratio method. O(1)
 func FibGolden(n int) *big.Int {
+	if n == 0 {
+		return big.NewInt(0)
+	}
+
 	if n == 1 {
 		return big.NewInt(1)
 	}
 
-	/*p := (1 + math.Sqrt(5)) / 2
-	f := big.NewFloat(0)
+	p := (1 + math.Sqrt(5)) / 2
+	f := math.Abs(math.Pow(p, float64(n))/math.Sqrt(5) + 1.0/2.0)
 
-
-	f := math.Abs(math.Pow(p, float64(n))/math.Sqrt(5) + 1/2)
-
-	return int(math.Round(f))*/
-	return big.NewInt(0)
+	return big.NewInt(int64(math.Floor(f)))
 }
 
 // Calculate fibonacci num with matrix. O(LogN)

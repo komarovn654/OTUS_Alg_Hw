@@ -42,7 +42,7 @@ func TestFib(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name+" Golden ratio", func(t *testing.T) {
-			require.Equal(t, tc.expected, FibMatrix(tc.in), "Golden ratio")
+			require.Equal(t, tc.expected, FibGolden(tc.in), "Golden ratio")
 		})
 	}
 }
