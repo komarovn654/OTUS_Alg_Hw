@@ -8,6 +8,8 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/komarovn654/OTUS_Alg_Hw/hw03alg"
 )
 
 var (
@@ -25,6 +27,15 @@ type testStruct struct {
 	expect *big.Int
 }
 
+func readLine(filePath string) (string, error) {
+	f, err := os.ReadFile(filePath)
+	if err != nil {
+		return "", err
+	}
+
+	return strings.Split(string(f), "\n")[0], nil
+}
+
 func parseN(filePath string) (int, error) {
 	strN, err := readLine(in)
 	if err != nil {
@@ -37,23 +48,18 @@ func parseN(filePath string) (int, error) {
 	return intN, nil
 }
 
-func readLine(filePath string) (string, error) {
-	f, err := os.ReadFile(filePath)
-	if err != nil {
-		return "", err
+func fibonacci(alg string, n int) (*big.Int, error) {
+	switch alg {
+	case "recursive":
+		return hw03alg.FibRecursive(n), nil
+	case "iterative":
+		return hw03alg.FibIterative(n), nil
+	case "golden ratio":
+		return hw03alg.FibGolden(n), nil
+	case "matrix":
+		return hw03alg.FibMatrix(n), nil
 	}
-
-	return strings.Split(string(f), "\n")[0], nil
-}
-
-func prepareTest(testNum int) (testStruct, error) {
-	i, _ := readLine(in)
-	o, _ := readLine(out)
-
-	bio := big.NewInt(0)
-	expect, _ := bio.SetString(o, 10)
-
-	return testStruct{n, expect}, nil
+	return nil, ErrUnsupAlg
 }
 
 func init() {
@@ -61,17 +67,6 @@ func init() {
 	flag.StringVar(&out, "out", "", "file with parameters for comparison")
 	flag.StringVar(&task, "task", "", "task: fibonacci, prime or power")
 	flag.StringVar(&alg, "alg", "", "algorithm name")
-}
-
-func fibonacci(alg string, n int) (*big.Int, error) {
-	switch alg {
-	case "recursive":
-		return hw03alg.FibRecursive(n)
-	case "iterative":
-	case "golden ratio":
-	case "matrix":
-	}
-	return nil, ErrUnsupAlg
 }
 
 func main() {

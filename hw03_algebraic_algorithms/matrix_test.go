@@ -1,4 +1,4 @@
-package hw03algebraicalgorithms
+package hw03alg
 
 import (
 	"fmt"

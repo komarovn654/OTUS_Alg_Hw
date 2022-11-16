@@ -1,4 +1,4 @@
-package hw03algebraicalgorithms
+package hw03alg
 
 // Iterative exponentiation algorithm. O(N).
 func PwrIterative(v float64, pwr int) float64 {
