@@ -154,7 +154,7 @@ func main() {
 	select {
 	case <-rdy:
 		if res {
-			fmt.Printf(" %v, EXECUTION TIME: %v\n", "PASS", time.Since(timer))
+			fmt.Printf("PASS, EXECUTION TIME: %v\n", time.Since(timer))
 			return
 		}
 		fmt.Println("FAIL")
