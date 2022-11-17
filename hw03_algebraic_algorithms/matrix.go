@@ -43,21 +43,26 @@ func (m *Matrix) Multiply(v Matrix) Matrix {
 	tmp := NullMatrix()
 	tmp.Set(*m)
 
+	// res.x11 = m.x11*v.x11 + m.x12*v.x21
 	res.x11.Add(m.x11.Mul(m.x11, v.x11), m.x12.Mul(m.x12, v.x21))
 	m.x11 = tmp.x11
 	m.x12 = tmp.x12
 
+	// res.x12 = m.x11*v.x12 + m.x12*v.x22
 	res.x12.Add(m.x11.Mul(m.x11, v.x12), m.x12.Mul(m.x12, v.x22))
 	m.x11 = tmp.x11
 	m.x12 = tmp.x12
 
+	// res.x21 = m.x21*v.x11 + m.x22*v.x21
 	res.x21.Add(m.x21.Mul(m.x21, v.x11), m.x22.Mul(m.x22, v.x21))
 	m.x21 = tmp.x21
 	m.x22 = tmp.x22
 
+	// res.x22 = m.x21*v.x12 + m.x22*v.x22
 	res.x22.Add(m.x21.Mul(m.x21, v.x12), m.x22.Mul(m.x22, v.x22))
 
 	m.Set(res)
+
 	return res
 }
 

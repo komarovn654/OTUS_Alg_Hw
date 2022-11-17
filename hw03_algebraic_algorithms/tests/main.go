@@ -6,9 +6,6 @@ import (
 	"fmt"
 	"log"
 	"math/big"
-	"os"
-	"strconv"
-	"strings"
 	"time"
 
 	"github.com/komarovn654/OTUS_Alg_Hw/hw03alg"
@@ -25,52 +22,102 @@ var (
 	alg  string
 )
 
-func readLine(filePath string) (string, error) {
-	f, err := os.ReadFile(filePath)
+func fibonacci(alg string, in string, out string) (bool, error) {
+	var res *big.Int
+
+	n, err := parseFibN(in)
 	if err != nil {
-		return "", err
+		return false, err
 	}
 
-	return strings.Split(string(f), "\n")[0], nil
-}
-
-func parseN(filePath string) (int, error) {
-	strN, err := readLine(filePath)
-	if err != nil {
-		return 0, err
-	}
-	intN, err := strconv.Atoi(strN)
-	if err != nil {
-		return 0, err
-	}
-	return intN, nil
-}
-
-func parseResult(filePath string) (*big.Int, error) {
-	strRes, err := readLine(filePath)
-	if err != nil {
-		return big.NewInt(0), err
-	}
-	bintRes := big.NewInt(0)
-	if _, ok := bintRes.SetString(strRes, 10); !ok {
-		return big.NewInt(0), ErrBigintStr
-	}
-
-	return bintRes, nil
-}
-
-func fibonacci(alg string, n int) (*big.Int, error) {
 	switch alg {
 	case "recursive":
-		return hw03alg.FibRecursive(n), nil
+		res = hw03alg.FibRecursive(n)
 	case "iterative":
-		return hw03alg.FibIterative(n), nil
+		res = hw03alg.FibIterative(n)
 	case "goldenratio":
-		return hw03alg.FibGolden(n), nil
+		res = hw03alg.FibGolden(n)
 	case "matrix":
-		return hw03alg.FibMatrix(n), nil
+		res = hw03alg.FibMatrix(n)
+	default:
+		return false, ErrUnsupAlg
 	}
-	return nil, ErrUnsupAlg
+
+	resCmp, err := parseResBInt(out)
+	if err != nil {
+		return false, err
+	}
+
+	if resCmp.Cmp(res) != 0 {
+		return false, nil
+	}
+	return true, nil
+}
+
+func power(alg string, in string, out string) (bool, error) {
+	var res float32
+
+	base, degree, err := parsePwr(in)
+	if err != nil {
+		return false, err
+	}
+
+	switch alg {
+	case "iterative":
+		res = hw03alg.PwrIterative(base, degree)
+	case "sqrmultiply":
+		res = hw03alg.PwrSqrMultiply(base, degree)
+	case "binary":
+		res = hw03alg.PwrBinary(base, degree)
+	default:
+		return false, ErrUnsupAlg
+	}
+
+	resCmp, err := parseResFloat(out)
+	if err != nil {
+		return false, err
+	}
+
+	res = (res * 100_000_000_000) / 100_000_000_000
+	if resCmp != res {
+		return false, nil
+	}
+	return true, nil
+}
+
+func prime(alg string, in string, out string) (bool, error) {
+	var res int64
+
+	n, err := parseInt(in)
+	if err != nil {
+		return false, err
+	}
+
+	switch alg {
+	case "brutforce":
+		res = hw03alg.PrimeBruteforce(n)
+	case "brutforceopt":
+		res = hw03alg.PrimeBFOpt(n)
+	case "erat":
+		res = hw03alg.PrimeErat(n)
+	case "eratmem":
+		res = hw03alg.PrimeEratMemOpt(n)
+	case "eratopt":
+		res = hw03alg.PrimeEratOpt(n)
+	default:
+		return false, ErrUnsupAlg
+	}
+
+	resCmp, err := parseInt(out)
+	if err != nil {
+		return false, err
+	}
+
+	if resCmp != res {
+		return false, nil
+	}
+
+	return true, nil
 }
 
 func init() {
@@ -82,25 +129,19 @@ func init() {
 
 func main() {
 	flag.Parse()
-	n, err := parseN(in)
-	if err != nil {
-		log.Fatal(err)
-	}
-	resCmp, err := parseResult(out)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	rdy := make(chan struct{})
-
-	res := big.NewInt(0)
 	timer := time.Now()
+	var res bool
+	var err error
+
 	go func() {
 		switch task {
 		case "fibonacci":
-			res, err = fibonacci(alg, n)
+			res, err = fibonacci(alg, in, out)
 		case "prime":
+			res, err = prime(alg, in, out)
 		case "power":
+			res, err = power(alg, in, out)
 		default:
 			log.Fatal(ErrUnsupTask)
 		}
@@ -112,7 +153,7 @@ func main() {
 
 	select {
 	case <-rdy:
-		if resCmp.Cmp(res) == 0 {
+		if res {
 			fmt.Printf(" %v, EXECUTION TIME: %v\n", "PASS", time.Since(timer))
 			return
 		}
