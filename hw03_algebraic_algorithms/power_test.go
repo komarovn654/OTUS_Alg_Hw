@@ -2,14 +2,16 @@ package hw03alg
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestPwr(t *testing.T) {
 	tests := []struct {
 		name     string
 		in       float64
-		pwr      int
-		expected float64
+		pwr      int64
+		expected float32
 	}{
 		{
 			name:     "int",
@@ -39,35 +41,13 @@ func TestPwr(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name+" Iterative", func(t *testing.T) {
-			//require.Equal(t, tc.expected, PwrIterative(tc.in, tc.pwr))
+			require.Equal(t, tc.expected, PwrIterative(tc.in, tc.pwr))
 		})
-	}
-
-	for _, tc := range tests {
 		t.Run(tc.name+" Multiply", func(t *testing.T) {
-			//require.Equal(t, tc.expected, PwrSqrMultiply(tc.in, tc.pwr))
+			require.Equal(t, tc.expected, PwrSqrMultiply(tc.in, tc.pwr))
 		})
-	}
-}
-
-func TestPwrM(t *testing.T) {
-	tests := []struct {
-		name     string
-		in       float64
-		pwr      int
-		expected float64
-	}{
-		{
-			name:     "int",
-			in:       2.0,
-			pwr:      9,
-			expected: 1024.0,
-		},
-	}
-
-	for _, tc := range tests {
-		t.Run(tc.name+" Multiply", func(t *testing.T) {
-			//require.Equal(t, tc.expected, PwrBinary(tc.in, tc.pwr))
+		t.Run(tc.name+" Binary", func(t *testing.T) {
+			require.Equal(t, tc.expected, PwrBinary(tc.in, tc.pwr))
 		})
 	}
 }

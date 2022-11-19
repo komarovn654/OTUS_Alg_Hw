@@ -16,7 +16,7 @@ func PwrSqrMultiply(base float64, degree int64) float32 {
 		return 1
 	}
 	res := 1.0
-	for ; isDegreeTwo(degree) == false; degree -= 1 {
+	for ; !isDegreeTwo(degree); degree -= 1 {
 		res = res * base
 	}
 	vSqr := base * base
