@@ -18,18 +18,25 @@ var (
 	ErrStackOverflow = errors.New("stack overflow")
 )
 
-func fibonacci(alg string, in string, out string) (bool, error) {
+type testResult struct {
+	res bool
+	dur time.Duration
+	err error
+}
+
+func fibonacci(alg string, in string, out string) testResult {
 	var res *big.Int
 
 	n, err := parseFibN(in)
 	if err != nil {
-		return false, err
+		return testResult{false, 0, err}
 	}
 
+	timer := time.Now()
 	switch alg {
 	case "recursive":
 		if n == 10_000_000 {
-			return false, ErrStackOverflow
+			return testResult{false, 0, err}
 		}
 		res = hw03alg.FibRecursive(n)
 	case "iterative":
@@ -39,28 +46,30 @@ func fibonacci(alg string, in string, out string) (bool, error) {
 	case "matrix":
 		res = hw03alg.FibMatrix(n)
 	default:
-		return false, ErrUnsupAlg
+		return testResult{false, 0, ErrUnsupAlg}
 	}
+	runtime := time.Since(timer)
 
 	resCmp, err := parseResBInt(out)
 	if err != nil {
-		return false, err
+		return testResult{false, 0, err}
 	}
 
 	if resCmp.Cmp(res) != 0 {
-		return false, nil
+		return testResult{false, runtime, nil}
 	}
-	return true, nil
+	return testResult{true, runtime, nil}
 }
 
-func power(alg string, in string, out string) (bool, error) {
+func power(alg string, in string, out string) testResult {
 	var res float32
 
 	base, degree, err := parsePwr(in)
 	if err != nil {
-		return false, err
+		return testResult{false, 0, err}
 	}
 
+	timer := time.Now()
 	switch alg {
 	case "iterative":
 		res = hw03alg.PwrIterative(base, degree)
@@ -69,29 +78,31 @@ func power(alg string, in string, out string) (bool, error) {
 	case "binary":
 		res = hw03alg.PwrBinary(base, degree)
 	default:
-		return false, ErrUnsupAlg
+		return testResult{false, 0, ErrUnsupAlg}
 	}
+	runtime := time.Since(timer)
 
 	resCmp, err := parseResFloat(out)
 	if err != nil {
-		return false, err
+		return testResult{false, 0, err}
 	}
 
 	res = (res * 100_000_000_000) / 100_000_000_000
 	if resCmp != res {
-		return false, nil
+		return testResult{false, runtime, nil}
 	}
-	return true, nil
+	return testResult{true, runtime, nil}
 }
 
-func prime(alg string, in string, out string) (bool, error) {
+func prime(alg string, in string, out string) testResult {
 	var res int64
 
 	n, err := parseInt(in)
 	if err != nil {
-		return false, err
+		return testResult{false, 0, err}
 	}
 
+	timer := time.Now()
 	switch alg {
 	case "brutforce":
 		res = hw03alg.PrimeBruteforce(n)
@@ -104,45 +115,37 @@ func prime(alg string, in string, out string) (bool, error) {
 	case "eratopt":
 		res = hw03alg.PrimeEratOpt(n)
 	default:
-		return false, ErrUnsupAlg
+		return testResult{false, 0, ErrUnsupAlg}
 	}
+	runtime := time.Since(timer)
 
 	resCmp, err := parseInt(out)
 	if err != nil {
-		return false, err
+		return testResult{false, 0, err}
 	}
 
 	if resCmp != res {
-		return false, nil
+		return testResult{false, runtime, nil}
 	}
-
-	return true, nil
-}
-
-type testResult struct {
-	res bool
-	dur time.Duration
-	err error
+	return testResult{true, runtime, nil}
 }
 
 func worker(task string, alg string, in string, out string) <-chan testResult {
-	var res bool
-	var err error
+	tr := testResult{}
 	done := make(chan testResult)
 
-	timer := time.Now()
 	go func() {
 		switch task {
 		case "fibonacci":
-			res, err = fibonacci(alg, in, out)
+			tr = fibonacci(alg, in, out)
 		case "prime":
-			res, err = prime(alg, in, out)
+			tr = prime(alg, in, out)
 		case "power":
-			res, err = power(alg, in, out)
+			tr = power(alg, in, out)
 		default:
-			err = ErrUnsupTask
+			tr = testResult{false, 0, ErrUnsupTask}
 		}
-		done <- testResult{res, time.Since(timer), err}
+		done <- tr
 	}()
 
 	return done

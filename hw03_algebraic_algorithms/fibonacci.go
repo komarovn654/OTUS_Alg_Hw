@@ -30,7 +30,6 @@ func FibIterative(n int) *big.Int {
 		f.Add(prevprev, prev)
 		prevprev.Set(prev)
 		prev.Set(f)
-
 	}
 	return f
 }
