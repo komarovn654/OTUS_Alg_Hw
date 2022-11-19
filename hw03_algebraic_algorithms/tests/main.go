@@ -156,7 +156,7 @@ func saveResult(filePath string, result testResult, timeout bool) error {
 	defer f.Close()
 
 	if result.res {
-		_, err = f.WriteString(fmt.Sprintf("| PASS %v*", result.dur))
+		_, err = f.WriteString(fmt.Sprintf("| PASS_%v*", result.dur))
 		return err
 	}
 

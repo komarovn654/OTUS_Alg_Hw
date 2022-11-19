@@ -5,6 +5,7 @@ import (
 	"math/big"
 	"os"
 	"strconv"
+	"strings"
 )
 
 // Parse fibonacci number
@@ -57,22 +58,17 @@ func parsePwr(filePath string) (base float64, exp int64, err error) {
 
 // Parse expected result big Int
 func parseResBInt(filePath string) (bInt *big.Int, err error) {
-	bInt = big.NewInt(0)
-	f, err := os.Open(filePath)
+	f, err := os.ReadFile(filePath)
 	if err != nil {
-		return
+		return big.NewInt(0), err
 	}
 
-	fscan := bufio.NewScanner(f)
-
-	if !fscan.Scan() {
-		return
-	}
-	if bInt, ok := bInt.SetString(fscan.Text(), 10); !ok {
-		return bInt, err
+	bintRes := big.NewInt(0)
+	if _, ok := bintRes.SetString(strings.Split(string(f), "\n")[0], 10); !ok {
+		return big.NewInt(0), ErrBigintStr
 	}
 
-	return
+	return bintRes, nil
 }
 
 // Parse expected result float
