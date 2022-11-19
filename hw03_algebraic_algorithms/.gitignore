@@ -2,3 +2,4 @@ tests/testfib.txt
 tests/testpwr.txt
 tests/testprime.txt
 tests/tests.exe
+/.vscode

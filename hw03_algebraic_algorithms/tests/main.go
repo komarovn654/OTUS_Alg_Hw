@@ -2,24 +2,20 @@ package main
 
 import (
 	"errors"
-	"flag"
 	"fmt"
 	"log"
 	"math/big"
+	"os"
 	"time"
 
 	"github.com/komarovn654/OTUS_Alg_Hw/hw03alg"
 )
 
 var (
-	ErrUnsupAlg  = errors.New("unsupported algorithm")
-	ErrUnsupTask = errors.New("unsupported task")
-	ErrBigintStr = errors.New("string to bigint cast error")
-
-	in   string
-	out  string
-	task string
-	alg  string
+	ErrUnsupAlg      = errors.New("unsupported algorithm")
+	ErrUnsupTask     = errors.New("unsupported task")
+	ErrBigintStr     = errors.New("string to bigint cast error")
+	ErrStackOverflow = errors.New("stack overflow")
 )
 
 func fibonacci(alg string, in string, out string) (bool, error) {
@@ -32,6 +28,9 @@ func fibonacci(alg string, in string, out string) (bool, error) {
 
 	switch alg {
 	case "recursive":
+		if n == 10_000_000 {
+			return false, ErrStackOverflow
+		}
 		res = hw03alg.FibRecursive(n)
 	case "iterative":
 		res = hw03alg.FibIterative(n)
@@ -120,20 +119,18 @@ func prime(alg string, in string, out string) (bool, error) {
 	return true, nil
 }
 
-func init() {
-	flag.StringVar(&in, "in", "", "file with input parameters")
-	flag.StringVar(&out, "out", "", "file with parameters for comparison")
-	flag.StringVar(&task, "task", "", "task: fibonacci, prime or power")
-	flag.StringVar(&alg, "alg", "", "algorithm name")
+type testResult struct {
+	res bool
+	dur time.Duration
+	err error
 }
 
-func main() {
-	flag.Parse()
-	rdy := make(chan struct{})
-	timer := time.Now()
+func worker(task string, alg string, in string, out string) <-chan testResult {
 	var res bool
 	var err error
+	done := make(chan testResult)
 
+	timer := time.Now()
 	go func() {
 		switch task {
 		case "fibonacci":
@@ -143,22 +140,59 @@ func main() {
 		case "power":
 			res, err = power(alg, in, out)
 		default:
-			log.Fatal(ErrUnsupTask)
+			err = ErrUnsupTask
 		}
-		if err != nil {
-			log.Fatal(err)
-		}
-		rdy <- struct{}{}
+		done <- testResult{res, time.Since(timer), err}
 	}()
 
+	return done
+}
+
+func saveResult(filePath string, result testResult, timeout bool) error {
+	f, err := os.OpenFile(filePath, os.O_RDWR|os.O_APPEND, 0755)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	if result.res {
+		_, err = f.WriteString(fmt.Sprintf("| PASS %v*", result.dur))
+		return err
+	}
+
+	if timeout {
+		_, err = f.WriteString(fmt.Sprintf("| %v*", "TIMEOUT"))
+		return err
+	}
+
+	_, err = f.WriteString(fmt.Sprintf("| FAIL %v*", result.dur))
+	return err
+}
+
+func main() {
+	if len(os.Args) < 5 {
+		log.Fatalf("Five arguments are expected: \n%v\n%v\n%v\n%v\n%v\n",
+			"1. file with input parameters",
+			"2. file with parameters for comparison",
+			"3. task: fibonacci, prime or power",
+			"4. algorithm name",
+			"5. file for saving the result",
+		)
+	}
+
+	result := worker(os.Args[3], os.Args[4], os.Args[1], os.Args[2])
+
 	select {
-	case <-rdy:
-		if res {
-			fmt.Printf("PASS, EXECUTION TIME: %v\n", time.Since(timer))
-			return
+	case res := <-result:
+		if res.err != nil && res.err != ErrStackOverflow {
+			log.Fatal(res.err)
 		}
-		fmt.Println("FAIL")
+		if err := saveResult(os.Args[5], res, false); err != nil {
+			log.Fatal(err)
+		}
 	case <-time.After(60 * time.Second):
-		fmt.Println("TIMEOUT")
+		if err := saveResult(os.Args[5], testResult{}, true); err != nil {
+			log.Fatal(err)
+		}
 	}
 }
