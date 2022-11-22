@@ -78,23 +78,23 @@ func runRemove(ar arrayCommon, len int) (tr testResult) {
 }
 
 func main() {
-	sa := hw04arrays.InitSingleArray(0)
-	res := runAdd(&sa, test100)
-	fmt.Printf("%v %v\n", res.dur, res.res)
-	res = runInsert(&sa, test100)
-	fmt.Printf("%v %v\n", res.dur, res.res)
-	res = runRemove(&sa, 2*test100)
-	fmt.Printf("%v %v\n", res.dur, res.res)
-	/*
-		da := hw04arrays.InitDynamicArray(0)
-		res = runAdd(&da, test10000)
-		fmt.Printf("%v %v\n", res.dur, res.res)
+	// sa := hw04arrays.InitSingleArray(0)
+	// res := runAdd(&sa, test100)
+	// fmt.Printf("%v %v\n", res.dur, res.res)
+	// res = runInsert(&sa, test100)
+	// fmt.Printf("%v %v\n", res.dur, res.res)
+	// res = runRemove(&sa, 2*test100)
+	// fmt.Printf("%v %v\n", res.dur, res.res)
 
-		fa := hw04arrays.InitFactorArray(0)
-		res = runAdd(&fa, test100000000)
-		fmt.Printf("%v %v\n", res.dur, res.res)
+	da := hw04arrays.InitDynamicArray(0)
+	res := runAdd(&da, test10000)
+	fmt.Printf("%v %v\n", res.dur, res.res)
 
-		ma := hw04arrays.InitMatrixArray(0)
-		res = runAdd(&ma, test100000000)
-		fmt.Printf("%v %v\n", res.dur, res.res)*/
+	fa := hw04arrays.InitFactorArray(0)
+	res = runAdd(&fa, test100000000)
+	fmt.Printf("%v %v\n", res.dur, res.res)
+
+	ma := hw04arrays.InitMatrixArray(0)
+	res = runAdd(&ma, test100000000)
+	fmt.Printf("%v %v\n", res.dur, res.res)
 }

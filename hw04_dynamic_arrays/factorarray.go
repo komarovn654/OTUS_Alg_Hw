@@ -36,45 +36,21 @@ func (fa *FactorArray) Add(t Item) {
 		return
 	}
 
-	newArray := InitFactorArray(fa.len + 1)
-
-	for i := 0; i < fa.len; i++ {
-		newArray.arr[i] = fa.arr[i]
-	}
-	newArray.arr[newArray.len-1] = t
-
-	fa.len = newArray.len
-	fa.cap = newArray.cap
-	fa.arr = newArray.arr
+	fa.resize(fa.len + 1)
+	fa.arr[fa.len-1] = t
 }
 
 func (fa *FactorArray) Insert(t Item, index int) {
-	if fa.cap > fa.len {
-		for i := fa.len; i > index; i-- {
-			fa.arr[i] = fa.arr[i-1]
-		}
-		fa.arr[index] = t
-		fa.len++
-		return
+	if fa.cap <= fa.len {
+		fa.resize(fa.len + 1)
+		fa.len--
 	}
 
-	newArray := InitFactorArray(fa.len + 1)
-	insert := false
-	for i := 0; i < fa.len; i++ {
-		if i == index {
-			newArray.arr[i] = t
-			insert = true
-		}
-		if insert {
-			newArray.arr[i+1] = fa.arr[i]
-			continue
-		}
-		newArray.arr[i] = fa.arr[i]
+	for i := fa.len; i > index; i-- {
+		fa.arr[i] = fa.arr[i-1]
 	}
-
-	fa.len = newArray.len
-	fa.cap = newArray.cap
-	fa.arr = newArray.arr
+	fa.arr[index] = t
+	fa.len++
 }
 
 func (fa *FactorArray) Remove(index int) Item {
@@ -84,6 +60,17 @@ func (fa *FactorArray) Remove(index int) Item {
 	}
 	fa.len--
 	return removed
+}
+
+func (fa *FactorArray) resize(length int) {
+	newArray := InitFactorArray(length)
+	for i := 0; i < fa.len; i++ {
+		newArray.arr[i] = fa.arr[i]
+	}
+
+	fa.arr = newArray.arr
+	fa.len = newArray.len
+	fa.cap = newArray.cap
 }
 
 func InitFactorArray(length int) FactorArray {
