@@ -186,3 +186,14 @@ func TestMoveToFront(t *testing.T) {
 	l.MoveToFront(l.Back())
 	require.True(t, checkIntList(l, []int{4, 3, 20, 10, 0, 1, 2}))
 }
+
+func TestInsert(t *testing.T) {
+	l := NewList()
+
+	for i := 0; i < 10; i++ {
+		l.PushFront(i)
+	}
+	l.Insert(5, 55)
+
+	require.True(t, checkIntList(l, []int{9, 8, 7, 6, 5, 55, 4, 3, 2, 1, 0}))
+}

@@ -8,6 +8,7 @@ type List interface {
 	PushBack(v interface{}) *ListItem
 	Remove(i *ListItem)
 	MoveToFront(i *ListItem)
+	Insert(pos int, i interface{})
 }
 
 type ListItem struct {
@@ -101,6 +102,23 @@ func (l *list) Remove(i *ListItem) {
 func (l *list) MoveToFront(i *ListItem) {
 	l.Remove(i)
 	l.PushFront(i.Value)
+}
+
+func (l *list) Insert(pos int, i interface{}) {
+	item := l.Front()
+	for i := 0; i < pos-1; i++ {
+		item = item.Next
+	}
+
+	newItem := &ListItem{
+		Value: i,
+		Next:  item.Next,
+		Prev:  item,
+	}
+
+	item.Next.Prev = newItem
+	item.Next = newItem
+	l.len++
 }
 
 func NewList() List {

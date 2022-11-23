@@ -30,8 +30,17 @@ func TestEnqueueArray(t *testing.T) {
 	}
 
 	for _, tc := range tests {
+		// t.Run(tc.name, func(t *testing.T) {
+		// 	pq := PQArray{}
+		// 	for _, v := range tc.pushValues {
+		// 		pq.Enqueue(v.prio, v.value)
+		// 	}
+		// 	for i := range tc.pushValues {
+		// 		require.Equal(t, tc.expect[i], pq.Dequeue())
+		// 	}
+		// })
 		t.Run(tc.name, func(t *testing.T) {
-			pq := PriorityQueue{}
+			pq := PQList{}
 			for _, v := range tc.pushValues {
 				pq.Enqueue(v.prio, v.value)
 			}
