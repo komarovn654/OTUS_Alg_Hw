@@ -139,7 +139,7 @@ func (ma *MatrixArray) isDomainFull(domainNum int) bool {
 
 func (ma *MatrixArray) isDomainExist(domainNum int) bool {
 	if ma.domains.arr == nil {
-		return false // array doesnt exist
+		return false
 	}
 
 	if ((ma.len - 1) / ma.maxLen) < domainNum {
@@ -153,5 +153,5 @@ func (ma *MatrixArray) isDomainExist(domainNum int) bool {
 }
 
 func InitMatrixArray(lenght int) MatrixArray {
-	return MatrixArray{domains: FactorArray{}, len: 0, maxLen: 100}
+	return MatrixArray{domains: FactorArray{}, len: 0, maxLen: 10_000}
 }

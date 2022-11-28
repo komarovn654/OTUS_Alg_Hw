@@ -105,6 +105,15 @@ func (l *list) MoveToFront(i *ListItem) {
 }
 
 func (l *list) Insert(pos int, i interface{}) {
+	if pos == 0 {
+		l.PushFront(i)
+		return
+	}
+	if pos == l.len {
+		l.PushBack(i)
+		return
+	}
+
 	item := l.Front()
 	for i := 0; i < pos-1; i++ {
 		item = item.Next
