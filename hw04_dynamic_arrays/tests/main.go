@@ -9,8 +9,9 @@ import (
 )
 
 var (
-	testcases = [5]int{100, 10_000, 1_000_000, 10_000_000, 100_000_000}
-	timeout   = time.Second * 30
+	testcases  = [5]int{1_000, 10_000, 100_000, 1_000_000, 10_000_000}
+	arrayOrder = [3]string{"increase", "decrease", "random"}
+	timeout    = time.Second * 30
 )
 
 const (
@@ -32,20 +33,19 @@ type testResult struct {
 	res bool
 }
 
-func runAdd(ar arrayCommon, len int, arrType int) (tr testResult) {
+func runAdd(ar arrayCommon, len int, arrType string) (tr testResult) {
 	timer := time.Now()
 	for i := 0; i < len; i++ {
-		switch arrType {
-		case increase:
-			ar.Add(i)
-		case decrease:
-			ar.Add(len - i)
-		case random:
-			ar.Add(rand.Intn(len))
-		}
-
 		if time.Since(timer) >= timeout {
-			return testResult{dur: time.Second * 125, res: false}
+			return testResult{dur: timeout, res: false}
+		}
+		switch arrType {
+		case "increase":
+			ar.Add(i)
+		case "decrease":
+			ar.Add(len - i)
+		case "random":
+			ar.Add(rand.Intn(len))
 		}
 	}
 	tr.dur = time.Since(timer)
@@ -53,15 +53,15 @@ func runAdd(ar arrayCommon, len int, arrType int) (tr testResult) {
 	tr.res = true
 	for i := 0; i < len; i++ {
 		switch arrType {
-		case increase:
+		case "increase":
 			if ar.Get(i) != i {
 				tr.res = false
 			}
-		case decrease:
+		case "decrease":
 			if ar.Get(i) != (len - i) {
 				tr.res = false
 			}
-		case random:
+		case "random":
 			return tr
 		}
 	}
@@ -72,10 +72,10 @@ func runAdd(ar arrayCommon, len int, arrType int) (tr testResult) {
 func runInsert(ar arrayCommon, len int) (tr testResult) {
 	timer := time.Now()
 	for i := 0; i < len; i++ {
-		ar.Insert(i, i)
 		if time.Since(timer) >= timeout {
-			return testResult{dur: time.Second * 125, res: false}
+			return testResult{dur: timeout, res: false}
 		}
+		ar.Insert(i, i)
 	}
 	tr.dur = time.Since(timer)
 
@@ -95,10 +95,10 @@ func runRemove(ar arrayCommon, len int) (tr testResult) {
 	tr.res = true
 	timer := time.Now()
 	for i := 0; i < len; i++ {
-		ar.Remove(0)
 		if time.Since(timer) >= timeout {
-			return testResult{dur: time.Second * 125, res: false}
+			return testResult{dur: timeout, res: false}
 		}
+		ar.Remove(0)
 	}
 	tr.dur = time.Since(timer)
 
@@ -108,7 +108,7 @@ func runRemove(ar arrayCommon, len int) (tr testResult) {
 	return
 }
 
-func runTestInc(ar arrayCommon, len int, arrType int, arrName string) {
+func runTest(ar arrayCommon, len int, arrType string, arrName string) {
 	res := runAdd(ar, len, arrType)
 	fmt.Printf("Add %v Array: %v %v\n", arrName, res.dur, res.res)
 	res = runInsert(ar, len)
@@ -119,42 +119,21 @@ func runTestInc(ar arrayCommon, len int, arrType int, arrName string) {
 
 func main() {
 	for _, tc := range testcases {
-		fmt.Printf("Test case: %v\nI", tc)
-		fmt.Println("Increasing array")
-		sw := hw04arrays.InitSliceWrap()
-		runTestInc(&sw, tc, increase, "Slice")
-		sa := hw04arrays.InitSingleArray(0)
-		runTestInc(&sa, tc, increase, "Single")
-		da := hw04arrays.InitDynamicArray(0)
-		runTestInc(&da, tc, increase, "Dynamic")
-		fa := hw04arrays.InitFactorArray(0)
-		runTestInc(&fa, tc, increase, "Factor")
-		ma := hw04arrays.InitMatrixArray(0)
-		runTestInc(&ma, tc, increase, "Matrix")
+		for _, order := range arrayOrder {
+			fmt.Printf("Test case: %v\n", tc)
+			fmt.Printf("%v array\n", order)
+			sw := hw04arrays.InitSliceWrap()
+			sa := hw04arrays.InitSingleArray(0)
+			da := hw04arrays.InitDynamicArray(0)
+			fa := hw04arrays.InitFactorArray(0)
+			ma := hw04arrays.InitMatrixArray(0)
 
-		fmt.Println("Decreasing array")
-		sw = hw04arrays.InitSliceWrap()
-		runTestInc(&sw, tc, decrease, "Slice")
-		sa = hw04arrays.InitSingleArray(0)
-		runTestInc(&sa, tc, decrease, "Single")
-		da = hw04arrays.InitDynamicArray(0)
-		runTestInc(&da, tc, decrease, "Dynamic")
-		fa = hw04arrays.InitFactorArray(0)
-		runTestInc(&fa, tc, decrease, "Factor")
-		ma = hw04arrays.InitMatrixArray(0)
-		runTestInc(&ma, tc, decrease, "Matrix")
-
-		fmt.Println("Random array")
-		sw = hw04arrays.InitSliceWrap()
-		runTestInc(&sw, tc, random, "Slice")
-		sa = hw04arrays.InitSingleArray(0)
-		runTestInc(&sa, tc, random, "Single")
-		da = hw04arrays.InitDynamicArray(0)
-		runTestInc(&da, tc, random, "Dynamic")
-		fa = hw04arrays.InitFactorArray(0)
-		runTestInc(&fa, tc, random, "Factor")
-		ma = hw04arrays.InitMatrixArray(0)
-		runTestInc(&ma, tc, random, "Matrix")
-		fmt.Printf("------------------------------\n")
+			runTest(&sw, tc, order, "Slice")
+			runTest(&sa, tc, order, "Single")
+			runTest(&da, tc, order, "Dynamic")
+			runTest(&fa, tc, order, "Factor")
+			runTest(&ma, tc, order, "Matrix")
+			fmt.Printf("------------------------------\n")
+		}
 	}
 }
