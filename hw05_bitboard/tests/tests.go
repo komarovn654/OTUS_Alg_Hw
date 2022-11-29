@@ -12,8 +12,6 @@ var (
 	ErrCountShift    = errors.New("count error, shift method")
 	ErrCountSubtract = errors.New("count error, subtract method")
 	ErrCountCache    = errors.New("count error, cache method")
-
-	cache = hw05bitboard.Cache{}
 )
 
 type testCase struct {
@@ -77,7 +75,7 @@ func runTest(tests []testCase, cp hw05bitboard.ChessPiece) []testResult {
 
 func kingTest(dir string) ([]testResult, error) {
 	log.Println("king test")
-	tc, err := parseTC(dir)
+	tc, err := parseTestCases(dir)
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +85,7 @@ func kingTest(dir string) ([]testResult, error) {
 
 func knightTest(dir string) ([]testResult, error) {
 	log.Println("knight test")
-	tc, err := parseTC(dir)
+	tc, err := parseTestCases(dir)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +95,7 @@ func knightTest(dir string) ([]testResult, error) {
 
 func rookTest(dir string) ([]testResult, error) {
 	log.Println("rook test")
-	tc, err := parseTC(dir)
+	tc, err := parseTestCases(dir)
 	if err != nil {
 		return nil, err // TODO: separate errors
 	}

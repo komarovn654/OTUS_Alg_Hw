@@ -1,6 +1,14 @@
 package main
 
-import "log"
+import (
+	"log"
+
+	"github.com/komarovn654/OTUS_Alg_Hw/hw05bitboard"
+)
+
+var (
+	cache = hw05bitboard.Cache{}
+)
 
 func init() {
 	cache.Init()

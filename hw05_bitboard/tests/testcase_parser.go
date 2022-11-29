@@ -40,10 +40,10 @@ func readFile(filePath string) ([]string, error) {
 	return str, nil
 }
 
-func parseTC(dir string) ([]testCase, error) {
+func parseTestCases(dir string) ([]testCase, error) {
 	tcNum, err := filesCount(dir)
 	os.Chdir(dir)
-	defer os.Chdir("../")
+	defer os.Chdir("../") // TODO: return to parent dir
 
 	if err != nil {
 		return nil, err

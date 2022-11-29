@@ -52,12 +52,16 @@ func (r *Rook) GetMoves(pos uint64) uint64 {
 	line := uint64(0x101010101010101)
 
 	line = line << (pos % 8)
-
-	for i := uint64(0); i < (pos / 8); i++ {
-		column = column << 8
-	}
+	column = column << (8 * (pos / 8))
 
 	return (line | column) ^ rp
+}
+
+type Bishop struct {
+}
+
+func (r *Bishop) GetMoves(pos uint64) uint64 {
+	return 0
 }
 
 func BitsCountShift(bitField uint64) (count uint64) {
