@@ -6,6 +6,10 @@ import (
 )
 
 func TestKing(t *testing.T) {
-	k := King{}
-	fmt.Println(k.GetMoves(24))
+	// k := Rook{}
+	// fmt.Println(k.GetMoves(35))
+	cache := Cache{}
+	cache.Init()
+
+	fmt.Println(BitsCountCache(770, &cache))
 }

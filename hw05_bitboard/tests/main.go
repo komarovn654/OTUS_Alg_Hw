@@ -1,9 +1,24 @@
 package main
 
-import "fmt"
+import "log"
+
+func init() {
+	cache.Init()
+}
 
 func main() {
-	tc, err := parseKingTC("1.Bitboard - Король")
-	k := hw05bitboard.King{}
-	fmt.Println(tc, err)
+	_, err := kingTest("1.Bitboard - Король")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = knightTest("2.Bitboard - Конь")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = rookTest("3.Bitboard - Ладья")
+	if err != nil {
+		log.Fatal(err)
+	}
 }

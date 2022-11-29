@@ -9,12 +9,6 @@ import (
 	"strings"
 )
 
-type testCase struct {
-	in     uint64 // input value
-	expCnt uint64 // expected count
-	expPos uint64 // expected positions
-}
-
 func filesCount(dir string) (count int, err error) {
 	files, err := ioutil.ReadDir(dir)
 	if err != nil {
@@ -46,9 +40,11 @@ func readFile(filePath string) ([]string, error) {
 	return str, nil
 }
 
-func parseKingTC(dir string) ([]testCase, error) {
+func parseTC(dir string) ([]testCase, error) {
 	tcNum, err := filesCount(dir)
 	os.Chdir(dir)
+	defer os.Chdir("../")
+
 	if err != nil {
 		return nil, err
 	}
