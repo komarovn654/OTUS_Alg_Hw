@@ -5,6 +5,9 @@ var (
 	noB = uint64(0xfdfdfdfdfdfdfdfd)
 	noH = uint64(0x7f7f7f7f7f7f7f7f)
 	noG = uint64(0xbfbfbfbfbfbfbfbf)
+
+	column1 = uint64(0xff)
+	lineA   = uint64(0x101010101010101)
 )
 
 type ChessPiece interface {
@@ -48,11 +51,9 @@ type Rook struct {
 
 func (r *Rook) GetMoves(pos uint64) uint64 {
 	rp := uint64(1 << pos)
-	column := uint64(0xff)
-	line := uint64(0x101010101010101)
 
-	line = line << (pos % 8)
-	column = column << (8 * (pos / 8))
+	line := lineA << (pos % 8)
+	column := column1 << (8 * (pos / 8))
 
 	return (line | column) ^ rp
 }
@@ -61,7 +62,30 @@ type Bishop struct {
 }
 
 func (r *Bishop) GetMoves(pos uint64) uint64 {
-	return 0
+	bp := uint64(1 << pos)
+	posDiag := bp
+	negDiag := bp
+
+	for i := uint64(1); i <= pos%8; i++ {
+		posDiag |= (bp >> ((8 * i) + i))
+		negDiag |= (bp << ((8 * i) - i))
+	}
+	for i := uint64(1); i < (8 - pos%8); i++ {
+		posDiag |= (bp << ((8 * i) + i))
+		negDiag |= (bp >> ((8 * i) - i))
+	}
+
+	return (posDiag | negDiag) ^ bp
+}
+
+type Queen struct {
+}
+
+func (q *Queen) GetMoves(pos uint64) uint64 {
+	b := Bishop{}
+	r := Rook{}
+
+	return (b.GetMoves(pos) | r.GetMoves(pos))
 }
 
 func BitsCountShift(bitField uint64) (count uint64) {

@@ -29,4 +29,14 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	_, err = bishopTest("4.Bitboard - Слон")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = queenTest("5.Bitboard - Ферзь")
+	if err != nil {
+		log.Fatal(err)
+	}
 }

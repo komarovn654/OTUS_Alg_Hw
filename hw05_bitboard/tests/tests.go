@@ -77,7 +77,7 @@ func kingTest(dir string) ([]testResult, error) {
 	log.Println("king test")
 	tc, err := parseTestCases(dir)
 	if err != nil {
-		return nil, err
+		return nil, err // TODO: separate errors
 	}
 
 	return runTest(tc, &hw05bitboard.King{}), nil
@@ -87,7 +87,7 @@ func knightTest(dir string) ([]testResult, error) {
 	log.Println("knight test")
 	tc, err := parseTestCases(dir)
 	if err != nil {
-		return nil, err
+		return nil, err // TODO: separate errors
 	}
 
 	return runTest(tc, &hw05bitboard.Knight{}), nil
@@ -101,4 +101,24 @@ func rookTest(dir string) ([]testResult, error) {
 	}
 
 	return runTest(tc, &hw05bitboard.Rook{}), nil
+}
+
+func bishopTest(dir string) ([]testResult, error) {
+	log.Println("bishop test")
+	tc, err := parseTestCases(dir)
+	if err != nil {
+		return nil, err // TODO: separate errors
+	}
+
+	return runTest(tc, &hw05bitboard.Bishop{}), nil
+}
+
+func queenTest(dir string) ([]testResult, error) {
+	log.Println("qeen test")
+	tc, err := parseTestCases(dir)
+	if err != nil {
+		return nil, err // TODO: separate errors
+	}
+
+	return runTest(tc, &hw05bitboard.Queen{}), nil
 }

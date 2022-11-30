@@ -6,8 +6,8 @@ import (
 )
 
 func TestKing(t *testing.T) {
-	k := Rook{}
-	fmt.Println(k.GetMoves(35))
+	k := Queen{}
+	fmt.Println(k.GetMoves(33))
 	/*cache := Cache{}
 	cache.Init()
 
