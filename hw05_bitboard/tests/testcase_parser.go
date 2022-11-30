@@ -51,6 +51,7 @@ func parseTestCases(dir string) ([]testCase, error) {
 	testCases := make([]testCase, tcNum/2)
 
 	for i, tc := range testCases {
+		tc.name = dir
 		inLines, err := readFile(fmt.Sprintf("test.%v.in", i))
 		if err != nil {
 			return nil, err

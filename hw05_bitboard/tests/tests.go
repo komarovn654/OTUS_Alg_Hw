@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"log"
 
 	"github.com/komarovn654/OTUS_Alg_Hw/hw05bitboard"
 )
@@ -14,67 +13,49 @@ var (
 	ErrCountCache    = errors.New("count error, cache method")
 )
 
-type testCase struct {
-	in     uint64 // input value
-	expCnt uint64 // expected count
-	expPos uint64 // expected positions
-}
-
-type testResult struct {
-	tc  testCase
-	res bool
-	err error
-}
-
-func runCountTest(mask uint64, t testCase) error {
+func runCountTest(mask uint64, t testCase) (uint64, error) {
 	cnt := hw05bitboard.BitsCountShift(mask)
-	log.Printf("count shift: %v", cnt)
 	if t.expCnt != cnt {
-		return ErrCountShift
+		return 0, ErrCountShift
 	}
 
 	cnt = hw05bitboard.BitsCountSubtract(mask)
-	log.Printf("count subtract: %v", cnt)
 	if t.expCnt != cnt {
-		return ErrCountSubtract
+		return 0, ErrCountSubtract
 	}
 
 	cnt = hw05bitboard.BitsCountCache(mask, &cache)
-	log.Printf("count cache: %v", cnt)
 	if t.expCnt != cnt {
-		return ErrCountCache
+		return 0, ErrCountCache
 	}
 
-	return nil
+	return cnt, nil
 }
 
 func runTest(tests []testCase, cp hw05bitboard.ChessPiece) []testResult {
 	tr := make([]testResult, 0)
 	for i, t := range tests {
-		log.Printf("test case: %+v", t)
 		tr = append(tr, testResult{})
 
 		mask := cp.GetMoves(t.in)
-		log.Printf("positions: %v", mask)
 		if t.expPos != mask {
-			tr[i] = testResult{tc: t, res: false, err: ErrMaskMismatch}
+			tr[i] = testResult{tc: t, res: calcResult{}, err: ErrMaskMismatch}
 			return tr
 		}
 
-		if err := runCountTest(mask, t); err != nil {
-			tr[i] = testResult{tc: t, res: false, err: err}
+		cnt, err := runCountTest(mask, t)
+		if err != nil {
+			tr[i] = testResult{tc: t, res: calcResult{}, err: err}
 			return tr
 		}
 
-		tr[i] = testResult{tc: t, res: true, err: nil}
-		log.Printf("Result: %v\n\n", true)
+		tr[i] = testResult{tc: t, res: calcResult{mask, cnt, true}, err: nil}
 	}
 
 	return tr
 }
 
 func kingTest(dir string) ([]testResult, error) {
-	log.Println("king test")
 	tc, err := parseTestCases(dir)
 	if err != nil {
 		return nil, err // TODO: separate errors
@@ -84,7 +65,6 @@ func kingTest(dir string) ([]testResult, error) {
 }
 
 func knightTest(dir string) ([]testResult, error) {
-	log.Println("knight test")
 	tc, err := parseTestCases(dir)
 	if err != nil {
 		return nil, err // TODO: separate errors
@@ -94,7 +74,6 @@ func knightTest(dir string) ([]testResult, error) {
 }
 
 func rookTest(dir string) ([]testResult, error) {
-	log.Println("rook test")
 	tc, err := parseTestCases(dir)
 	if err != nil {
 		return nil, err // TODO: separate errors
@@ -104,7 +83,6 @@ func rookTest(dir string) ([]testResult, error) {
 }
 
 func bishopTest(dir string) ([]testResult, error) {
-	log.Println("bishop test")
 	tc, err := parseTestCases(dir)
 	if err != nil {
 		return nil, err // TODO: separate errors
@@ -114,11 +92,46 @@ func bishopTest(dir string) ([]testResult, error) {
 }
 
 func queenTest(dir string) ([]testResult, error) {
-	log.Println("qeen test")
 	tc, err := parseTestCases(dir)
 	if err != nil {
 		return nil, err // TODO: separate errors
 	}
 
 	return runTest(tc, &hw05bitboard.Queen{}), nil
+}
+
+func runTests() ([]testResult, error) {
+	results := make([]testResult, 0)
+
+	tr, err := kingTest("1.Bitboard - Король")
+	if err != nil {
+		return nil, err
+	}
+	results = append(results, tr...)
+
+	tr, err = knightTest("2.Bitboard - Конь")
+	if err != nil {
+		return nil, err
+	}
+	results = append(results, tr...)
+
+	tr, err = rookTest("3.Bitboard - Ладья")
+	if err != nil {
+		return nil, err
+	}
+	results = append(results, tr...)
+
+	tr, err = bishopTest("4.Bitboard - Слон")
+	if err != nil {
+		return nil, err
+	}
+	results = append(results, tr...)
+
+	tr, err = queenTest("5.Bitboard - Ферзь")
+	if err != nil {
+		return nil, err
+	}
+	results = append(results, tr...)
+
+	return results, err
 }

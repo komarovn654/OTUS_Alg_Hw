@@ -63,14 +63,15 @@ type Bishop struct {
 
 func (r *Bishop) GetMoves(pos uint64) uint64 {
 	bp := uint64(1 << pos)
+	columnNum := pos % 8
 	posDiag := bp
 	negDiag := bp
 
-	for i := uint64(1); i <= pos%8; i++ {
+	for i := uint64(1); i <= columnNum; i++ {
 		posDiag |= (bp >> ((8 * i) + i))
 		negDiag |= (bp << ((8 * i) - i))
 	}
-	for i := uint64(1); i < (8 - pos%8); i++ {
+	for i := uint64(1); i < (8 - columnNum); i++ {
 		posDiag |= (bp << ((8 * i) + i))
 		negDiag |= (bp >> ((8 * i) - i))
 	}
