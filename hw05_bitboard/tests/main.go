@@ -41,8 +41,8 @@ func printResult(filePath string, results []testResult) {
 	for _, tr := range results {
 		str := fmt.Sprintf(
 			"%v, Position: %v  \n"+
-				"Expected Mask - Calculated Mask: %v - %v\n"+
-				"Expected Bits - Calculated Bits: %v - %v\n"+
+				"Expected Mask - Calculated Mask: %v - %v;\n"+
+				"Expected Bits - Calculated Bits: %v - %v;\n"+
 				"Result: %v  \n",
 			tr.tc.name, tr.tc.in,
 			tr.tc.expPos, tr.res.mask,
