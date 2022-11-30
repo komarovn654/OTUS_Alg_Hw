@@ -198,7 +198,3 @@ Result: true
 Expected Mask - Calculated Mask: 9205534180971414145 - 9205534180971414145;
 Expected Bits - Calculated Bits: 21 - 21;
 Result: true  
-05534180971414145 - 9205534180971414145
-  Expected Bits - Calculated Bits: 21 - 21
-  Result: true
-  
