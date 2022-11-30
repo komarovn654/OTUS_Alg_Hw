@@ -49,6 +49,15 @@ func printResult(filePath string, results []testResult) {
 			tr.tc.expCnt, tr.res.bits,
 			tr.res.res,
 		)
+		if tr.err != nil {
+			str = fmt.Sprintf(
+				"%v, Position: %v  \n"+
+					"ERROR: %v",
+				tr.tc.name, tr.tc.in,
+				tr.err,
+			)
+		}
+
 		f.WriteString(str)
 	}
 }
