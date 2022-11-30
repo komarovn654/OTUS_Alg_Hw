@@ -39,14 +39,16 @@ func printResult(filePath string, results []testResult) {
 	defer f.Close()
 
 	for _, tr := range results {
-		str := fmt.Sprintf("%v, Position: %v\n"+
-			"Expected Mask - Calculated Mask: %v - %v\n"+
-			"Expected Bits - Calculated Bits: %v - %v\n"+
-			"Result: %v\n",
+		str := fmt.Sprintf(
+			"%v, Position: %v  \n"+
+				"Expected Mask - Calculated Mask: %v - %v\n  "+
+				"Expected Bits - Calculated Bits: %v - %v\n  "+
+				"Result: %v\n  ",
 			tr.tc.name, tr.tc.in,
 			tr.tc.expPos, tr.res.mask,
 			tr.tc.expCnt, tr.res.bits,
-			tr.res.res)
+			tr.res.res,
+		)
 		f.WriteString(str)
 	}
 }
