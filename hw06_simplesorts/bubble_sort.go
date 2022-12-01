@@ -1,10 +1,11 @@
 package hw06simplesorts
 
 import (
+	"fmt"
 	"time"
 )
 
-func bubbleSort(array *[]Item, itr chan<- struct{}) <-chan sortTime {
+func bubbleSort(array *[]Item, itr chan struct{}) <-chan sortTime {
 	sTime := make(chan sortTime)
 
 	go func() {
@@ -20,6 +21,7 @@ func bubbleSort(array *[]Item, itr chan<- struct{}) <-chan sortTime {
 					return
 				default:
 					itr <- struct{}{}
+					<-itr
 				}
 			}
 		}
@@ -39,6 +41,9 @@ func BubbleSort(array []Item) sortedArray {
 		case st := <-sTime:
 			return sortedArray{array: array, time: st}
 		case <-itr:
+			fmt.Printf("%v\r", array)
+			time.Sleep(time.Second * 3)
+			itr <- struct{}{}
 			// case with each iteration. Do some animation
 		}
 	}
