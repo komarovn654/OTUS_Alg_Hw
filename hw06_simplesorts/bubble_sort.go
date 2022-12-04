@@ -1,11 +1,11 @@
 package hw06simplesorts
 
 import (
-	"fmt"
+	"context"
 	"time"
 )
 
-func bubbleSort(array *[]Item, itr chan struct{}) <-chan sortTime {
+func bubbleSort(array *[]Item) <-chan sortTime {
 	sTime := make(chan sortTime)
 
 	go func() {
@@ -15,14 +15,6 @@ func bubbleSort(array *[]Item, itr chan struct{}) <-chan sortTime {
 				if (*array)[j+1] < (*array)[j] {
 					(*array)[j], (*array)[j+1] = swap((*array)[j], (*array)[j+1])
 				}
-				select {
-				case <-time.After(sortTimeout):
-					sTime <- sortTime{timeout: true}
-					return
-				default:
-					itr <- struct{}{}
-					<-itr
-				}
 			}
 		}
 		sTime <- sortTime{time: time.Since(start)}
@@ -31,20 +23,50 @@ func bubbleSort(array *[]Item, itr chan struct{}) <-chan sortTime {
 	return sTime
 }
 
-func BubbleSort(array []Item) sortedArray {
-	itr := make(chan struct{})
+func bubbleSortAnimate(array *[]Item, animate chan sortAnimation) <-chan sortTime {
+	sTime := make(chan sortTime)
 
-	sTime := bubbleSort(&array, itr)
+	go func() {
+		start := time.Now()
+		sa := sortAnimation{stepNum: 0, cmpCount: 0, asgCount: 0}
+		for i := len(*array) - 1; i > 0; i-- {
+			for j := 0; j < i; j++ {
+				sa.cmp = []int{j, j + 1}
+				sa.transmitCondition(animate, true)
+				sa.cmpCount++
+				sa.stepNum++
 
-	for {
-		select {
-		case st := <-sTime:
-			return sortedArray{array: array, time: st}
-		case <-itr:
-			fmt.Printf("%v\r", array)
-			time.Sleep(time.Second * 3)
-			itr <- struct{}{}
-			// case with each iteration. Do some animation
+				if (*array)[j+1] < (*array)[j] {
+					(*array)[j], (*array)[j+1] = swap((*array)[j], (*array)[j+1])
+					sa.swaped = true
+					sa.asgCount += 3
+					sa.transmitCondition(animate, true)
+					continue
+				}
+
+				sa.swaped = false
+				sa.transmitCondition(animate, true)
+			}
 		}
+		sTime <- sortTime{time: time.Since(start)}
+	}()
+
+	return sTime
+}
+
+func BubbleSort(ctx context.Context, array []Item, animate bool) sortedArray {
+	var st <-chan sortTime
+	if animate {
+		animateChan := initBubbleAnimation(&array)
+		st = bubbleSortAnimate(&array, animateChan)
+	} else {
+		st = bubbleSort(&array)
+	}
+
+	select {
+	case <-ctx.Done():
+		return sortedArray{array: nil, time: sortTime{timeout: true}}
+	case done := <-st:
+		return sortedArray{array: array, time: done}
 	}
 }

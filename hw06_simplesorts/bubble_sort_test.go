@@ -1,7 +1,6 @@
 package hw06simplesorts
 
 import (
-	"fmt"
 	"math/rand"
 	"testing"
 	"time"
@@ -14,5 +13,4 @@ func TestBubbleSort(t *testing.T) {
 	for i := range array {
 		array[i] = Item(r1.Int63n(100))
 	}
-	fmt.Println(BubbleSort(array))
 }

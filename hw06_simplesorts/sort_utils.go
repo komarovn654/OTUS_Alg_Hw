@@ -2,8 +2,6 @@ package hw06simplesorts
 
 import "time"
 
-var sortTimeout = time.Second * 120
-
 type Item int64
 
 type sortedArray struct {
@@ -18,4 +16,13 @@ type sortTime struct {
 
 func swap(a Item, b Item) (newA Item, newB Item) {
 	return b, a
+}
+
+func isSliceContain(sl []int, item int) bool {
+	for _, s := range sl {
+		if s == item {
+			return true
+		}
+	}
+	return false
 }
