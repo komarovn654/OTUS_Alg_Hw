@@ -14,5 +14,5 @@ func TestInsertionSort(t *testing.T) {
 	for i := range array {
 		array[i] = Item(r1.Int63n(100))
 	}
-	fmt.Println(insertionSort(&array))
+	fmt.Println(InsertionSort(&array))
 }

@@ -1,28 +1,33 @@
 package hw06simplesorts
 
-import "time"
+import (
+	"context"
+	"time"
+)
 
 type Item int64
 
-type sortedArray struct {
-	array []Item
-	time  sortTime
+type SortedArray struct {
+	Array []Item
+	Time  SortTime
 }
 
-type sortTime struct {
-	time    time.Duration
-	timeout bool
+type SortTime struct {
+	Time    time.Duration
+	Timeout bool
 }
 
 func swap(a Item, b Item) (newA Item, newB Item) {
 	return b, a
 }
 
-func isSliceContain(sl []int, item int) bool {
-	for _, s := range sl {
-		if s == item {
-			return true
-		}
+func SortArray(ctx context.Context, array *[]Item, sortfunc func(array *[]Item) <-chan SortTime) SortedArray {
+	st := sortfunc(array)
+
+	select {
+	case <-ctx.Done():
+		return SortedArray{Array: nil, Time: SortTime{Timeout: true}}
+	case done := <-st:
+		return SortedArray{Array: *array, Time: done}
 	}
-	return false
 }

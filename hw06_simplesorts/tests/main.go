@@ -25,8 +25,17 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), sortTimeout)
 	defer cancel()
 
-	newArray := randArray()
-	ba := hw06simplesorts.Bubble{Array: &newArray}
+	ar := randArray()
+	res := hw06simplesorts.SortArray(ctx, &ar, hw06simplesorts.BubbleSort)
+	fmt.Printf("%v\n", res.Time.Time)
 
-	fmt.Println(ba.Sort(ctx, true))
+	ar = randArray()
+	res = hw06simplesorts.SortArray(ctx, &ar, hw06simplesorts.InsertionSort)
+	fmt.Printf("%v\n", res.Time.Time)
+
+	ar = randArray()
+	fmt.Println(ar)
+	res = hw06simplesorts.SortArray(ctx, &ar, hw06simplesorts.ShellSort)
+	fmt.Println(ar)
+	fmt.Printf("%v\n", res.Time.Time)
 }
