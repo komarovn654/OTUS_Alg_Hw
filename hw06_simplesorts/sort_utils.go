@@ -2,6 +2,7 @@ package hw06simplesorts
 
 import (
 	"context"
+	"math/rand"
 	"time"
 )
 
@@ -30,4 +31,14 @@ func SortArray(ctx context.Context, array *[]Item, sortfunc func(array *[]Item) 
 	case done := <-st:
 		return SortedArray{Array: *array, Time: done}
 	}
+}
+
+func RandArray(size int64, rndRange int64) []Item {
+	array := make([]Item, size)
+	s1 := rand.NewSource(time.Now().UnixNano())
+	r1 := rand.New(s1)
+	for i := range array {
+		array[i] = Item(r1.Int63n(rndRange))
+	}
+	return array
 }

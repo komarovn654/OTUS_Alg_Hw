@@ -1,6 +1,7 @@
 package hw06simplesorts
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -71,6 +72,7 @@ func binarySearch(array *[]Item, key Item, min int, max int) int {
 	}
 
 	mid := (max + min) / 2
+	fmt.Println(mid)
 	if (*array)[mid] < key {
 		return binarySearch(array, key, mid, max)
 	}
