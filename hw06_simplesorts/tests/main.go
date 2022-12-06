@@ -26,16 +26,7 @@ func main() {
 	defer cancel()
 
 	ar := randArray()
-	res := hw06simplesorts.SortArray(ctx, &ar, hw06simplesorts.BubbleSort)
+	res := hw06simplesorts.SortArray(ctx, &ar, hw06simplesorts.InsertionSortShift)
 	fmt.Printf("%v\n", res.Time.Time)
-
-	ar = randArray()
-	res = hw06simplesorts.SortArray(ctx, &ar, hw06simplesorts.InsertionSort)
-	fmt.Printf("%v\n", res.Time.Time)
-
-	ar = randArray()
-	fmt.Println(ar)
-	res = hw06simplesorts.SortArray(ctx, &ar, hw06simplesorts.ShellSort)
-	fmt.Println(ar)
-	fmt.Printf("%v\n", res.Time.Time)
+	fmt.Println(res.Array)
 }

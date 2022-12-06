@@ -21,3 +21,26 @@ func BubbleSort(array *[]Item) <-chan SortTime {
 
 	return sTime
 }
+
+func BubbleSortOpt(array *[]Item) <-chan SortTime {
+	sTime := make(chan SortTime)
+
+	go func() {
+		start := time.Now()
+		for i := len(*array) - 1; i > 0; i-- {
+			sorted := true
+			for j := 0; j < i; j++ {
+				if (*array)[j+1] < (*array)[j] {
+					(*array)[j], (*array)[j+1] = swap((*array)[j], (*array)[j+1])
+					sorted = false
+				}
+			}
+			if sorted {
+				break
+			}
+		}
+		sTime <- SortTime{Time: time.Since(start)}
+	}()
+
+	return sTime
+}
