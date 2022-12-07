@@ -15,7 +15,7 @@ func main() {
 	defer cancel()
 
 	ar := hw06simplesorts.RandArray(10, 100)
-	res := hw06simplesorts.SortArray(ctx, &ar, hw06simplesorts.ShellSortHibbard)
+	res := hw06simplesorts.SortArray(ctx, &ar, hw06simplesorts.ShellSortFrankLazarus)
 	fmt.Printf("%v\n", res.Time.Time)
 	fmt.Println(res.Array)
 }
