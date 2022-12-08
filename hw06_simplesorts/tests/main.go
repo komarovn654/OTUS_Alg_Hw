@@ -1,21 +1,14 @@
 package main
 
 import (
-	"context"
-	"fmt"
+	"log"
 	"time"
-
-	hw06simplesorts "github.com/komarovn654/OTUS_Alg_Hw/hw06_simplesorts"
 )
 
 var sortTimeout = time.Second * 120
 
 func main() {
-	ctx, cancel := context.WithTimeout(context.Background(), sortTimeout)
-	defer cancel()
-
-	ar := hw06simplesorts.RandArray(10, 100)
-	res := hw06simplesorts.SortArray(ctx, &ar, hw06simplesorts.ShellSortFrankLazarus)
-	fmt.Printf("%v\n", res.Time.Time)
-	fmt.Println(res.Array)
+	if err := runTests("README.md", sortTimeout); err != nil {
+		log.Fatal(err)
+	}
 }
