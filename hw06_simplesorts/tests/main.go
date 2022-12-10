@@ -5,10 +5,18 @@ import (
 	"time"
 )
 
+//go:generate bash ./generate/generate_tests.sh generate/tests.template
+
 var sortTimeout = time.Second * 120
 
 func main() {
-	if err := runTests("README.md", sortTimeout); err != nil {
+	rTable := make(ResultTable)
+
+	for _, r := range runTestsCases(sortTimeout) {
+		fillResultTable(r, &rTable)
+	}
+
+	if err := saveResultTable("README.md", &rTable); err != nil {
 		log.Fatal(err)
 	}
 }
