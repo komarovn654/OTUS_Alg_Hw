@@ -1,0 +1,27 @@
+package hw07_heapsort
+
+import (
+	hw06simplesorts "github.com/komarovn654/OTUS_Alg_Hw/hw06_simplesorts"
+)
+
+type SelectionSort struct {
+	array []int64
+}
+
+func (ss *SelectionSort) initArray() {
+
+}
+
+func selctionSort() {
+	ar := hw06simplesorts.RandArray(20)
+
+	for i := len(ar); i > 0; i-- {
+
+	}
+}
+
+func max(array *[]int64, start int, end int) int {
+	for i := start; i < end; i++ {
+
+	}
+}
