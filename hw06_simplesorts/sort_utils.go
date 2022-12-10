@@ -33,12 +33,12 @@ func SortArray(ctx context.Context, array *[]Item, sortfunc func(array *[]Item) 
 	}
 }
 
-func RandArray(size int64, rndRange int64) []Item {
+func RandArray(size int64) []Item {
 	array := make([]Item, size)
 	s1 := rand.NewSource(time.Now().UnixNano())
 	r1 := rand.New(s1)
 	for i := range array {
-		array[i] = Item(r1.Int63n(rndRange))
+		array[i] = Item(r1.Int63n(size))
 	}
 	return array
 }
@@ -63,7 +63,7 @@ func SortedArray(size int64) []Item {
 
 func ReversArray(size int64) []Item {
 	ar := make([]Item, size)
-	for i := size; i > 0; i-- {
+	for i := size - 1; i > 0; i-- {
 		ar[i] = Item(i)
 	}
 	return ar
