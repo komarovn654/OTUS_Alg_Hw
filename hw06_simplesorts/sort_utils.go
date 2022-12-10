@@ -63,8 +63,8 @@ func SortedArray(size int64) []Item {
 
 func ReversArray(size int64) []Item {
 	ar := make([]Item, size)
-	for i := size - 1; i > 0; i-- {
-		ar[i] = Item(i)
+	for i := int64(0); i < size; i++ {
+		ar[i] = Item(size - i)
 	}
 	return ar
 }

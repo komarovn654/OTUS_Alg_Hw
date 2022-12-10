@@ -1,29 +1,11 @@
 package hw06simplesorts
 
 import (
-	"fmt"
-	"math/rand"
 	"strconv"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/require"
 )
-
-func TestInsertionSort(t *testing.T) {
-	array := make([]Item, 20)
-	s1 := rand.NewSource(time.Now().UnixNano())
-	r1 := rand.New(s1)
-	for i := range array {
-		array[i] = Item(r1.Int63n(100))
-	}
-	fmt.Println(InsertionSort(&array))
-}
-
-type keypos struct {
-	key Item
-	pos int
-}
 
 func TestBinarySearch(t *testing.T) {
 	tests := []struct {
@@ -60,4 +42,85 @@ func TestBinarySearch(t *testing.T) {
 			})
 		}
 	}
+}
+
+func TestInsertionSort(t *testing.T) {
+	t.Run("random array", func(t *testing.T) {
+		ar := RandArray(100)
+		done := InsertionSort(&ar)
+		<-done
+		require.True(t, IsSorted(&ar))
+	})
+	t.Run("random digits", func(t *testing.T) {
+		ar := RandDigits(100)
+		done := InsertionSort(&ar)
+		<-done
+		require.True(t, IsSorted(&ar))
+	})
+	t.Run("sorted array", func(t *testing.T) {
+		ar := SortedArray(100)
+		done := InsertionSort(&ar)
+		<-done
+		require.True(t, IsSorted(&ar))
+	})
+	t.Run("reverse array", func(t *testing.T) {
+		ar := ReversArray(100)
+		done := InsertionSort(&ar)
+		<-done
+		require.True(t, IsSorted(&ar))
+	})
+}
+
+func TestInsertionSortShift(t *testing.T) {
+	t.Run("random array", func(t *testing.T) {
+		ar := RandArray(100)
+		done := InsertionSortShift(&ar)
+		<-done
+		require.True(t, IsSorted(&ar))
+	})
+	t.Run("random digits", func(t *testing.T) {
+		ar := RandDigits(100)
+		done := InsertionSortShift(&ar)
+		<-done
+		require.True(t, IsSorted(&ar))
+	})
+	t.Run("sorted array", func(t *testing.T) {
+		ar := SortedArray(100)
+		done := InsertionSortShift(&ar)
+		<-done
+		require.True(t, IsSorted(&ar))
+	})
+	t.Run("reverse array", func(t *testing.T) {
+		ar := ReversArray(100)
+		done := InsertionSortShift(&ar)
+		<-done
+		require.True(t, IsSorted(&ar))
+	})
+}
+
+func TestInsertionSortBinarySearch(t *testing.T) {
+	t.Run("random array", func(t *testing.T) {
+		ar := RandArray(100)
+		done := InsertionSortBinarySearch(&ar)
+		<-done
+		require.True(t, IsSorted(&ar))
+	})
+	t.Run("random digits", func(t *testing.T) {
+		ar := RandDigits(100)
+		done := InsertionSortBinarySearch(&ar)
+		<-done
+		require.True(t, IsSorted(&ar))
+	})
+	t.Run("sorted array", func(t *testing.T) {
+		ar := SortedArray(100)
+		done := InsertionSortBinarySearch(&ar)
+		<-done
+		require.True(t, IsSorted(&ar))
+	})
+	t.Run("reverse array", func(t *testing.T) {
+		ar := ReversArray(100)
+		done := InsertionSortBinarySearch(&ar)
+		<-done
+		require.True(t, IsSorted(&ar))
+	})
 }

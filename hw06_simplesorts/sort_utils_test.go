@@ -1,6 +1,7 @@
 package hw06simplesorts
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -34,4 +35,11 @@ func TestIsSorted(t *testing.T) {
 			require.Equal(t, tc.res, IsSorted(&tc.ar))
 		})
 	}
+}
+
+func TestArrayGen(t *testing.T) {
+	fmt.Println(RandArray(20))
+	fmt.Println(RandDigits(20))
+	fmt.Println(SortedArray(20))
+	fmt.Println(ReversArray(20))
 }

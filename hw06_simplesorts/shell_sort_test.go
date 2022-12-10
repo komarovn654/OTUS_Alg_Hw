@@ -1,18 +1,88 @@
 package hw06simplesorts
 
 import (
-	"fmt"
-	"math/rand"
 	"testing"
-	"time"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestShellSort(t *testing.T) {
-	array := make([]Item, 10)
-	s1 := rand.NewSource(time.Now().UnixNano())
-	r1 := rand.New(s1)
-	for i := range array {
-		array[i] = Item(r1.Int63n(100))
-	}
-	fmt.Println(ShellSortFrankLazarus(&array))
+	t.Run("random array", func(t *testing.T) {
+		ar := RandArray(100)
+		done := ShellSort(&ar)
+		<-done
+		require.True(t, IsSorted(&ar))
+	})
+	t.Run("random digits", func(t *testing.T) {
+		ar := RandDigits(100)
+		done := ShellSort(&ar)
+		<-done
+		require.True(t, IsSorted(&ar))
+	})
+	t.Run("sorted array", func(t *testing.T) {
+		ar := SortedArray(100)
+		done := ShellSort(&ar)
+		<-done
+		require.True(t, IsSorted(&ar))
+	})
+	t.Run("reverse array", func(t *testing.T) {
+		ar := ReversArray(100)
+		done := ShellSort(&ar)
+		<-done
+		require.True(t, IsSorted(&ar))
+	})
+}
+
+func TestShellSortFrankLazarus(t *testing.T) {
+	t.Run("random array", func(t *testing.T) {
+		ar := RandArray(100)
+		done := ShellSortFrankLazarus(&ar)
+		<-done
+		require.True(t, IsSorted(&ar))
+	})
+	t.Run("random digits", func(t *testing.T) {
+		ar := RandDigits(100)
+		done := ShellSortFrankLazarus(&ar)
+		<-done
+		require.True(t, IsSorted(&ar))
+	})
+	t.Run("sorted array", func(t *testing.T) {
+		ar := SortedArray(100)
+		done := ShellSortFrankLazarus(&ar)
+		<-done
+		require.True(t, IsSorted(&ar))
+	})
+	t.Run("reverse array", func(t *testing.T) {
+		ar := ReversArray(100)
+		done := ShellSortFrankLazarus(&ar)
+		<-done
+		require.True(t, IsSorted(&ar))
+	})
+}
+
+func TestShellSortHibbard(t *testing.T) {
+	t.Run("random array", func(t *testing.T) {
+		ar := RandArray(100)
+		done := ShellSortHibbard(&ar)
+		<-done
+		require.True(t, IsSorted(&ar))
+	})
+	t.Run("random digits", func(t *testing.T) {
+		ar := RandDigits(100)
+		done := ShellSortHibbard(&ar)
+		<-done
+		require.True(t, IsSorted(&ar))
+	})
+	t.Run("sorted array", func(t *testing.T) {
+		ar := SortedArray(100)
+		done := ShellSortHibbard(&ar)
+		<-done
+		require.True(t, IsSorted(&ar))
+	})
+	t.Run("reverse array", func(t *testing.T) {
+		ar := ReversArray(100)
+		done := ShellSortHibbard(&ar)
+		<-done
+		require.True(t, IsSorted(&ar))
+	})
 }

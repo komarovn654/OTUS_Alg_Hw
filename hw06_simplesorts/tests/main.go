@@ -9,6 +9,7 @@ import (
 
 var sortTimeout = time.Second * 120
 
+// TODO run tests conccurency
 func main() {
 	rTable := make(ResultTable)
 
