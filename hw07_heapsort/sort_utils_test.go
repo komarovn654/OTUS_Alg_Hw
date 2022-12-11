@@ -76,11 +76,10 @@ func TestSelectionSort(t *testing.T) {
 
 	for _, tc := range tests {
 		_ = tc
-		// t.Run(tc.name, func(t *testing.T) {
-		// 	a := Array{Ar: tc.array}
-		// 	a.SelctionSort()
-		// 	fmt.Println(a.Ar)
-		// 	require.True(t, a.IsSorted())
-		// })
+		t.Run(tc.name, func(t *testing.T) {
+			a := Array{Ar: tc.array}
+			a.SelctionSort()
+			require.True(t, a.IsSorted())
+		})
 	}
 }

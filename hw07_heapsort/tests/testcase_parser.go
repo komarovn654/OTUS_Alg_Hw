@@ -1,8 +1,6 @@
 package main
 
 import (
-	"bufio"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"strconv"
@@ -50,7 +48,6 @@ func (tc *testCase) parseExpected(str *string) (err error) {
 func (tc *testCase) ParseTestCase(dir string, inFile string, outFile string) (err error) {
 	tc.Name = dir
 	inLines, err := readFile(inFile)
-	fmt.Println(inFile, len(inLines))
 	if err != nil {
 		return err
 	}
@@ -87,17 +84,23 @@ func filesCount(dir string) (count int, err error) {
 }
 
 func readFile(filePath string) ([]string, error) {
-	f, err := os.Open(filePath)
+	// f, err := os.Open(filePath)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// defer f.Close()
+
+	// str := make([]string, 0)
+	// fscan := bufio.NewScanner(f)
+	// for fscan.Scan() {
+	// 	str = append(str, fscan.Text())
+	// }
+	// fmt.Println(filePath, len(str))
+	// return str, nil
+	f, err := os.ReadFile(filePath)
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
-
-	str := make([]string, 0)
-	fscan := bufio.NewScanner(f)
-	for fscan.Scan() {
-		str = append(str, fscan.Text())
-	}
-	fmt.Println(filePath, len(str))
-	return str, nil
+	res := strings.Split(string(f), "\n")
+	return res, nil
 }

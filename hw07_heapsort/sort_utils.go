@@ -1,6 +1,7 @@
 package hw07_heapsort
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 )
@@ -18,12 +19,16 @@ type Array struct {
 	Ar []Item
 }
 
+type SortTime struct {
+}
+
 func (s *Array) IsArraysEqual(array []Item) bool {
 	if len(s.Ar) != len(array) {
 		return false
 	}
 
 	for i := 0; i < len(s.Ar); i++ {
+		fmt.Printf("%v == %v\n", s.Ar[i], array[i])
 		if s.Ar[i] != array[i] {
 			return false
 		}
