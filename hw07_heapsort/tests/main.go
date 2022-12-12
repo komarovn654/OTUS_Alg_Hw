@@ -1,11 +1,18 @@
 package main
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"log"
 	"sync"
+	"time"
 
-	"github.com/komarovn654/OTUS_Alg_Hw/hw07_heapsort"
+	hw07 "github.com/komarovn654/OTUS_Alg_Hw/hw07_heapsort"
+)
+
+var (
+	ErrArrayIsUnsorted = errors.New("array is not sorted")
 )
 
 const (
@@ -13,47 +20,70 @@ const (
 	testCount  = 8
 )
 
-type Rows map[string][]hw07_heapsort.SortTime
+type Rows []hw07.SortTime
+
+// type Rows map[string][]hw07_heapsort.SortTime
 type ResultTable map[string]Rows
 
-func idkfunc(dir string, num int) error {
+func runTestCase(dir string, num int) (hw07.SortTime, error) {
 	tc := testCase{}
 	if err := tc.ParseTestCase(dir, fmt.Sprintf(dir+"/test.%v.in", num), fmt.Sprintf(dir+"/test.%v.out", num)); err != nil {
-		return err
+		return hw07.SortTime{}, err
 	}
-	ar := hw07_heapsort.Array{Ar: tc.Array}
-	ar.SelctionSort()
-	ar.IsArraysEqual(tc.Expected)
-	return nil
+
+	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
+	defer cancel()
+	ar := hw07.Array{Ar: tc.Array}
+	t := ar.SortArray(ctx, ar.SelctionSort)
+
+	if !ar.IsArraysEqual(tc.Expected) && !t.Timeout {
+		return t, ErrArrayIsUnsorted
+	}
+	return t, nil
 }
 
-func worker(wg *sync.WaitGroup, dir string, num int, res <-chan hw07_heapsort.SortTime) {
-
+func worker(wg *sync.WaitGroup, dir string, num int, res chan<- hw07.SortTime) {
+	defer wg.Done()
+	t, _ := runTestCase(dir, num)
+	res <- t
 }
 
-func accumResult(res chan<- hw07_heapsort.SortTime, done chan<- struct{}) {
-
+func storeResult(res <-chan hw07.SortTime, done chan Rows) {
+	result := make(Rows, 0)
+	for {
+		select {
+		case <-done:
+			done <- result
+			return
+		case r := <-res:
+			result = append(result, r)
+		}
+	}
 }
 
 func RunTest(dir string) error {
 	var wg sync.WaitGroup
-	rc := make(chan hw07_heapsort.SortTime)
-	done := make(chan struct{})
+	caseResult := make(chan hw07.SortTime)
+	// testResult := make(chan Rows)
+	done := make(chan Rows)
 
-	go accumResult(rc, done)
+	go storeResult(caseResult, done)
 	for i := 0; i < testCount; i++ {
-		go worker(&wg, dir, i, rc)
+		wg.Add(1)
+		go worker(&wg, dir, i, caseResult)
 	}
 
 	wg.Wait()
-	done <- struct{}{}
-
+	done <- nil
+	fmt.Println(<-done)
 	return nil
 }
 
 func main() {
+	fmt.Println(time.Now())
 	err := RunTest("sorting-tests/3.revers")
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println(time.Now())
 }
