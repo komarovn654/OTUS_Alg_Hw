@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
-	"strings"
+	"sync"
 
 	"github.com/komarovn654/OTUS_Alg_Hw/hw07_heapsort"
 )
@@ -27,15 +27,27 @@ func idkfunc(dir string, num int) error {
 	return nil
 }
 
-func RunTest(dir string) error {
-	// rt := make(ResultTable)
-	// r := make(chan Rows)
+func worker(wg *sync.WaitGroup, dir string, num int, res <-chan hw07_heapsort.SortTime) {
 
-	for _, at := range strings.Split(ArrayTypes, ", ") {
-		for i := 0; i < testCount; i++ {
-			fmt.Println(at)
-		}
+}
+
+func accumResult(res chan<- hw07_heapsort.SortTime, done chan<- struct{}) {
+
+}
+
+func RunTest(dir string) error {
+	var wg sync.WaitGroup
+	rc := make(chan hw07_heapsort.SortTime)
+	done := make(chan struct{})
+
+	go accumResult(rc, done)
+	for i := 0; i < testCount; i++ {
+		go worker(&wg, dir, i, rc)
 	}
+
+	wg.Wait()
+	done <- struct{}{}
+
 	return nil
 }
 
