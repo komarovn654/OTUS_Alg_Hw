@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strings"
 	"sync"
 	"time"
 
@@ -16,74 +17,96 @@ var (
 )
 
 const (
-	ArrayTypes = "Random Array, Random Digits, Sorted Array, Reverse Array"
-	testCount  = 8
+	testsDir  = "sorting-tests/0.random,sorting-tests/1.digits,sorting-tests/2.sorted,sorting-tests/3.revers"
+	sizeCount = 8
 )
 
-type Rows []hw07.SortTime
+type caseResult struct {
+	arrayType  string
+	sortMethod string
+	n          int
+	time       hw07.SortTime
+	err        error
+}
 
-// type Rows map[string][]hw07_heapsort.SortTime
-type ResultTable map[string]Rows
+type Rows map[string][]hw07.SortTime
+type resultTable map[string]Rows
 
-func runTestCase(dir string, num int) (hw07.SortTime, error) {
+func runSort(dir string, num int, sm string) caseResult {
 	tc := testCase{}
 	if err := tc.ParseTestCase(dir, fmt.Sprintf(dir+"/test.%v.in", num), fmt.Sprintf(dir+"/test.%v.out", num)); err != nil {
-		return hw07.SortTime{}, err
+		return caseResult{err: err}
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
 	defer cancel()
 	ar := hw07.Array{Ar: tc.Array}
-	t := ar.SortArray(ctx, ar.SelctionSort)
+	t, err := ar.SortArray(ctx, sm)
+	if err != nil {
+		return caseResult{err: err}
+	}
 
 	if !ar.IsArraysEqual(tc.Expected) && !t.Timeout {
-		return t, ErrArrayIsUnsorted
+		return caseResult{err: ErrArrayIsUnsorted}
 	}
-	return t, nil
+	return caseResult{arrayType: dir, time: t, n: num, sortMethod: "Selection sort"}
 }
 
-func worker(wg *sync.WaitGroup, dir string, num int, res chan<- hw07.SortTime) {
+func worker(wg *sync.WaitGroup, dir string, num int, res chan<- caseResult, sm string) {
 	defer wg.Done()
-	t, _ := runTestCase(dir, num)
+	t := runSort(dir, num, sm)
 	res <- t
 }
 
-func storeResult(res <-chan hw07.SortTime, done chan Rows) {
-	result := make(Rows, 0)
+func storeResult(cr <-chan caseResult, done chan resultTable) {
+	rt := make(resultTable)
 	for {
 		select {
 		case <-done:
-			done <- result
+			done <- rt
 			return
-		case r := <-res:
-			result = append(result, r)
+		case r := <-cr:
+			if rt[r.arrayType] == nil {
+				rt[r.arrayType] = make(Rows)
+			}
+			if rt[r.arrayType][r.sortMethod] == nil {
+				rt[r.arrayType][r.sortMethod] = make([]hw07.SortTime, sizeCount)
+			}
+			rt[r.arrayType][r.sortMethod][r.n] = r.time
 		}
 	}
 }
 
-func RunTest(dir string) error {
+func RunTest() (resultTable, error) {
 	var wg sync.WaitGroup
-	caseResult := make(chan hw07.SortTime)
-	// testResult := make(chan Rows)
-	done := make(chan Rows)
+	cr := make(chan caseResult)
+	done := make(chan resultTable)
 
-	go storeResult(caseResult, done)
-	for i := 0; i < testCount; i++ {
-		wg.Add(1)
-		go worker(&wg, dir, i, caseResult)
+	go storeResult(cr, done)
+	for _, d := range strings.Split(testsDir, ",") {
+		for i := 0; i < sizeCount; i++ {
+			wg.Add(1)
+			go worker(&wg, d, i, cr, "Selection Sort")
+		}
 	}
 
 	wg.Wait()
 	done <- nil
-	fmt.Println(<-done)
-	return nil
+	return <-done, nil
 }
 
 func main() {
-	fmt.Println(time.Now())
-	err := RunTest("sorting-tests/3.revers")
+
+	tr, err := RunTest()
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(time.Now())
+
+	// err := RunTestHeapSort(result)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	fmt.Println(tr)
+
 }

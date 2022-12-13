@@ -1,7 +1,7 @@
 package hw07_heapsort
 
 import (
-	"fmt"
+	"context"
 	"math/rand"
 	"time"
 )
@@ -16,10 +16,42 @@ import (
 type Item int64
 
 type Array struct {
-	Ar []Item
+	Ar   []Item
+	Sort func() <-chan SortTime
+}
+
+type SortedTime struct {
+	Time    time.Duration
+	Timeout bool
 }
 
 type SortTime struct {
+	Time    time.Duration
+	Timeout bool
+}
+
+func (s *Array) chooseSortMethod(sm string) func() <-chan SortTime {
+	switch sm {
+	case "Selection Sort":
+		return s.SelctionSort
+	default:
+		return nil
+	}
+}
+
+func (s *Array) SortArray(ctx context.Context, sortMethod string) (SortTime, error) {
+	sortFunc := s.chooseSortMethod(sortMethod)
+	if sortFunc == nil {
+		return SortTime{}, nil
+	}
+	st := sortFunc()
+
+	select {
+	case <-ctx.Done():
+		return SortTime{Timeout: true}, nil
+	case done := <-st:
+		return done, nil
+	}
 }
 
 func (s *Array) IsArraysEqual(array []Item) bool {
@@ -28,7 +60,6 @@ func (s *Array) IsArraysEqual(array []Item) bool {
 	}
 
 	for i := 0; i < len(s.Ar); i++ {
-		fmt.Printf("%v == %v\n", s.Ar[i], array[i])
 		if s.Ar[i] != array[i] {
 			return false
 		}
