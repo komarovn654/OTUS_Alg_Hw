@@ -43,11 +43,11 @@ func TestIsSorted(t *testing.T) {
 
 	for _, tc := range tests {
 		_ = tc
-		// t.Run(tc.name, func(t *testing.T) {
-		// 	a := Array{}
-		// 	a.Ar = tc.array
-		// 	require.Equal(t, tc.res, a.IsSorted())
-		// })
+		t.Run(tc.name, func(t *testing.T) {
+			a := Array{}
+			a.Ar = tc.array
+			require.Equal(t, tc.res, a.IsSorted())
+		})
 	}
 }
 

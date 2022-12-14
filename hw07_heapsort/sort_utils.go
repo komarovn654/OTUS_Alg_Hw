@@ -6,13 +6,6 @@ import (
 	"time"
 )
 
-// type Sort interface {
-// 	InitRandArray(int64)
-// 	InitRandDigits(int64)
-// 	InitSortedArray(int64)
-// 	InitReverseArray(int64)
-// }
-
 type Item int64
 
 type Array struct {
