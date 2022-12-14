@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"strings"
 	"sync"
 	"time"
@@ -20,12 +21,10 @@ type sortConf struct {
 	arrayType  string
 	sortMethod string
 	n          int
-	time       hw07.SortTime
-	err        error
 }
 
-type Rows map[string][]hw07.SortTime
-type resultTable map[string]Rows
+type rows map[string][]hw07.SortTime
+type resultTable map[string]rows
 
 func RunTest() (resultTable, error) {
 	var wg sync.WaitGroup
@@ -35,8 +34,9 @@ func RunTest() (resultTable, error) {
 	go storeResult(res, done)
 	for _, dir := range strings.Split(testsDir, ",") {
 		for i := 0; i < sizeCount; i++ {
-			wg.Add(1)
-			go worker(&wg, dir, i, res, "Selection Sort")
+			wg.Add(2)
+			go worker(&wg, res, sortConf{sortMethod: "Selection Sort", arrayType: dir, n: i})
+			go worker(&wg, res, sortConf{sortMethod: "Heap Sort", arrayType: dir, n: i})
 		}
 	}
 
@@ -54,7 +54,7 @@ func storeResult(sr <-chan sortResult, done chan resultTable) {
 			return
 		case r := <-sr:
 			if rt[r.sc.arrayType] == nil {
-				rt[r.sc.arrayType] = make(Rows)
+				rt[r.sc.arrayType] = make(rows)
 			}
 			if rt[r.sc.arrayType][r.sc.sortMethod] == nil {
 				rt[r.sc.arrayType][r.sc.sortMethod] = make([]hw07.SortTime, sizeCount)
@@ -64,29 +64,34 @@ func storeResult(sr <-chan sortResult, done chan resultTable) {
 	}
 }
 
-func worker(ctx context.Context, wg *sync.WaitGroup, resChan chan<- sortResult, sc sortConf) {
+func worker(wg *sync.WaitGroup, resChan chan<- sortResult, sc sortConf) {
 	defer wg.Done()
-	t := runSort(ctx, sc)
+	t := runSort(sc)
 	resChan <- t
 }
 
-func runSort(ctx context.Context, sc sortConf) sortResult {
+func runSort(sc sortConf) sortResult {
 	tc := testCase{}
 	if err := tc.ParseTestCase(sc.arrayType, fmt.Sprintf(sc.arrayType+"/test.%v.in", sc.n),
 		fmt.Sprintf(sc.arrayType+"/test.%v.out", sc.n)); err != nil {
 		return sortResult{err: err}
 	}
 
-	ctx, cancel := context.WithTimeout(ctx, 120*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
 	defer cancel()
+
 	ar := hw07.Array{Ar: tc.Array}
+	log.Printf("Start sort: %+v\n", sc)
 	t, err := ar.SortArray(ctx, sc.sortMethod)
 	if err != nil {
 		return sortResult{err: err}
 	}
 
 	if !ar.IsArraysEqual(tc.Expected) && !t.Timeout {
+		log.Printf("Unsorted error: %+v\n", sc)
 		return sortResult{err: ErrArrayIsUnsorted}
 	}
+
+	log.Printf("Sorted: %+v; Result: %+v\n", sc, t)
 	return sortResult{sc: sc, time: t}
 }

@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"log"
 )
 
@@ -16,12 +15,12 @@ const (
 )
 
 func main() {
-
 	tr, err := RunTest()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println(tr)
-
+	if err := saveResultTable("README.md", tr); err != nil {
+		log.Fatal(err)
+	}
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io/ioutil"
 	"os"
 	"strconv"
 	"strings"
@@ -68,35 +67,7 @@ func (tc *testCase) ParseTestCase(dir string, inFile string, outFile string) (er
 	return nil
 }
 
-func filesCount(dir string) (count int, err error) {
-	files, err := ioutil.ReadDir(dir)
-	if err != nil {
-		return count, err
-	}
-
-	for _, f := range files {
-		if strings.Contains(f.Name(), "test") {
-			count++
-		}
-	}
-
-	return count, err
-}
-
 func readFile(filePath string) ([]string, error) {
-	// f, err := os.Open(filePath)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// defer f.Close()
-
-	// str := make([]string, 0)
-	// fscan := bufio.NewScanner(f)
-	// for fscan.Scan() {
-	// 	str = append(str, fscan.Text())
-	// }
-	// fmt.Println(filePath, len(str))
-	// return str, nil
 	f, err := os.ReadFile(filePath)
 	if err != nil {
 		return nil, err
