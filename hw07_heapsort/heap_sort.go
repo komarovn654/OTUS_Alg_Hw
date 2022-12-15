@@ -21,3 +21,20 @@ func (s *Array) HeapSort() <-chan SortTime {
 
 	return sTime
 }
+
+func (s *Array) heapify(rootIndex int, size int) {
+	lIndex := 2*rootIndex + 1
+	rIndex := 2*rootIndex + 2
+	p := rootIndex
+	if lIndex < size && s.Ar[lIndex] > s.Ar[p] {
+		p = lIndex
+	}
+	if rIndex < size && s.Ar[rIndex] > s.Ar[p] {
+		p = rIndex
+	}
+	if p == rootIndex {
+		return
+	}
+	s.swap(rootIndex, p)
+	s.heapify(p, size)
+}
