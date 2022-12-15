@@ -72,6 +72,6 @@ func readFile(filePath string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	res := strings.Split(string(f), "\n")
+	res := strings.Split(string(f), "\r\n")
 	return res, nil
 }

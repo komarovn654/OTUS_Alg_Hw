@@ -2,8 +2,19 @@ package hw07_heapsort
 
 import (
 	"context"
+	"errors"
 	"math/rand"
 	"time"
+)
+
+var (
+	ErrUnknownMethod = errors.New("unknown sort method")
+)
+
+const (
+	SelectionSort = "Selection Sort"
+	HeapSort      = "Heap Sort"
+	timeout       = time.Second * 120
 )
 
 type Item int64
@@ -25,9 +36,9 @@ type SortTime struct {
 
 func (s *Array) chooseSortMethod(sm string) func() <-chan SortTime {
 	switch sm {
-	case "Selection Sort":
+	case SelectionSort:
 		return s.SelctionSort
-	case "Heap Sort":
+	case HeapSort:
 		return s.HeapSort
 	default:
 		return nil
@@ -35,14 +46,17 @@ func (s *Array) chooseSortMethod(sm string) func() <-chan SortTime {
 }
 
 func (s *Array) SortArray(ctx context.Context, sortMethod string) (SortTime, error) {
+	newCtx, cancel := context.WithTimeout(ctx, timeout)
+	defer cancel()
+
 	sortFunc := s.chooseSortMethod(sortMethod)
 	if sortFunc == nil {
-		return SortTime{}, nil
+		return SortTime{}, ErrUnknownMethod
 	}
 	st := sortFunc()
 
 	select {
-	case <-ctx.Done():
+	case <-newCtx.Done():
 		return SortTime{Timeout: true}, nil
 	case done := <-st:
 		return done, nil
