@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func saveResultTable(filePath string, rt resultTable) error {
+func SaveResultTable(filePath string, rt resultTable) error {
 	f, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY, 0777)
 	if err != nil {
 		return err
