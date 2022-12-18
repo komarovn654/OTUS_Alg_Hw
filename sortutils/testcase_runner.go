@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"strings"
 	"sync"
 )
 
@@ -28,7 +27,7 @@ type testResult struct {
 type rows map[string][]SortTime
 type resultTable map[string]rows
 
-func RunTest(sortTypes string, testsDir string, sizeCount int) (resultTable, error) {
+func RunTest(sortTypes []string, testsDir []string, sizeCount int) (resultTable, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	var wg sync.WaitGroup
@@ -36,8 +35,8 @@ func RunTest(sortTypes string, testsDir string, sizeCount int) (resultTable, err
 	caseCh := make(chan caseResult)
 	testRes := scheduler(ctx, sizeCount, caseCh)
 
-	for _, sort := range strings.Split(sortTypes, ",") {
-		for _, dir := range strings.Split(testsDir, ",") {
+	for _, sort := range sortTypes {
+		for _, dir := range testsDir {
 			for n := 0; n < sizeCount; n++ {
 				wg.Add(1)
 				go worker(ctx, &wg, caseCh, sortConf{sortMethod: sort, arrayType: dir, n: n})

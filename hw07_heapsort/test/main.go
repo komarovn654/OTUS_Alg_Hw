@@ -8,6 +8,10 @@ import (
 	"github.com/komarovn654/OTUS_Alg_Hw/sortutils"
 )
 
+var (
+	sortFunctions = []string{sortutils.SelectionSort, sortutils.HeapSort}
+)
+
 func main() {
 	if len(os.Args) < 4 {
 		log.Fatal("exppected four args: ... TODO")
