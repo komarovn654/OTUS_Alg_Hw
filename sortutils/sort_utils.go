@@ -22,7 +22,7 @@ const (
 // 	SelctionSort() <-chan SortTime
 // 	HeapSort() <-chan SortTime
 // }
-type SortFunc map[string]func([]Item) <-chan SortTime
+type SortFunc map[string]func(Array) <-chan SortTime
 
 type Item int64
 
@@ -36,7 +36,7 @@ type SortTime struct {
 	Timeout bool
 }
 
-func (a *Array) ChooseSortMethod(sortMethod string) func([]Item) <-chan SortTime {
+func (a *Array) ChooseSortMethod(sortMethod string) func(Array) <-chan SortTime {
 	if f, ok := a.Sort[sortMethod]; ok {
 		return f
 	}
@@ -52,7 +52,7 @@ func (a *Array) SortArray(ctx context.Context, sortMethod string) (SortTime, err
 	if sortFunc == nil {
 		return SortTime{}, ErrUnknownMethod
 	}
-	st := sortFunc(a.Ar)
+	st := sortFunc(*a)
 
 	select {
 	case <-newCtx.Done():
