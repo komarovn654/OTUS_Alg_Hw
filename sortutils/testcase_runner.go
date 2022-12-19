@@ -9,7 +9,8 @@ import (
 
 type sortConf struct {
 	arrayType  string
-	sortMethod string
+	sortName   string
+	sortMethod func(Array) <-chan SortTime
 	n          int
 }
 
@@ -27,7 +28,7 @@ type testResult struct {
 type rows map[string][]SortTime
 type resultTable map[string]rows
 
-func RunTest(sortTypes []string, testsDir []string, sizeCount int) (resultTable, error) {
+func RunTest(sort SortFunc, testsDir []string, sizeCount int) (resultTable, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	var wg sync.WaitGroup
@@ -35,11 +36,11 @@ func RunTest(sortTypes []string, testsDir []string, sizeCount int) (resultTable,
 	caseCh := make(chan caseResult)
 	testRes := scheduler(ctx, sizeCount, caseCh)
 
-	for _, sort := range sortTypes {
+	for sName, sFunc := range sort {
 		for _, dir := range testsDir {
 			for n := 0; n < sizeCount; n++ {
 				wg.Add(1)
-				go worker(ctx, &wg, caseCh, sortConf{sortMethod: sort, arrayType: dir, n: n})
+				go worker(ctx, &wg, caseCh, sortConf{sortName: sName, sortMethod: sFunc, arrayType: dir, n: n})
 			}
 		}
 	}
@@ -81,25 +82,28 @@ func storeResult(ctx context.Context, sizeCount int, res resultTable, caseCh <-c
 			if res[r.sc.arrayType] == nil {
 				res[r.sc.arrayType] = make(rows)
 			}
-			if res[r.sc.arrayType][r.sc.sortMethod] == nil {
-				res[r.sc.arrayType][r.sc.sortMethod] = make([]SortTime, sizeCount)
+			if res[r.sc.arrayType][r.sc.sortName] == nil {
+				res[r.sc.arrayType][r.sc.sortName] = make([]SortTime, sizeCount)
 			}
-			res[r.sc.arrayType][r.sc.sortMethod][r.sc.n] = r.time
+			res[r.sc.arrayType][r.sc.sortName][r.sc.n] = r.time
 		}
 	}
 }
 
 func worker(ctx context.Context, wg *sync.WaitGroup, resChan chan<- caseResult, sc sortConf) {
 	defer wg.Done()
+
+	tc := testCase{}
+	if err := tc.ParseTestCase(sc.arrayType, fmt.Sprintf(sc.arrayType+"/test.%v.in", sc.n),
+		fmt.Sprintf(sc.arrayType+"/test.%v.out", sc.n)); err != nil {
+		resChan <- caseResult{err: err}
+		return
+	}
+
 	resChan <- runSort(ctx, sc)
 }
 
 func runSort(ctx context.Context, sc sortConf) caseResult {
-	tc := testCase{}
-	if err := tc.ParseTestCase(sc.arrayType, fmt.Sprintf(sc.arrayType+"/test.%v.in", sc.n),
-		fmt.Sprintf(sc.arrayType+"/test.%v.out", sc.n)); err != nil {
-		return caseResult{err: err}
-	}
 
 	ar := Array{Ar: tc.Array}
 	log.Printf("Start sort: %+v\n", sc)

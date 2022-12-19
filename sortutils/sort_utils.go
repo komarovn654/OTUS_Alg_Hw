@@ -18,17 +18,12 @@ const (
 	timeout       = time.Second * 120
 )
 
-// type SortFunc interface {
-// 	SelctionSort() <-chan SortTime
-// 	HeapSort() <-chan SortTime
-// }
 type SortFunc map[string]func(Array) <-chan SortTime
 
 type Item int64
 
 type Array struct {
-	Ar   []Item
-	Sort SortFunc
+	Ar []Item
 }
 
 type SortTime struct {
@@ -36,23 +31,11 @@ type SortTime struct {
 	Timeout bool
 }
 
-func (a *Array) ChooseSortMethod(sortMethod string) func(Array) <-chan SortTime {
-	if f, ok := a.Sort[sortMethod]; ok {
-		return f
-	}
-
-	return nil
-}
-
-func (a *Array) SortArray(ctx context.Context, sortMethod string) (SortTime, error) {
+func (a *Array) SortArray(ctx context.Context, sortMethod func(Array) <-chan SortTime) (SortTime, error) {
 	newCtx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 
-	sortFunc := a.ChooseSortMethod(sortMethod)
-	if sortFunc == nil {
-		return SortTime{}, ErrUnknownMethod
-	}
-	st := sortFunc(*a)
+	st := sortMethod(*a)
 
 	select {
 	case <-newCtx.Done():
