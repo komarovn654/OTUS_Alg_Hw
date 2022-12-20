@@ -100,23 +100,19 @@ func worker(ctx context.Context, wg *sync.WaitGroup, resChan chan<- caseResult, 
 		return
 	}
 
-	resChan <- runSort(ctx, sc)
+	resChan <- runSort(ctx, sc, tc)
 }
 
-func runSort(ctx context.Context, sc sortConf) caseResult {
-
+func runSort(ctx context.Context, sc sortConf, tc testCase) caseResult {
+	log.Printf("Start sort: Array: %v, Sort: %v, N = %v\n", sc.arrayType, sc.sortName, tc.N)
 	ar := Array{Ar: tc.Array}
-	log.Printf("Start sort: %+v\n", sc)
-	t, err := ar.SortArray(ctx, sc.sortMethod)
-	if err != nil {
-		return caseResult{err: err}
-	}
+	t := ar.SortArray(ctx, sc.sortMethod)
 
 	if !ar.IsArraysEqual(tc.Expected) && !t.Timeout {
-		log.Printf("Unsorted error: %+v\n", sc)
+		log.Printf("Unsorted error: Array: %v, Sort: %v, N = %v\n", sc.arrayType, sc.sortName, tc.N)
 		return caseResult{err: ErrArrayIsUnsorted}
 	}
 
-	log.Printf("Sorted: %+v; Result: %+v\n", sc, t)
+	log.Printf("Sorted: Array: %v, Sort: %v, N = %v; Result: %+v\n", sc.arrayType, sc.sortName, tc.N, t)
 	return caseResult{sc: sc, time: t}
 }

@@ -8,7 +8,6 @@ import (
 )
 
 var (
-	ErrUnknownMethod   = errors.New("unknown sort method")
 	ErrArrayIsUnsorted = errors.New("array is not sorted")
 )
 
@@ -31,7 +30,7 @@ type SortTime struct {
 	Timeout bool
 }
 
-func (a *Array) SortArray(ctx context.Context, sortMethod func(Array) <-chan SortTime) (SortTime, error) {
+func (a *Array) SortArray(ctx context.Context, sortMethod func(Array) <-chan SortTime) SortTime {
 	newCtx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 
@@ -39,9 +38,9 @@ func (a *Array) SortArray(ctx context.Context, sortMethod func(Array) <-chan Sor
 
 	select {
 	case <-newCtx.Done():
-		return SortTime{Timeout: true}, nil
+		return SortTime{Timeout: true}
 	case done := <-st:
-		return done, nil
+		return done
 	}
 }
 
