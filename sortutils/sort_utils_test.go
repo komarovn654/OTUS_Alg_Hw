@@ -11,10 +11,10 @@ func TestFindMax(t *testing.T) {
 	ar := []Item{18, 12, 3, 14, 7, 9, 18, 0, 18, 13, 4, 17, 19, 18, 4, 11, 12, 5, 10, 18}
 	s.Ar = ar
 	t.Run("max index", func(t *testing.T) {
-		require.Equal(t, 0, s.findMax(0, 5))
-		require.Equal(t, 0, s.findMax(0, 10))
-		require.Equal(t, 12, s.findMax(0, 19))
-		require.Equal(t, 12, s.findMax(12, 19))
+		require.Equal(t, 0, s.FindMax(0, 5))
+		require.Equal(t, 0, s.FindMax(0, 10))
+		require.Equal(t, 12, s.FindMax(0, 19))
+		require.Equal(t, 12, s.FindMax(12, 19))
 	})
 }
 

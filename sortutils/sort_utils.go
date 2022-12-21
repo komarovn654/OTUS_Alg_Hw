@@ -92,7 +92,7 @@ func (a *Array) IsSorted() bool {
 	return true
 }
 
-func (a *Array) findMax(start int, end int) int {
+func (a *Array) FindMax(start int, end int) int {
 	max := start
 	for i := start + 1; i <= end; i++ {
 		if a.Ar[i] > a.Ar[max] {
@@ -103,13 +103,13 @@ func (a *Array) findMax(start int, end int) int {
 	return max
 }
 
-func (a *Array) swap(aIndex int, bIndex int) {
+func (a *Array) Swap(aIndex int, bIndex int) {
 	tmp := a.Ar[aIndex]
 	a.Ar[aIndex] = a.Ar[bIndex]
 	a.Ar[bIndex] = tmp
 }
 
-func (a *Array) heapify(rootIndex int, size int) {
+func (a *Array) Heapify(rootIndex int, size int) {
 	lIndex := 2*rootIndex + 1
 	rIndex := 2*rootIndex + 2
 	p := rootIndex
@@ -122,6 +122,6 @@ func (a *Array) heapify(rootIndex int, size int) {
 	if p == rootIndex {
 		return
 	}
-	a.swap(rootIndex, p)
-	a.heapify(p, size)
+	a.Swap(rootIndex, p)
+	a.Heapify(p, size)
 }
