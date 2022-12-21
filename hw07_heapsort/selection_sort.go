@@ -6,7 +6,7 @@ import (
 	"github.com/komarovn654/OTUS_Alg_Hw/sortutils"
 )
 
-func SelctionSort(array sortutils.Array) <-chan sortutils.SortTime {
+func SelectionSort(array sortutils.Array) <-chan sortutils.SortTime {
 	sTime := make(chan sortutils.SortTime)
 
 	go func() {
