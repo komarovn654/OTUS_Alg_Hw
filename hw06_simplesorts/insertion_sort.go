@@ -1,18 +1,19 @@
 package hw06simplesorts
 
 import (
-	"fmt"
 	"time"
+
+	"github.com/komarovn654/OTUS_Alg_Hw/sortutils"
 )
 
-func InsertionSort(array *[]Item) <-chan SortTime {
+func InsertionSort(array sortutils.Array) <-chan SortTime {
 	sTime := make(chan SortTime)
 
 	go func() {
 		start := time.Now()
-		for i := 1; i < len(*array); i++ {
-			for j := i; j > 0 && (*array)[j] < (*array)[j-1]; j-- {
-				(*array)[j], (*array)[j-1] = swap((*array)[j], (*array)[j-1])
+		for i := 1; i < len(array.Ar); i++ {
+			for j := i; j > 0 && (array.Ar)[j] < (array.Ar)[j-1]; j-- {
+				array.Swap(j, j-1)
 			}
 		}
 
@@ -22,18 +23,18 @@ func InsertionSort(array *[]Item) <-chan SortTime {
 	return sTime
 }
 
-func InsertionSortShift(array *[]Item) <-chan SortTime {
+func InsertionSortShift(array sortutils.Array) <-chan SortTime {
 	sTime := make(chan SortTime)
 
 	go func() {
 		start := time.Now()
-		for i := 1; i < len(*array); i++ {
+		for i := 1; i < len(array.Ar); i++ {
 			j := i
-			cache := (*array)[j]
-			for ; j > 0 && cache < (*array)[j-1]; j-- {
-				(*array)[j] = (*array)[j-1]
+			cache := array.Ar[j]
+			for ; j > 0 && cache < array.Ar[j-1]; j-- {
+				array.Ar[j] = array.Ar[j-1]
 			}
-			(*array)[j] = cache
+			array.Ar[j] = cache
 		}
 
 		sTime <- SortTime{Time: time.Since(start)}
@@ -42,19 +43,19 @@ func InsertionSortShift(array *[]Item) <-chan SortTime {
 	return sTime
 }
 
-func InsertionSortBinarySearch(array *[]Item) <-chan SortTime {
+func InsertionSortBinarySearch(array sortutils.Array) <-chan SortTime {
 	sTime := make(chan SortTime)
 
 	go func() {
 		start := time.Now()
-		for i := 1; i < len(*array); i++ {
+		for i := 1; i < len(array.Ar); i++ {
 			j := i
-			cache := (*array)[j]
+			cache := array.Ar[j]
 			pos := binarySearch(array, 0, 0, 0)
-			for ; j > pos && cache < (*array)[j-1]; j-- {
-				(*array)[j] = (*array)[j-1]
+			for ; j > pos && cache < array.Ar[j-1]; j-- {
+				array.Ar[j] = array.Ar[j-1]
 			}
-			(*array)[j] = cache
+			array.Ar[j] = cache
 		}
 
 		sTime <- SortTime{Time: time.Since(start)}
@@ -72,7 +73,6 @@ func binarySearch(array *[]Item, key Item, min int, max int) int {
 	}
 
 	mid := (max + min) / 2
-	fmt.Println(mid)
 	if key < (*array)[mid] {
 		return binarySearch(array, key, min, mid-1)
 	}
