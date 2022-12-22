@@ -1,7 +1,6 @@
 package hw06simplesorts
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -50,7 +49,7 @@ func InsertionSortBinarySearch(array *[]Item) <-chan SortTime {
 		for i := 1; i < len(*array); i++ {
 			j := i
 			cache := (*array)[j]
-			pos := binarySearch(array, 0, 0, 0)
+			pos := binarySearch(array, cache, 0, j)
 			for ; j > pos && cache < (*array)[j-1]; j-- {
 				(*array)[j] = (*array)[j-1]
 			}
@@ -72,7 +71,6 @@ func binarySearch(array *[]Item, key Item, min int, max int) int {
 	}
 
 	mid := (max + min) / 2
-	fmt.Println(mid)
 	if key < (*array)[mid] {
 		return binarySearch(array, key, min, mid-1)
 	}

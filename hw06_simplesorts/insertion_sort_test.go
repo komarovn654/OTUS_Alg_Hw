@@ -100,7 +100,7 @@ func TestInsertionSortShift(t *testing.T) {
 
 func TestInsertionSortBinarySearch(t *testing.T) {
 	t.Run("random array", func(t *testing.T) {
-		ar := RandArray(100)
+		ar := RandArray(20)
 		done := InsertionSortBinarySearch(&ar)
 		<-done
 		require.True(t, IsSorted(&ar))
