@@ -63,18 +63,3 @@ func InsertionSortBinarySearch(array sortutils.Array) <-chan SortTime {
 
 	return sTime
 }
-
-func binarySearch(array *[]Item, key Item, min int, max int) int {
-	if max <= min {
-		if (*array)[min] > key {
-			return min
-		}
-		return min + 1
-	}
-
-	mid := (max + min) / 2
-	if key < (*array)[mid] {
-		return binarySearch(array, key, min, mid-1)
-	}
-	return binarySearch(array, key, mid+1, max)
-}

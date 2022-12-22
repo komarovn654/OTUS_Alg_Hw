@@ -126,7 +126,7 @@ func (a *Array) Heapify(rootIndex int, size int) {
 	a.Heapify(p, size)
 }
 
-func (a *Array) binarySearch(key Item, min int, max int) int {
+func (a *Array) BinarySearch(key Item, min int, max int) int {
 	if max <= min {
 		if a.Ar[min] > key {
 			return min
@@ -136,7 +136,7 @@ func (a *Array) binarySearch(key Item, min int, max int) int {
 
 	mid := (max + min) / 2
 	if key < a.Ar[mid] {
-		return a.binarySearch(key, min, mid-1)
+		return a.BinarySearch(key, min, mid-1)
 	}
-	return a.binarySearch(key, mid+1, max)
+	return a.BinarySearch(key, mid+1, max)
 }

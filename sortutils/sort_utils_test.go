@@ -82,7 +82,7 @@ func TestBinarySearch(t *testing.T) {
 	for _, tc := range tests {
 		for _, kp := range tc.keypos {
 			t.Run(strconv.Itoa(kp.pos), func(t *testing.T) {
-				require.Equal(t, kp.pos, binarySearch(&tc.array, kp.key, 0, 9))
+				require.Equal(t, kp.pos, BinarySearch(&tc.array, kp.key, 0, 9))
 			})
 		}
 	}
