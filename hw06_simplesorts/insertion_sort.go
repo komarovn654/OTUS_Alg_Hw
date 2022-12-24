@@ -6,8 +6,8 @@ import (
 	"github.com/komarovn654/OTUS_Alg_Hw/sortutils"
 )
 
-func InsertionSort(array sortutils.Array) <-chan SortTime {
-	sTime := make(chan SortTime)
+func InsertionSort(array sortutils.Array) <-chan sortutils.SortTime {
+	sTime := make(chan sortutils.SortTime)
 
 	go func() {
 		start := time.Now()
@@ -17,14 +17,14 @@ func InsertionSort(array sortutils.Array) <-chan SortTime {
 			}
 		}
 
-		sTime <- SortTime{Time: time.Since(start)}
+		sTime <- sortutils.SortTime{Time: time.Since(start)}
 	}()
 
 	return sTime
 }
 
-func InsertionSortShift(array sortutils.Array) <-chan SortTime {
-	sTime := make(chan SortTime)
+func InsertionSortShift(array sortutils.Array) <-chan sortutils.SortTime {
+	sTime := make(chan sortutils.SortTime)
 
 	go func() {
 		start := time.Now()
@@ -37,28 +37,28 @@ func InsertionSortShift(array sortutils.Array) <-chan SortTime {
 			array.Ar[j] = cache
 		}
 
-		sTime <- SortTime{Time: time.Since(start)}
+		sTime <- sortutils.SortTime{Time: time.Since(start)}
 	}()
 
 	return sTime
 }
 
-func InsertionSortBinarySearch(array sortutils.Array) <-chan SortTime {
-	sTime := make(chan SortTime)
+func InsertionSortBinarySearch(array sortutils.Array) <-chan sortutils.SortTime {
+	sTime := make(chan sortutils.SortTime)
 
 	go func() {
 		start := time.Now()
 		for i := 1; i < len(array.Ar); i++ {
 			j := i
 			cache := array.Ar[j]
-			pos := binarySearch(array, 0, 0, 0)
+			pos := array.BinarySearch(cache, 0, j)
 			for ; j > pos && cache < array.Ar[j-1]; j-- {
 				array.Ar[j] = array.Ar[j-1]
 			}
 			array.Ar[j] = cache
 		}
 
-		sTime <- SortTime{Time: time.Since(start)}
+		sTime <- sortutils.SortTime{Time: time.Since(start)}
 	}()
 
 	return sTime

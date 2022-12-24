@@ -1,47 +1,48 @@
-# RandArray
+# sorting-tests/0.random
 | Sort name | 1 | 10 | 100 | 1000 | 10000 | 100000 | 1000000 | 10000000 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| ShellSort | 0s | 0s | 0s | 0s | 1.0009ms | 15.8643ms | 209.7056ms | 9.4436481s |
-| ShellSortHibbard | 0s | 0s | 0s | 0s | 1.0001ms | 17.0047ms | 247.7163ms | 10.2211204s |
-| ShellSortFrankLazarus | 0s | 0s | 0s | 517.7µs | 998.7µs | 14.0026ms | 222.3513ms | 8.3208337s |
-| InsertionSort | 0s | 0s | 0s | 515.5µs | 47.2025ms | 5.7147831s | timeout | timeout |
-| InsertionSortShift | 0s | 0s | 0s | 0s | 21.0077ms | 4.5599939s | timeout | timeout |
-| InsertionSortBinarySearch | 0s | 0s | 0s | 0s | 23.0042ms | 2.057252s | timeout | timeout |
-| BubbleSort | 0s | 0s | 0s | 1.5528ms | 153.621ms | 15.989522s | timeout | timeout |
-| BubbleSortOpt | 0s | 0s | 0s | 514.1µs | 94.3591ms | 14.4538625s | timeout | timeout |
+| Shell Sort | 0s | 0s | 0s | 1.0002ms | 7.0015ms | 2.4283134s | 7.1461304s | 32.9842896s |
+| Shell Sort Hibbard | 0s | 0s | 0s | 0s | 1.0004ms | 1.0412999s | 3.4402155s | 29.4653954s |
+| Bubble Sort Opt | 0s | 0s | 0s | 1.0001ms | 2.3408511s | 1m58.4164797s | timeout | timeout |
+| Insertion Sort | 0s | 0s | 0s | 994.6µs | 673.9732ms | 43.9113577s | timeout | timeout |
+| Insertion Sort BinarySearch | 0s | 0s | 999.2µs | 387.4µs | 80.1033ms | 30.733504s | timeout | timeout |
+| Shell Sort Frank&Lazarus | 0s | 0s | 0s | 0s | 13.5113ms | 963.3363ms | 2.0134967s | 35.4514681s |
+| Insertion Sort Shift | 0s | 0s | 0s | 322.1µs | 38.4199ms | 17.7352087s | timeout | timeout |
+| Bubble Sort | 0s | 0s | 0s | 1.9952ms | 1.6649336s | 1m58.1001413s | timeout | timeout |
 
-# RandDigits
+# sorting-tests/3.revers
 | Sort name | 1 | 10 | 100 | 1000 | 10000 | 100000 | 1000000 | 10000000 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| ShellSort | 0s | 0s | 0s | 0s | 1.0004ms | 5.0009ms | 51.0117ms | 3.3760753s |
-| ShellSortHibbard | 0s | 0s | 0s | 515µs | 1.0005ms | 3.0006ms | 47.477ms | 2.646732s |
-| ShellSortFrankLazarus | 0s | 0s | 0s | 0s | 0s | 4.0007ms | 46.6349ms | 2.4372212s |
-| InsertionSort | 0s | 0s | 0s | 514.4µs | 51.5164ms | 5.0086253s | timeout | timeout |
-| InsertionSortShift | 0s | 0s | 0s | 559.7µs | 19.6063ms | 4.3110118s | timeout | timeout |
-| InsertionSortBinarySearch | 0s | 0s | 0s | 0s | 19.6168ms | 4.768859s | timeout | timeout |
-| BubbleSort | 0s | 0s | 0s | 1.0384ms | 154.5473ms | 15.5805831s | timeout | timeout |
-| BubbleSortOpt | 0s | 0s | 0s | 516.3µs | 91.1018ms | 14.4016104s | timeout | timeout |
+| Insertion Sort BinarySearch | 0s | 0s | 1.0004ms | 1.0001ms | 1.3798097s | 1m2.7213087s | timeout | timeout |
+| Shell Sort | 0s | 0s | 0s | 0s | 1.9577ms | 9.0021ms | 76.0161ms | 5.6384568s |
+| Insertion Sort | 0s | 0s | 0s | 4.6257ms | 111.8248ms | 1m23.8070789s | timeout | timeout |
+| Bubble Sort Opt | 0s | 0s | 0s | 1.0004ms | 5.9275016s | 1m28.4004946s | timeout | timeout |
+| Bubble Sort | 0s | 0s | 0s | 3.3814ms | 207.0285ms | 1m14.9513117s | timeout | timeout |
+| Insertion Sort Shift | 0s | 0s | 0s | 13.0028ms | 1.0929386s | 28.1410478s | timeout | timeout |
+| Shell Sort Frank&Lazarus | 0s | 0s | 0s | 0s | 999.9µs | 431.2215ms | 2.9615866s | 7.6006928s |
+| Shell Sort Hibbard | 0s | 0s | 0s | 0s | 0s | 19.3776ms | 3.3396994s | 5.591108s |
 
-# SortedArray
+# sorting-tests/2.sorted
 | Sort name | 1 | 10 | 100 | 1000 | 10000 | 100000 | 1000000 | 10000000 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| ShellSort | 0s | 0s | 0s | 0s | 0s | 2.0008ms | 27.5802ms | 1.3217259s |
-| ShellSortHibbard | 0s | 0s | 0s | 0s | 0s | 3.0007ms | 40.0124ms | 1.4618838s |
-| ShellSortFrankLazarus | 0s | 0s | 0s | 0s | 999.9µs | 2.5072ms | 33.3595ms | 1.5379281s |
-| InsertionSort | 0s | 0s | 0s | 0s | 2.0004ms | 228.6405ms | 24.8776025s | timeout |
-| InsertionSortShift | 0s | 0s | 0s | 0s | 2.0008ms | 215.1105ms | 27.0371086s | timeout |
-| InsertionSortBinarySearch | 0s | 0s | 0s | 0s | 1.0003ms | 225.4477ms | 33.1729133s | timeout |
-| BubbleSort | 0s | 0s | 0s | 516.5µs | 41.016ms | 4.0882301s | timeout | timeout |
-| BubbleSortOpt | 0s | 0s | 0s | 515.8µs | 31.5333ms | 3.0589026s | timeout | timeout |
+| Insertion Sort Shift | 0s | 0s | 0s | 17.0043ms | 1.1724ms | 1.3973133s | 43.2344619s | timeout |
+| Insertion Sort BinarySearch | 0s | 0s | 0s | 0s | 8.8104ms | 1.115534s | 1m16.3057497s | timeout |
+| Bubble Sort Opt | 0s | 0s | 0s | 12.5886ms | 407.8116ms | 41.8686671s | timeout | timeout |
+| Shell Sort Hibbard | 0s | 0s | 5.0017ms | 0s | 3.2629ms | 609.113ms | 1.5626673s | 18.3029603s |
+| Bubble Sort | 0s | 0s | 0s | 1.0005ms | 1.3905267s | 57.9050976s | timeout | timeout |
+| Shell Sort | 0s | 0s | 0s | 0s | 1.3874ms | 935.8024ms | 1.7287927s | 21.4371471s |
+| Insertion Sort | 0s | 0s | 2.0002ms | 0s | 5.0018ms | 1.8327954s | 1m46.8465501s | timeout |
+| Shell Sort Frank&Lazarus | 0s | 0s | 1.0001ms | 8.1454ms | 1ms | 314.2746ms | 1.8156458s | 21.8759145s |
 
-# ReversArray
+# sorting-tests/1.digits
 | Sort name | 1 | 10 | 100 | 1000 | 10000 | 100000 | 1000000 | 10000000 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| ShellSort | 0s | 0s | 0s | 0s | 0s | 3.0049ms | 34.6981ms | 1.4497468s |
-| ShellSortHibbard | 0s | 0s | 0s | 0s | 0s | 3.0005ms | 46.0138ms | 1.6171179s |
-| ShellSortFrankLazarus | 0s | 0s | 0s | 0s | 0s | 2.9999ms | 36.3296ms | 1.581125s |
-| InsertionSort | 0s | 0s | 0s | 513.8µs | 91.4888ms | 9.2933847s | timeout | timeout |
-| InsertionSortShift | 0s | 0s | 0s | 526.1µs | 49.3786ms | 4.0543515s | timeout | timeout |
-| InsertionSortBinarySearch | 0s | 0s | 0s | 545.4µs | 42.1981ms | 3.9615269s | timeout | timeout |
-| BubbleSort | 0s | 0s | 0s | 1.027ms | 93.5463ms | 9.2193921s | timeout | timeout |
-| BubbleSortOpt | 0s | 0s | 0s | 509.4µs | 92.5935ms | 9.2705513s | timeout | timeout |
+| Insertion Sort Shift | 0s | 0s | 0s | 1.0002ms | 22.1139ms | 15.6808674s | timeout | timeout |
+| Bubble Sort | 0s | 0s | 0s | 3.6448ms | 149.2409ms | 1m51.1831718s | timeout | timeout |
+| Shell Sort | 0s | 0s | 1.0001ms | 0s | 2.0002ms | 283.0089ms | 2.2201361s | 12.2987568s |
+| Insertion Sort BinarySearch | 0s | 0s | 0s | 0s | 29.9549ms | 31.6289715s | timeout | timeout |
+| Bubble Sort Opt | 0s | 0s | 0s | 3.0006ms | 1.8855833s | timeout | timeout | timeout |
+| Shell Sort Frank&Lazarus | 0s | 0s | 0s | 0s | 0s | 14.1201ms | 2.2840768s | 9.238756s |
+| Insertion Sort | 0s | 0s | 0s | 532.7µs | 453.7257ms | 40.2760963s | timeout | timeout |
+| Shell Sort Hibbard | 0s | 0s | 6.0018ms | 2.9998ms | 8.0024ms | 7.0015ms | 431.6339ms | 15.5333317s |
+

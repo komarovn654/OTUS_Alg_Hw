@@ -7,8 +7,8 @@ import (
 	"github.com/komarovn654/OTUS_Alg_Hw/sortutils"
 )
 
-func ShellSort(array sortutils.Array) <-chan SortTime {
-	sTime := make(chan SortTime)
+func ShellSort(array sortutils.Array) <-chan sortutils.SortTime {
+	sTime := make(chan sortutils.SortTime)
 
 	go func() {
 		start := time.Now()
@@ -20,14 +20,14 @@ func ShellSort(array sortutils.Array) <-chan SortTime {
 			}
 		}
 
-		sTime <- SortTime{Time: time.Since(start)}
+		sTime <- sortutils.SortTime{Time: time.Since(start)}
 	}()
 
 	return sTime
 }
 
-func ShellSortFrankLazarus(array sortutils.Array) <-chan SortTime {
-	sTime := make(chan SortTime)
+func ShellSortFrankLazarus(array sortutils.Array) <-chan sortutils.SortTime {
+	sTime := make(chan sortutils.SortTime)
 
 	go func() {
 		start := time.Now()
@@ -41,14 +41,14 @@ func ShellSortFrankLazarus(array sortutils.Array) <-chan SortTime {
 			}
 		}
 
-		sTime <- SortTime{Time: time.Since(start)}
+		sTime <- sortutils.SortTime{Time: time.Since(start)}
 	}()
 
 	return sTime
 }
 
-func ShellSortHibbard(array sortutils.Array) <-chan SortTime {
-	sTime := make(chan SortTime)
+func ShellSortHibbard(array sortutils.Array) <-chan sortutils.SortTime {
+	sTime := make(chan sortutils.SortTime)
 
 	go func() {
 		start := time.Now()
@@ -61,7 +61,7 @@ func ShellSortHibbard(array sortutils.Array) <-chan SortTime {
 			}
 		}
 
-		sTime <- SortTime{Time: time.Since(start)}
+		sTime <- sortutils.SortTime{Time: time.Since(start)}
 	}()
 
 	return sTime

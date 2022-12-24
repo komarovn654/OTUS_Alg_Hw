@@ -3,6 +3,8 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/komarovn654/OTUS_Alg_Hw/sortutils v0.0.0-20221221173105-12acf0c032ba h1:OHJqC4oL9OpvPR7axmAGLenLt87jp0qrHLjOVFSam6s=
 github.com/komarovn654/OTUS_Alg_Hw/sortutils v0.0.0-20221221173105-12acf0c032ba/go.mod h1:JC2/vGHv98p4CkKRqj4LRcqK9pA5JirMPi/yVRUY9wI=
+github.com/komarovn654/OTUS_Alg_Hw/sortutils v0.0.0-20221222193938-655080d06e0a h1:pIqc5pMC8S/NeMzfdKOJu9fOk2Mhqkw/OPlqPqfmEus=
+github.com/komarovn654/OTUS_Alg_Hw/sortutils v0.0.0-20221222193938-655080d06e0a/go.mod h1:JC2/vGHv98p4CkKRqj4LRcqK9pA5JirMPi/yVRUY9wI=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=

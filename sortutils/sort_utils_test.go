@@ -1,6 +1,7 @@
 package sortutils
 
 import (
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -82,7 +83,8 @@ func TestBinarySearch(t *testing.T) {
 	for _, tc := range tests {
 		for _, kp := range tc.keypos {
 			t.Run(strconv.Itoa(kp.pos), func(t *testing.T) {
-				require.Equal(t, kp.pos, BinarySearch(&tc.array, kp.key, 0, 9))
+				ar := Array{Ar: tc.array}
+				require.Equal(t, kp.pos, ar.BinarySearch(kp.key, 0, len(ar.Ar)-1))
 			})
 		}
 	}

@@ -68,7 +68,13 @@ func (a *Array) InitRandArray(size int64) {
 }
 
 func (a *Array) InitRandDigits(size int64) {
-
+	array := make([]Item, size)
+	s1 := rand.NewSource(time.Now().UnixNano())
+	r1 := rand.New(s1)
+	for i := range array {
+		array[i] = Item(r1.Int63n(9))
+	}
+	a.Ar = array
 }
 
 func (a *Array) InitSortedArray(size int64) {
@@ -80,7 +86,11 @@ func (a *Array) InitSortedArray(size int64) {
 }
 
 func (a *Array) InitReverseArray(size int64) {
-
+	array := make([]Item, size)
+	for i := int64(0); i < size; i++ {
+		array[i] = Item(size - i)
+	}
+	a.Ar = array
 }
 
 func (a *Array) IsSorted() bool {
