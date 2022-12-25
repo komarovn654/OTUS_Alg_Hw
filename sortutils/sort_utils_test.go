@@ -89,3 +89,11 @@ func TestBinarySearch(t *testing.T) {
 		}
 	}
 }
+
+// func TestPartition(t *testing.T) {
+// 	a := Array{}
+// 	a.InitRandArray(20)
+// 	fmt.Println(a.Ar)
+// 	a.partition(0, 19)
+// 	fmt.Println(a.Ar)
+// }
