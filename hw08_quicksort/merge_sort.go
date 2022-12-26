@@ -12,7 +12,7 @@ func (s *Sort) MergeSort() <-chan sortutils.SortTime {
 	go func() {
 		start := time.Now()
 
-		s.mergeSort(0, len(s.Ar.Ar)-1)
+		s.mergeSort(0, len(s.Array.Ar)-1)
 
 		sTime <- sortutils.SortTime{Time: time.Since(start)}
 	}()
@@ -38,28 +38,28 @@ func (s *Sort) merge(lIndex int, rIndex int, mIndex int) {
 	b := mIndex + 1
 
 	for a <= mIndex && b <= rIndex {
-		if s.Ar.Ar[a] < s.Ar.Ar[b] {
-			tmp[m] = s.Ar.Ar[a]
+		if s.Array.Ar[a] < s.Array.Ar[b] {
+			tmp[m] = s.Array.Ar[a]
 			a++
 		} else {
-			tmp[m] = s.Ar.Ar[b]
+			tmp[m] = s.Array.Ar[b]
 			b++
 		}
 		m++
 	}
 
 	for b <= rIndex {
-		tmp[m] = s.Ar.Ar[b]
+		tmp[m] = s.Array.Ar[b]
 		m++
 		b++
 	}
 	for a <= mIndex {
-		tmp[m] = s.Ar.Ar[a]
+		tmp[m] = s.Array.Ar[a]
 		m++
 		a++
 	}
 
 	for i := 0; i < len(tmp); i++ {
-		s.Ar.Ar[lIndex+i] = tmp[i]
+		s.Array.Ar[lIndex+i] = tmp[i]
 	}
 }

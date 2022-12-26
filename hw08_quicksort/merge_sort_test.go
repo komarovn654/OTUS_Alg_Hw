@@ -9,17 +9,17 @@ import (
 
 func TestMerge(t *testing.T) {
 	s := Sort{}
-	s.Ar.Ar = []sortutils.Item{3, 5, 7, 9, 2, 4, 6, 8}
+	s.Array.Ar = []sortutils.Item{3, 5, 7, 9, 2, 4, 6, 8}
 
 	s.merge(0, 7, 3)
-	fmt.Println(s.Ar.Ar)
+	fmt.Println(s.Array.Ar)
 }
 
 func TestMergeSort(t *testing.T) {
 	s := Sort{}
-	s.Ar.InitRandArray(50)
-	fmt.Println(s.Ar)
+	s.Array.InitRandArray(50)
+	fmt.Println(s.Array)
 	time := s.MergeSort()
 	fmt.Println(<-time)
-	fmt.Println(s.Ar)
+	fmt.Println(s.Array)
 }

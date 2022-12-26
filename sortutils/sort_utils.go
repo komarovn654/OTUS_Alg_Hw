@@ -17,6 +17,21 @@ const (
 	timeout       = time.Second * 120
 )
 
+type Sort interface {
+	BubbleSort() <-chan SortTime
+	BubbleSortOpt() <-chan SortTime
+	InsertionSort() <-chan SortTime
+	InsertionSortShift() <-chan SortTime
+	InsertionSortBinarySearch() <-chan SortTime
+	ShellSort() <-chan SortTime
+	ShellSortFrankLazarus() <-chan SortTime
+	ShellSortHibbard() <-chan SortTime
+	SelectionSort() <-chan SortTime
+	HeapSort() <-chan SortTime
+	MergeSort() <-chan SortTime
+	QuickSort() <-chan SortTime
+}
+
 type SortFunc map[string]func(Array) <-chan SortTime
 
 type Item int64

@@ -7,7 +7,7 @@ import (
 )
 
 type Sort struct {
-	Ar sortutils.Array
+	Array sortutils.Array
 }
 
 func (s *Sort) QuickSort() <-chan sortutils.SortTime {
@@ -16,7 +16,7 @@ func (s *Sort) QuickSort() <-chan sortutils.SortTime {
 	go func() {
 		start := time.Now()
 
-		s.quickSort(0, len(s.Ar.Ar)-1)
+		s.quickSort(0, len(s.Array.Ar)-1)
 
 		sTime <- sortutils.SortTime{Time: time.Since(start)}
 	}()
@@ -38,9 +38,9 @@ func (s *Sort) partition(lIndex int, rIndex int) int {
 	sPtr := lIndex - 1
 	bPtr := 0
 	for i := lIndex; i <= rIndex; i++ {
-		if s.Ar.Ar[i] <= s.Ar.Ar[rIndex] {
+		if s.Array.Ar[i] <= s.Array.Ar[rIndex] {
 			sPtr++
-			s.Ar.Swap(sPtr, i)
+			s.Array.Swap(sPtr, i)
 		}
 		bPtr++
 	}
