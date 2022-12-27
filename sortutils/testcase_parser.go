@@ -42,27 +42,27 @@ func (tc *testCase) parseExpected(str *string) (err error) {
 	return nil
 }
 
-func (tc *testCase) ParseTestCase(dir string, inFile string, outFile string) (err error) {
+func ParseTestCase(dir string, inFile string, outFile string) (tc testCase, err error) {
 	tc.Name = dir
 	inLines, err := readFile(inFile)
 	if err != nil {
-		return err
+		return testCase{}, err
 	}
 	outLines, err := readFile(outFile)
 	if err != nil {
-		return err
+		return testCase{}, err
 	}
 
 	if err := tc.parseN(&inLines[0]); err != nil {
-		return err
+		return testCase{}, err
 	}
 	if err := tc.parseArray(&inLines[1]); err != nil {
-		return err
+		return testCase{}, err
 	}
 	if err := tc.parseExpected(&outLines[0]); err != nil {
-		return err
+		return testCase{}, err
 	}
-	return nil
+	return tc, err
 }
 
 func readFile(filePath string) ([]string, error) {

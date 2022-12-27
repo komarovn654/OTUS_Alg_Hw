@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"runtime"
 
 	hw06simplesorts "github.com/komarovn654/OTUS_Alg_Hw/hw06_simplesorts"
 	"github.com/komarovn654/OTUS_Alg_Hw/sortutils"
@@ -19,6 +20,7 @@ var (
 )
 
 func main() {
+	runtime.GOMAXPROCS(1)
 	rt, err := sortutils.RunTest(sortFunctions, testDirects, testsCount)
 	if err != nil {
 		log.Fatal(err)

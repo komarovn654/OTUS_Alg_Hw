@@ -7,11 +7,17 @@ import (
 	"sync"
 )
 
+const (
+	WORKERS_COUNT = 10
+)
+
 type sortConf struct {
 	arrayType  string
 	sortName   string
 	sortMethod func(Array) <-chan SortTime
 	n          int
+	inDir      string
+	resDir     string
 }
 
 type caseResult struct {
@@ -36,14 +42,7 @@ func RunTest(sort SortFunc, testsDir []string, sizeCount int) (resultTable, erro
 	caseCh := make(chan caseResult)
 	testRes := scheduler(ctx, sizeCount, caseCh)
 
-	for sName, sFunc := range sort {
-		for _, dir := range testsDir {
-			for n := 0; n < sizeCount; n++ {
-				wg.Add(1)
-				go worker(ctx, &wg, caseCh, sortConf{sortName: sName, sortMethod: sFunc, arrayType: dir, n: n})
-			}
-		}
-	}
+	worker(ctx, wg, testRes)
 
 	go func() {
 		wg.Wait()
@@ -59,13 +58,54 @@ func RunTest(sort SortFunc, testsDir []string, sizeCount int) (resultTable, erro
 	}
 }
 
-func scheduler(ctx context.Context, sizeCount int, caseResCh <-chan caseResult) chan testResult {
-	testCh := make(chan testResult)
-	testRes := make(resultTable)
+func sendTask(cntrl chan<- sortConf, sort SortFunc, testsDir []string, sizeCount int) {
+	for sName, sFunc := range sort {
+		for _, dir := range testsDir {
+			for n := 0; n < sizeCount; n++ {
+				cntrl <- sortConf{
+					sortName:   sName,
+					sortMethod: sFunc,
+					arrayType:  dir,
+					n:          n,
+					inDir:      fmt.Sprintf(dir+"/test.%v.in", n),
+					resDir:     fmt.Sprintf(dir+"/test.%v.out", n)}
+			}
+		}
+	}
+}
 
-	go storeResult(ctx, sizeCount, testRes, caseResCh, testCh)
+func scheduler(ctx context.Context, sort SortFunc, testsDir []string, sizeCount int) (chan testResult, chan sortConf) {
+	// testCh := make(chan testResult)
+	// testRes := make(resultTable)
 
-	return testCh
+	// go
+
+	// return testCh
+	cntrl := make(chan sortConf)
+	res := make(chan caseResult)
+
+	sendTask(cntrl, sort, testsDir, sizeCount)
+	storeResult(ctx, res, sizeCount)
+
+	return nil, cntrl
+}
+
+func worker(ctx context.Context, wg *sync.WaitGroup, resChan chan<- caseResult, in <-chan sortConf) {
+	for i := 0; i < WORKERS_COUNT; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			sc := <-in
+
+			tc, err := ParseTestCase(sc.arrayType, sc.inDir, sc.resDir) //
+			if err != nil {
+				resChan <- caseResult{err: err}
+				return
+			}
+
+			resChan <- runSort(ctx, sc, tc)
+		}()
+	}
 }
 
 func storeResult(ctx context.Context, sizeCount int, res resultTable, caseCh <-chan caseResult, testCh chan<- testResult) {
@@ -88,19 +128,6 @@ func storeResult(ctx context.Context, sizeCount int, res resultTable, caseCh <-c
 			res[r.sc.arrayType][r.sc.sortName][r.sc.n] = r.time
 		}
 	}
-}
-
-func worker(ctx context.Context, wg *sync.WaitGroup, resChan chan<- caseResult, sc sortConf) {
-	defer wg.Done()
-
-	tc := testCase{}
-	if err := tc.ParseTestCase(sc.arrayType, fmt.Sprintf(sc.arrayType+"/test.%v.in", sc.n),
-		fmt.Sprintf(sc.arrayType+"/test.%v.out", sc.n)); err != nil {
-		resChan <- caseResult{err: err}
-		return
-	}
-
-	resChan <- runSort(ctx, sc, tc)
 }
 
 func runSort(ctx context.Context, sc sortConf, tc testCase) caseResult {
