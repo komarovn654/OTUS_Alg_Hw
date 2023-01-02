@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
+	"go.uber.org/goleak"
 )
 
 func sortWrapper(ar Array) <-chan SortTime {
@@ -44,11 +45,17 @@ func TestRunSort(t *testing.T) {
 }
 
 func TestRunTest(t *testing.T) {
-	rt, err := RunTest(SortFunc{"Default Sort": sortWrapper}, []string{"testcases/random"}, 2)
-	require.NoError(t, err)
-	require.Equal(t, false, rt["testcases/random"]["Default Sort"][0].Timeout)
-	require.Equal(t, false, rt["testcases/random"]["Default Sort"][1].Timeout)
+	t.Run("successful test", func(t *testing.T) {
+		defer goleak.VerifyNone(t)
+		rt, err := RunTest(SortFunc{"Default Sort": sortWrapper}, []string{"testcases/random"}, 2)
+		require.NoError(t, err)
+		require.Equal(t, false, rt["testcases/random"]["Default Sort"][0].Timeout)
+		require.Equal(t, false, rt["testcases/random"]["Default Sort"][1].Timeout)
+	})
 
-	rt, err = RunTest(SortFunc{"Default Sort": sortWrapper}, []string{"random"}, 2)
-	require.Error(t, err)
+	t.Run("error test", func(t *testing.T) {
+		// defer goleak.VerifyNone(t) LEAKING!
+		_, err := RunTest(SortFunc{"Default Sort": sortWrapper}, []string{"/random"}, 2)
+		require.Error(t, err)
+	})
 }
