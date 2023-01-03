@@ -2,7 +2,10 @@ module github.com/komarovn654/OTUS_Alg_Hw/hw07_heapsort
 
 go 1.18
 
-require github.com/stretchr/testify v1.8.1
+require (
+	github.com/komarovn654/OTUS_Alg_Hw/sortutils v0.0.0-20221221173105-12acf0c032ba
+	github.com/stretchr/testify v1.8.1
+)
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect

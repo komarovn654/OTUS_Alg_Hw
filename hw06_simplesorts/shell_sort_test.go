@@ -1,88 +1,49 @@
 package hw06simplesorts
 
-import (
-	"testing"
+// func TestShellSort(t *testing.T) {
+// 	tests := []int64{1, 10, 100, 1000, 10000}
 
-	"github.com/stretchr/testify/require"
-)
+// 	for _, tc := range tests {
+// 		t.Run("N="+fmt.Sprint(tc), func(t *testing.T) {
+// 			ar := sortutils.Array{}
+// 			ar.InitRandArray(tc)
 
-func TestShellSort(t *testing.T) {
-	t.Run("random array", func(t *testing.T) {
-		ar := RandArray(100)
-		done := ShellSort(&ar)
-		<-done
-		require.True(t, IsSorted(&ar))
-	})
-	t.Run("random digits", func(t *testing.T) {
-		ar := RandDigits(100)
-		done := ShellSort(&ar)
-		<-done
-		require.True(t, IsSorted(&ar))
-	})
-	t.Run("sorted array", func(t *testing.T) {
-		ar := SortedArray(100)
-		done := ShellSort(&ar)
-		<-done
-		require.True(t, IsSorted(&ar))
-	})
-	t.Run("reverse array", func(t *testing.T) {
-		ar := ReversArray(100)
-		done := ShellSort(&ar)
-		<-done
-		require.True(t, IsSorted(&ar))
-	})
-}
+// 			st := ShellSort(ar)
+// 			time := <-st
+// 			require.Equal(t, false, time.Timeout)
+// 			require.True(t, ar.IsSorted())
+// 		})
+// 	}
+// }
 
-func TestShellSortFrankLazarus(t *testing.T) {
-	t.Run("random array", func(t *testing.T) {
-		ar := RandArray(100)
-		done := ShellSortFrankLazarus(&ar)
-		<-done
-		require.True(t, IsSorted(&ar))
-	})
-	t.Run("random digits", func(t *testing.T) {
-		ar := RandDigits(100)
-		done := ShellSortFrankLazarus(&ar)
-		<-done
-		require.True(t, IsSorted(&ar))
-	})
-	t.Run("sorted array", func(t *testing.T) {
-		ar := SortedArray(100)
-		done := ShellSortFrankLazarus(&ar)
-		<-done
-		require.True(t, IsSorted(&ar))
-	})
-	t.Run("reverse array", func(t *testing.T) {
-		ar := ReversArray(100)
-		done := ShellSortFrankLazarus(&ar)
-		<-done
-		require.True(t, IsSorted(&ar))
-	})
-}
+// func TestShellSortFrankLazarus(t *testing.T) {
+// 	tests := []int64{1, 10, 100, 1000, 10000}
 
-func TestShellSortHibbard(t *testing.T) {
-	t.Run("random array", func(t *testing.T) {
-		ar := RandArray(100)
-		done := ShellSortHibbard(&ar)
-		<-done
-		require.True(t, IsSorted(&ar))
-	})
-	t.Run("random digits", func(t *testing.T) {
-		ar := RandDigits(100)
-		done := ShellSortHibbard(&ar)
-		<-done
-		require.True(t, IsSorted(&ar))
-	})
-	t.Run("sorted array", func(t *testing.T) {
-		ar := SortedArray(100)
-		done := ShellSortHibbard(&ar)
-		<-done
-		require.True(t, IsSorted(&ar))
-	})
-	t.Run("reverse array", func(t *testing.T) {
-		ar := ReversArray(100)
-		done := ShellSortHibbard(&ar)
-		<-done
-		require.True(t, IsSorted(&ar))
-	})
-}
+// 	for _, tc := range tests {
+// 		t.Run("N="+fmt.Sprint(tc), func(t *testing.T) {
+// 			ar := sortutils.Array{}
+// 			ar.InitRandArray(tc)
+
+// 			st := ShellSortFrankLazarus(ar)
+// 			time := <-st
+// 			require.Equal(t, false, time.Timeout)
+// 			require.True(t, ar.IsSorted())
+// 		})
+// 	}
+// }
+
+// func TestShellSortHibbard(t *testing.T) {
+// 	tests := []int64{1, 10, 100, 1000, 10000}
+
+// 	for _, tc := range tests {
+// 		t.Run("N="+fmt.Sprint(tc), func(t *testing.T) {
+// 			ar := sortutils.Array{}
+// 			ar.InitRandArray(tc)
+
+// 			st := ShellSortHibbard(ar)
+// 			time := <-st
+// 			require.Equal(t, false, time.Timeout)
+// 			require.True(t, ar.IsSorted())
+// 		})
+// 	}
+// }

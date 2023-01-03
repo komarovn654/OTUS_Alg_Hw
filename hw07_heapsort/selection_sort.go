@@ -1,16 +1,20 @@
 package hw07_heapsort
 
-import "time"
+import (
+	"time"
 
-func (s *Array) SelctionSort() <-chan SortTime {
-	sTime := make(chan SortTime)
+	"github.com/komarovn654/OTUS_Alg_Hw/sortutils"
+)
+
+func SelectionSort(array sortutils.Array) <-chan sortutils.SortTime {
+	sTime := make(chan sortutils.SortTime)
 
 	go func() {
 		start := time.Now()
-		for i := len(s.Ar) - 1; i > 0; i-- {
-			s.swap(s.findMax(0, i), i)
+		for i := len(array.Ar) - 1; i > 0; i-- {
+			array.Swap(array.FindMax(0, i), i)
 		}
-		sTime <- SortTime{Time: time.Since(start)}
+		sTime <- sortutils.SortTime{Time: time.Since(start)}
 	}()
 
 	return sTime

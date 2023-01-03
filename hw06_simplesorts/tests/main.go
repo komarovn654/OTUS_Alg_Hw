@@ -1,23 +1,33 @@
 package main
 
 import (
+	"context"
 	"log"
-	"time"
+
+	"github.com/komarovn654/OTUS_Alg_Hw/sortutils"
 )
 
-//go:generate bash ./generate/generate_tests.sh generate/tests.template
+var (
+	sortFunctions = sortutils.SortFunctions{
+		"Bubble Sort": hw06simplesorts.BubbleSort, "Bubble Sort Opt": hw06simplesorts.BubbleSortOpt,
+		"Insertion Sort": hw06simplesorts.InsertionSort, "Insertion Sort Shift": hw06simplesorts.InsertionSortShift,
+		"Insertion Sort BinarySearch": hw06simplesorts.InsertionSortBinarySearch, "Shell Sort": hw06simplesorts.ShellSort,
+		"Shell Sort Frank&Lazarus": hw06simplesorts.ShellSortFrankLazarus, "Shell Sort Hibbard": hw06simplesorts.ShellSortHibbard,
+	}
+	testDirects = []string{"sorting-tests/0.random", "sorting-tests/1.digits", "sorting-tests/2.sorted", "sorting-tests/3.revers"}
+	testsCount  = 8
+)
 
-var sortTimeout = time.Second * 120
+type SortFunctions map[string]func(context.Context) <-chan sortutils.SortTime
 
-// TODO run tests conccurency
 func main() {
-	rTable := make(ResultTable)
 
-	for _, r := range runTestsCases(sortTimeout) {
-		fillResultTable(r, &rTable)
+	rt, err := sortutils.RunTest(sortFunctions, testDirects, testsCount)
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	if err := saveResultTable("README.md", &rTable); err != nil {
+	if err := sortutils.SaveResultTable("README.md", rt); err != nil {
 		log.Fatal(err)
 	}
 }
