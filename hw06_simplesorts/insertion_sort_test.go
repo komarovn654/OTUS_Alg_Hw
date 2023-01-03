@@ -32,6 +32,7 @@ package hw06simplesorts
 // 	}
 // }
 
+<<<<<<< HEAD
 // func TestInsertionSortBinarySearch(t *testing.T) {
 // 	tests := []int64{1, 10, 100, 1000, 10000}
 

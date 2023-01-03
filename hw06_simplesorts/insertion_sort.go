@@ -1,7 +1,10 @@
 package hw06simplesorts
 
 import (
+<<<<<<< HEAD
 	"context"
+=======
+>>>>>>> master
 	"time"
 
 	"github.com/komarovn654/OTUS_Alg_Hw/sortutils"
@@ -76,6 +79,7 @@ func binarySearch(a sortutils.Array, key sortutils.Item, min int, max int) int {
 	mid := (max + min) / 2
 	if key < a.Ar[mid] {
 		return binarySearch(a, key, min, mid-1)
+
 	}
 	return binarySearch(a, key, mid+1, max)
 }
