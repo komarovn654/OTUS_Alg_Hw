@@ -1,15 +1,14 @@
 package main
 
 import (
+	"context"
 	"log"
-	"runtime"
 
-	hw06simplesorts "github.com/komarovn654/OTUS_Alg_Hw/hw06_simplesorts"
 	"github.com/komarovn654/OTUS_Alg_Hw/sortutils"
 )
 
 var (
-	sortFunctions = sortutils.SortFunc{
+	sortFunctions = sortutils.SortFunctions{
 		"Bubble Sort": hw06simplesorts.BubbleSort, "Bubble Sort Opt": hw06simplesorts.BubbleSortOpt,
 		"Insertion Sort": hw06simplesorts.InsertionSort, "Insertion Sort Shift": hw06simplesorts.InsertionSortShift,
 		"Insertion Sort BinarySearch": hw06simplesorts.InsertionSortBinarySearch, "Shell Sort": hw06simplesorts.ShellSort,
@@ -19,8 +18,10 @@ var (
 	testsCount  = 8
 )
 
+type SortFunctions map[string]func(context.Context) <-chan sortutils.SortTime
+
 func main() {
-	runtime.GOMAXPROCS(1)
+
 	rt, err := sortutils.RunTest(sortFunctions, testDirects, testsCount)
 	if err != nil {
 		log.Fatal(err)

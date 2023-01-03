@@ -10,28 +10,22 @@ import (
 	"go.uber.org/goleak"
 )
 
-func sortWrapper(ar Array) <-chan SortTime {
-	st := make(chan SortTime)
+func SortTest(ctx context.Context, st chan<- SortTime, ar Array) {
+	start := time.Now()
 
-	go func() {
-		start := time.Now()
+	sort.Slice(ar.Ar, func(i, j int) bool {
+		return ar.Ar[i] < ar.Ar[j]
+	})
 
-		sort.Slice(ar.Ar, func(i, j int) bool {
-			return ar.Ar[i] < ar.Ar[j]
-		})
-
-		st <- SortTime{Time: time.Since(start)}
-	}()
-
-	return st
+	st <- SortTime{Time: time.Since(start)}
 }
 
 func TestRunSort(t *testing.T) {
 	ctx := context.Background()
-	sc := sortConf{
-		arrayType:  "Random",
-		sortName:   "Default Sort",
-		sortMethod: sortWrapper,
+	sc := taskConf{
+		sortFunc:  SortTest,
+		arrayType: "Random",
+		sortName:  "Default Sort",
 	}
 	tc := testCase{
 		Name:     "Random",
@@ -47,15 +41,27 @@ func TestRunSort(t *testing.T) {
 func TestRunTest(t *testing.T) {
 	t.Run("successful test", func(t *testing.T) {
 		defer goleak.VerifyNone(t)
-		rt, err := RunTest(SortFunc{"Default Sort": sortWrapper}, []string{"testcases/random"}, 2)
+		conf := SortConf{
+			SortFuncs: SortFunctions{"Default Sort": SortTest},
+			TestsDir:  []string{"testcases/random"},
+			SizeCount: 2,
+		}
+
+		rt, err := RunTest(conf)
 		require.NoError(t, err)
 		require.Equal(t, false, rt["testcases/random"]["Default Sort"][0].Timeout)
 		require.Equal(t, false, rt["testcases/random"]["Default Sort"][1].Timeout)
 	})
 
 	t.Run("error test", func(t *testing.T) {
-		// defer goleak.VerifyNone(t) LEAKING!
-		_, err := RunTest(SortFunc{"Default Sort": sortWrapper}, []string{"/random"}, 2)
+		defer goleak.VerifyNone(t)
+		conf := SortConf{
+			SortFuncs: SortFunctions{"Default Sort": SortTest},
+			TestsDir:  []string{"random"},
+			SizeCount: 2,
+		}
+
+		_, err := RunTest(conf)
 		require.Error(t, err)
 	})
 }

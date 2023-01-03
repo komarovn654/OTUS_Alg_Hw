@@ -11,70 +11,78 @@ const (
 	WORKERS_COUNT = 10
 )
 
-type sortConf struct {
-	arrayType  string
-	sortName   string
-	sortMethod func(Array) <-chan SortTime
-	n          int
-	inDir      string
-	resDir     string
+type SortConf struct {
+	SortFuncs SortFunctions
+	TestsDir  []string
+	SizeCount int
+}
+
+type SortFunctions map[string]func(context.Context, chan<- SortTime, Array)
+
+type taskConf struct {
+	sortFunc  func(context.Context, chan<- SortTime, Array)
+	num       int
+	sortName  string
+	arrayType string
+	inFile    string
+	outFile   string
 }
 
 type caseResult struct {
-	sc   sortConf
+	task taskConf
 	time SortTime
 	err  error
 }
 
+type rows map[string][]SortTime
+type resultTable map[string]rows
 type testResult struct {
 	rt  resultTable
 	err error
 }
 
-type rows map[string][]SortTime
-type resultTable map[string]rows
-
-func RunTest(sort SortFunc, testsDir []string, sizeCount int) (resultTable, error) {
+func RunTest(conf SortConf) (resultTable, error) {
 	log.Printf("RunTest\n")
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	var wg sync.WaitGroup
 
-	resCase := worker(ctx, &wg, scheduler(ctx, &wg, sort, testsDir, sizeCount))
+	resCase := worker(ctx, &wg, scheduler(ctx, &wg, conf))
 
-	res := <-storeResult(ctx, &wg, resCase, sizeCount, len(sort)*len(testsDir)*sizeCount)
+	res := <-storeResult(ctx, &wg, resCase, conf.SizeCount, len(conf.SortFuncs)*len(conf.TestsDir)*conf.SizeCount)
 	cancel()
 	wg.Wait()
 	return res.rt, res.err
 }
 
-func scheduler(ctx context.Context, wg *sync.WaitGroup, sort SortFunc, testsDir []string, sizeCount int) chan sortConf {
-	cntrl := make(chan sortConf)
+func scheduler(ctx context.Context, wg *sync.WaitGroup, conf SortConf) chan taskConf {
+	cntrl := make(chan taskConf)
 	wg.Add(1)
 
 	go func() {
 		defer wg.Done()
-		sendTask(ctx, cntrl, sort, testsDir, sizeCount)
+		sendTask(ctx, cntrl, conf)
 	}()
 
 	return cntrl
 }
 
-func sendTask(ctx context.Context, cntrl chan<- sortConf, sort SortFunc, testsDir []string, sizeCount int) {
-	for sName, sFunc := range sort {
-		for _, dir := range testsDir {
-			for n := 0; n < sizeCount; n++ {
+func sendTask(ctx context.Context, cntrl chan<- taskConf, conf SortConf) {
+	for sName, sFunc := range conf.SortFuncs {
+		for _, dir := range conf.TestsDir {
+			for n := 0; n < conf.SizeCount; n++ {
 				select {
 				case <-ctx.Done():
 					log.Printf("Send task. Context done\n")
 					return
-				case cntrl <- sortConf{
-					sortName:   sName,
-					sortMethod: sFunc,
-					arrayType:  dir,
-					n:          n,
-					inDir:      fmt.Sprintf(dir+"/test.%v.in", n),
-					resDir:     fmt.Sprintf(dir+"/test.%v.out", n)}:
+				case cntrl <- taskConf{
+					sortFunc:  sFunc,
+					sortName:  sName,
+					arrayType: dir,
+					inFile:    fmt.Sprintf(dir+"/test.%v.in", n),
+					outFile:   fmt.Sprintf(dir+"/test.%v.out", n),
+					num:       n,
+				}:
 					log.Printf("Send task. Send: Array: %v, Sort: %v, n = %v\n", dir, sName, n)
 				}
 			}
@@ -83,7 +91,7 @@ func sendTask(ctx context.Context, cntrl chan<- sortConf, sort SortFunc, testsDi
 	log.Printf("Send task. All tasks send\n")
 }
 
-func worker(ctx context.Context, wg *sync.WaitGroup, in <-chan sortConf) chan caseResult {
+func worker(ctx context.Context, wg *sync.WaitGroup, in <-chan taskConf) chan caseResult {
 	resCase := make(chan caseResult)
 
 	for i := 0; i < WORKERS_COUNT; i++ {
@@ -95,9 +103,9 @@ func worker(ctx context.Context, wg *sync.WaitGroup, in <-chan sortConf) chan ca
 				case <-ctx.Done():
 					log.Printf("Worker. Context done before get task")
 					return
-				case sc := <-in:
-					log.Printf("Worker. Get task: Array: %v, Sort: %v, n = %v\n", sc.arrayType, sc.sortName, sc.n)
-					tc, err := ParseTestCase(sc.arrayType, sc.inDir, sc.resDir)
+				case conf := <-in:
+					log.Printf("Worker. Get task: Array: %v, Sort: %v, n = %v\n", conf.arrayType, conf.sortName, conf.num)
+					tc, err := ParseTestCase(conf.arrayType, conf.inFile, conf.outFile)
 					if err != nil {
 						select {
 						case <-ctx.Done():
@@ -112,7 +120,7 @@ func worker(ctx context.Context, wg *sync.WaitGroup, in <-chan sortConf) chan ca
 					case <-ctx.Done():
 						log.Printf("Worker. Context done after parse")
 						return
-					case resCase <- runSort(ctx, sc, tc):
+					case resCase <- runSort(ctx, conf, tc):
 					}
 				}
 			}
@@ -122,18 +130,18 @@ func worker(ctx context.Context, wg *sync.WaitGroup, in <-chan sortConf) chan ca
 	return resCase
 }
 
-func runSort(ctx context.Context, sc sortConf, tc testCase) caseResult {
-	log.Printf("Start sort: Array: %v, Sort: %v, n = %v\n", sc.arrayType, sc.sortName, sc.n)
+func runSort(ctx context.Context, conf taskConf, tc testCase) caseResult {
+	log.Printf("Start sort: Array: %v, Sort: %v, n = %v\n", conf.arrayType, conf.sortName, conf.num)
 	ar := Array{Ar: tc.Array}
-	t := ar.SortArray(ctx, sc.sortMethod)
+	t := ar.SortArray(ctx, conf.sortFunc)
 
 	if !ar.IsArraysEqual(tc.Expected) && !t.Timeout {
-		log.Printf("Unsorted error: Array: %v, Sort: %v, n = %v\n", sc.arrayType, sc.sortName, sc.n)
+		log.Printf("Unsorted error: Array: %v, Sort: %v, n = %v\n", conf.arrayType, conf.sortName, conf.num)
 		return caseResult{err: ErrArrayIsUnsorted}
 	}
 
-	log.Printf("Sorted: Array: %v, Sort: %v, n = %v; Result: %+v\n", sc.arrayType, sc.sortName, sc.n, t)
-	return caseResult{sc: sc, time: t}
+	log.Printf("Sorted: Array: %v, Sort: %v, n = %v; Result: %+v\n", conf.arrayType, conf.sortName, conf.num, t)
+	return caseResult{task: conf, time: t}
 }
 
 func storeResult(ctx context.Context, wg *sync.WaitGroup, resCase <-chan caseResult, sizeCount int, testsCount int) chan testResult {
@@ -146,20 +154,20 @@ func storeResult(ctx context.Context, wg *sync.WaitGroup, resCase <-chan caseRes
 		defer wg.Done()
 		for i := 0; i < testsCount; i++ {
 			rc := <-resCase
-			log.Printf("Store result. Get: Array: %v, Sort: %v, n = %v\n", rc.sc.arrayType, rc.sc.sortName, rc.sc.n)
+			log.Printf("Store result. Get: Array: %v, Sort: %v, n = %v\n", rc.task.arrayType, rc.task.sortName, rc.task.num)
 			if rc.err != nil {
 				resTest <- testResult{err: rc.err}
 				log.Printf("Store result. Send error\n")
 				return
 			}
 
-			if table[rc.sc.arrayType] == nil {
-				table[rc.sc.arrayType] = make(rows)
+			if table[rc.task.arrayType] == nil {
+				table[rc.task.arrayType] = make(rows)
 			}
-			if table[rc.sc.arrayType][rc.sc.sortName] == nil {
-				table[rc.sc.arrayType][rc.sc.sortName] = make([]SortTime, sizeCount)
+			if table[rc.task.arrayType][rc.task.sortName] == nil {
+				table[rc.task.arrayType][rc.task.sortName] = make([]SortTime, sizeCount)
 			}
-			table[rc.sc.arrayType][rc.sc.sortName][rc.sc.n] = rc.time
+			table[rc.task.arrayType][rc.task.sortName][rc.task.num] = rc.time
 		}
 		resTest <- testResult{rt: table}
 		log.Printf("Store result. Send result\n")
