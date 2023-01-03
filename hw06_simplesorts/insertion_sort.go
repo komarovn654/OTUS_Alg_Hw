@@ -1,10 +1,8 @@
 package hw06simplesorts
 
 import (
-<<<<<<< HEAD
 	"context"
-=======
->>>>>>> master
+
 	"time"
 
 	"github.com/komarovn654/OTUS_Alg_Hw/sortutils"
