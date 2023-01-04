@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	WORKERS_COUNT = 8
+	workersCount = 8
 )
 
 type SortConf struct {
@@ -39,6 +39,14 @@ type resultTable map[string]rows
 type testResult struct {
 	rt  resultTable
 	err error
+}
+
+func SetWorkersCount(v int) {
+	workersCount = v
+}
+
+func GetWorkersCount() int {
+	return workersCount
 }
 
 func RunTest(conf SortConf) (resultTable, error) {
@@ -94,7 +102,7 @@ func sendTask(ctx context.Context, cntrl chan<- taskConf, conf SortConf) {
 func worker(ctx context.Context, wg *sync.WaitGroup, in <-chan taskConf) chan caseResult {
 	resCase := make(chan caseResult)
 
-	for i := 0; i < WORKERS_COUNT; i++ {
+	for i := 0; i < workersCount; i++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()

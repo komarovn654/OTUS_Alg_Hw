@@ -110,20 +110,3 @@ func (a *Array) Swap(aIndex int, bIndex int) {
 	a.Ar[aIndex] = a.Ar[bIndex]
 	a.Ar[bIndex] = tmp
 }
-
-func (a *Array) Heapify(rootIndex int, size int) {
-	lIndex := 2*rootIndex + 1
-	rIndex := 2*rootIndex + 2
-	p := rootIndex
-	if lIndex < size && a.Ar[lIndex] > a.Ar[p] {
-		p = lIndex
-	}
-	if rIndex < size && a.Ar[rIndex] > a.Ar[p] {
-		p = rIndex
-	}
-	if p == rootIndex {
-		return
-	}
-	a.Swap(rootIndex, p)
-	a.Heapify(p, size)
-}

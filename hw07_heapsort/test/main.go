@@ -8,13 +8,19 @@ import (
 )
 
 var (
-	sortFunctions = sortutils.SortFunc{"Selection Sort": hw07_heapsort.SelectionSort, "Heap Sort": hw07_heapsort.HeapSort}
+	sortFunctions = sortutils.SortFunctions{"Selection Sort": hw07_heapsort.SelectionSort, "Heap Sort": hw07_heapsort.HeapSort}
 	testDirects   = []string{"sorting-tests/0.random", "sorting-tests/1.digits", "sorting-tests/2.sorted", "sorting-tests/3.revers"}
 	testsCount    = 8
 )
 
 func main() {
-	rt, err := sortutils.RunTest(sortFunctions, testDirects, testsCount)
+	sortutils.WORKERS_COUNT = 1
+
+	rt, err := sortutils.RunTest(sortutils.SortConf{
+		SortFuncs: sortFunctions,
+		TestsDir:  testDirects,
+		SizeCount: testsCount,
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
