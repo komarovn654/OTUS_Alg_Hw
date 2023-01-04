@@ -7,8 +7,8 @@ import (
 	"sync"
 )
 
-const (
-	WORKERS_COUNT = 10
+var (
+	WORKERS_COUNT = 8
 )
 
 type SortConf struct {

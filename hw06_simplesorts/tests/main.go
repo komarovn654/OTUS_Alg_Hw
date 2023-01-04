@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 
+	hw06simplesorts "github.com/komarovn654/OTUS_Alg_Hw/hw06_simplesorts"
 	"github.com/komarovn654/OTUS_Alg_Hw/sortutils"
 )
 
@@ -21,8 +22,11 @@ var (
 type SortFunctions map[string]func(context.Context) <-chan sortutils.SortTime
 
 func main() {
-
-	rt, err := sortutils.RunTest(sortFunctions, testDirects, testsCount)
+	rt, err := sortutils.RunTest(sortutils.SortConf{
+		SortFuncs: sortFunctions,
+		TestsDir:  testDirects,
+		SizeCount: testsCount,
+	})
 	if err != nil {
 		log.Fatal(err)
 	}

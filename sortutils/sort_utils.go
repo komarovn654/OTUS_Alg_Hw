@@ -13,45 +13,7 @@ var (
 
 const (
 	timeout = time.Second * 120
-
-	BubbleSort                = "Bubble Sort"
-	BubbleSortOpt             = "Bubble Sort Opt"
-	InsertionSort             = "Insertion Sort"
-	InsertionSortShift        = "Insertion Sort Shift"
-	InsertionSortBinarySearch = "Insertion Sort BinarySearch"
-	ShellSort                 = "Shell Sort"
-	ShellSortFrankLazarus     = "Shell Sort Frank&Lazarus"
-	ShellSortHibbard          = "Shell Sort Hibbard"
-	SelectionSort             = "Selection Sort"
-	HeapSort                  = "Heap Sort"
-	MergeSort                 = "Merge Sort"
-	QuickSort                 = "Quick Sort"
 )
-
-type SimpleSorts interface {
-	BubbleSort(context.Context, Array) SortTime
-	BubbleSortOpt(context.Context, Array) SortTime
-	InsertionSort(context.Context, Array) SortTime
-	InsertionSortShift(context.Context, Array) SortTime
-	InsertionSortBinarySearch(context.Context, Array) SortTime
-	ShellSort(context.Context, Array) SortTime
-	ShellSortFrankLazarus(context.Context, Array) SortTime
-	ShellSortHibbard(context.Context, Array) SortTime
-}
-
-type HeapSorts interface {
-	SelectionSort(context.Context, Array) SortTime
-	HeapSort(context.Context, Array) SortTime
-}
-
-type QuickSorts interface {
-	MergeSort(context.Context, Array) SortTime
-	QuickSort(context.Context, Array) SortTime
-}
-
-type TestSorts interface {
-	SortTest(ctx context.Context, ar Array) SortTime
-}
 
 type Item int64
 
@@ -165,18 +127,3 @@ func (a *Array) Heapify(rootIndex int, size int) {
 	a.Swap(rootIndex, p)
 	a.Heapify(p, size)
 }
-
-// func (a *Array) BinarySearch(key Item, min int, max int) int {
-// 	if max <= min {
-// 		if a.Ar[min] > key {
-// 			return min
-// 		}
-// 		return min + 1
-// 	}
-
-// 	mid := (max + min) / 2
-// 	if key < a.Ar[mid] {
-// 		return a.BinarySearch(key, min, mid-1)
-// 	}
-// 	return a.BinarySearch(key, mid+1, max)
-// }
