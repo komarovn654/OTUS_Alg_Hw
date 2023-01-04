@@ -1,24 +1,23 @@
-# sorting-tests/2.sorted
-| Sort name | 1 | 10 | 100 | 1000 | 10000 | 100000 | 1000000 | 10000000 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Heap Sort | 0s | 0s | 0s | 0s | 2.9999ms | 27.6677ms | 253.9245ms | 2.8505299s |
-| Selection Sort | 0s | 0s | 0s | 3.0023ms | 117.6174ms | 10.7240053s | timeout | timeout |
-
-# sorting-tests/3.revers
-| Sort name | 1 | 10 | 100 | 1000 | 10000 | 100000 | 1000000 | 10000000 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Selection Sort | 0s | 0s | 0s | 4.0055ms | 140.0207ms | 10.9507448s | timeout | timeout |
-| Heap Sort | 0s | 0s | 0s | 0s | 1.5228ms | 16.9347ms | 229.0607ms | 2.9642157s |
-
 # sorting-tests/0.random
 | Sort name | 1 | 10 | 100 | 1000 | 10000 | 100000 | 1000000 | 10000000 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Selection Sort | 0s | 0s | 1.0005ms | 6.3891ms | 119.6097ms | 10.539928s | timeout | timeout |
-| Heap Sort | 0s | 0s | 0s | 999.6µs | 994.9µs | 30.3898ms | 787.3927ms | 13.3948411s |
+| Selection Sort | 0s | 0s | 0s | 1.0458ms | 91.8894ms | 10.6465428s | timeout | timeout |
+| Heap Sort | 0s | 0s | 0s | 0s | 2.0024ms | 27.0052ms | 782.5524ms | 14.8089117s |
 
 # sorting-tests/1.digits
 | Sort name | 1 | 10 | 100 | 1000 | 10000 | 100000 | 1000000 | 10000000 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Selection Sort | 0s | 0s | 2.1929ms | 1.7202ms | 124.1187ms | 10.8143136s | timeout | timeout |
-| Heap Sort | 0s | 0s | 0s | 999.1µs | 998µs | 19.9019ms | 236.5787ms | 2.1586604s |
+| Selection Sort | 0s | 0s | 0s | 1.2537ms | 98.9975ms | 11.0533364s | timeout | timeout |
+| Heap Sort | 0s | 0s | 0s | 0s | 3.9998ms | 19.2459ms | 184.9626ms | 2.2936505s |
 
+# sorting-tests/2.sorted
+| Sort name | 1 | 10 | 100 | 1000 | 10000 | 100000 | 1000000 | 10000000 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Selection Sort | 0s | 0s | 0s | 1.0001ms | 116.9799ms | 10.9184838s | timeout | timeout |
+| Heap Sort | 0s | 0s | 0s | 0s | 3.0022ms | 22.6725ms | 226.6539ms | 3.0977442s |
+
+# sorting-tests/3.revers
+| Sort name | 1 | 10 | 100 | 1000 | 10000 | 100000 | 1000000 | 10000000 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Selection Sort | 0s | 0s | 0s | 1ms | 124.9674ms | 10.8165559s | timeout | timeout |
+| Heap Sort | 0s | 0s | 0s | 0s | 3.001ms | 15.0015ms | 258.3382ms | 2.6485464s |

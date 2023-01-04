@@ -14,7 +14,7 @@ var (
 )
 
 func main() {
-	sortutils.WORKERS_COUNT = 1
+	sortutils.SetWorkersCount(10)
 
 	rt, err := sortutils.RunTest(sortutils.SortConf{
 		SortFuncs: sortFunctions,
