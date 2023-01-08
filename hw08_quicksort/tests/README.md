@@ -1,23 +1,23 @@
 # sorting-tests/0.random
 | Sort name | 1 | 10 | 100 | 1000 | 10000 | 100000 | 1000000 | 10000000 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Selection Sort | 0s | 0s | 0s | 786.3µs | 150.9737ms | 13.4921637s | timeout | timeout |
-| Heap Sort | 0s | 0s | 0s | 0s | 1.9746ms | 123.496ms | 955.9083ms | 9.4815587s |
+| Merge Sort | 541.1µs | 0s | 0s | 0s | 2.9145ms | 42.3537ms | 418.1632ms | 3.0245804s |
+| Quick Sort | 0s | 0s | 0s | 0s | 1.0023ms | 13.8672ms | 156.4901ms | 1.9402911s |
 
 # sorting-tests/1.digits
 | Sort name | 1 | 10 | 100 | 1000 | 10000 | 100000 | 1000000 | 10000000 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Selection Sort | 0s | 0s | 0s | 1.0036ms | 245.368ms | 13.7008759s | timeout | timeout |
-| Heap Sort | 0s | 0s | 1.0012ms | 1.0012ms | 1.2697ms | 118.9504ms | 584.6892ms | 2.4643669s |
+| Merge Sort | 0s | 0s | 0s | 0s | 4.2134ms | 24.7918ms | 284.8449ms | 2.4849062s |
+| Quick Sort | 0s | 0s | 0s | 0s | 18.3661ms | 1.5822798s | timeout | timeout |
 
 # sorting-tests/2.sorted
 | Sort name | 1 | 10 | 100 | 1000 | 10000 | 100000 | 1000000 | 10000000 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Selection Sort | 0s | 0s | 0s | 1.9957ms | 184.0219ms | 13.4838399s | timeout | timeout |
-| Heap Sort | 0s | 0s | 0s | 0s | 1.9797ms | 119.9723ms | 418.9473ms | 3.1688902s |
+| Merge Sort | 0s | 0s | 0s | 547.2µs | 4.7825ms | 35.7033ms | 392.1588ms | 2.3086147s |
+| Quick Sort | 0s | 0s | 0s | 999.9µs | 2.0009ms | 50.0795ms | 859.0699ms | 9.982894s |
 
 # sorting-tests/3.revers
 | Sort name | 1 | 10 | 100 | 1000 | 10000 | 100000 | 1000000 | 10000000 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Selection Sort | 0s | 0s | 0s | 996µs | 304.383ms | 13.6454335s | timeout | timeout |
-| Heap Sort | 0s | 0s | 997.8µs | 998.2µs | 994.9µs | 75.8251ms | 298.4377ms | 2.6047716s |
+| Merge Sort | 0s | 0s | 0s | 594.4µs | 1.6668ms | 20.1125ms | 334.1088ms | 2.2285206s |
+| Quick Sort | 0s | 0s | 0s | 1.9991ms | 132.58ms | 12.7912812s | timeout | timeout |

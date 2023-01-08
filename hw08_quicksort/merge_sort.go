@@ -1,65 +1,72 @@
 package hw08quicksort
 
 import (
+	"context"
 	"time"
 
 	"github.com/komarovn654/OTUS_Alg_Hw/sortutils"
 )
 
-func (s *Sort) MergeSort() <-chan sortutils.SortTime {
-	sTime := make(chan sortutils.SortTime)
+func MergeSort(ctx context.Context, sTime chan<- sortutils.SortTime, ar sortutils.Array) {
+	start := time.Now()
 
-	go func() {
-		start := time.Now()
+	mergeSort(ctx, ar, 0, len(ar.Ar)-1)
 
-		s.mergeSort(0, len(s.Array.Ar)-1)
-
-		sTime <- sortutils.SortTime{Time: time.Since(start)}
-	}()
-
-	return sTime
+	select {
+	case <-ctx.Done():
+		sTime <- sortutils.SortTime{Timeout: true}
+		return
+	default:
+	}
+	sTime <- sortutils.SortTime{Time: time.Since(start)}
 }
 
-func (s *Sort) mergeSort(lIndex int, rIndex int) {
+func mergeSort(ctx context.Context, ar sortutils.Array, lIndex int, rIndex int) {
+	select {
+	case <-ctx.Done():
+		return
+	default:
+	}
+
 	if lIndex >= rIndex {
 		return
 	}
 
 	mIndex := (lIndex + rIndex) / 2
-	s.mergeSort(lIndex, mIndex)
-	s.mergeSort(mIndex+1, rIndex)
-	s.merge(lIndex, rIndex, mIndex)
+	mergeSort(ctx, ar, lIndex, mIndex)
+	mergeSort(ctx, ar, mIndex+1, rIndex)
+	merge(ar, lIndex, rIndex, mIndex)
 }
 
-func (s *Sort) merge(lIndex int, rIndex int, mIndex int) {
+func merge(ar sortutils.Array, lIndex int, rIndex int, mIndex int) {
 	tmp := make([]sortutils.Item, rIndex-lIndex+1)
 	m := 0
 	a := lIndex
 	b := mIndex + 1
 
 	for a <= mIndex && b <= rIndex {
-		if s.Array.Ar[a] < s.Array.Ar[b] {
-			tmp[m] = s.Array.Ar[a]
+		if ar.Ar[a] < ar.Ar[b] {
+			tmp[m] = ar.Ar[a]
 			a++
 		} else {
-			tmp[m] = s.Array.Ar[b]
+			tmp[m] = ar.Ar[b]
 			b++
 		}
 		m++
 	}
 
 	for b <= rIndex {
-		tmp[m] = s.Array.Ar[b]
+		tmp[m] = ar.Ar[b]
 		m++
 		b++
 	}
 	for a <= mIndex {
-		tmp[m] = s.Array.Ar[a]
+		tmp[m] = ar.Ar[a]
 		m++
 		a++
 	}
 
 	for i := 0; i < len(tmp); i++ {
-		s.Array.Ar[lIndex+i] = tmp[i]
+		ar.Ar[lIndex+i] = tmp[i]
 	}
 }
