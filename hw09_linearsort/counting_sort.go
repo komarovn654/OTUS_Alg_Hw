@@ -15,6 +15,7 @@ func CountingSort(array []int64) []int64 {
 	}
 
 	sorted := make([]int64, len(array))
+	indexes[0] = 0
 	for _, v := range array {
 		sorted[indexes[v]] = v
 		indexes[v]++
