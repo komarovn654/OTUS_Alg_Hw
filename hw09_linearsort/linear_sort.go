@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	MAX_VALUE = 999
+	MAX_VALUE = 10
 )
 
 func GenerateArray(size int) []int64 {

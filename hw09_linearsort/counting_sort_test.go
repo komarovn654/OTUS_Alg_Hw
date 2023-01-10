@@ -27,7 +27,7 @@ func TestCountingSort(t *testing.T) {
 			array := GenerateArray(tc.len)
 
 			tm := time.Now()
-			sorted := CountingSort(array)
+			sorted := CountingSort(array, MAX_VALUE)
 			fmt.Println("Sorted time = ", time.Since(tm))
 			require.True(t, IsSorted(sorted))
 		})
