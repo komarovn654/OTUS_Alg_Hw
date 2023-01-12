@@ -1,7 +1,14 @@
 package hw09linearsort
 
 func RadixSort(array []uint16, max uint16) []uint16 {
-	return radixSort(array, 0, uint16(countDigits(max)))
+	digits := countDigits(max)
+
+	for digit := 0; digit < digits; digit++ {
+		sorted := countingSortRadix(array, digit)
+		copy(array, sorted)
+	}
+
+	return array
 }
 
 func radixSort(array []uint16, digit int, lastDigit uint16) []uint16 {

@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// go test -run TestRadixSort -timeout 120s -v
 func TestRadixSort(t *testing.T) {
 	max := uint16(999)
 	tests := []struct {
@@ -20,6 +21,9 @@ func TestRadixSort(t *testing.T) {
 		{len: 10000},
 		{len: 100000},
 		{len: 1000000},
+		{len: 10000000},
+		{len: 100000000},
+		{len: 1000000000},
 	}
 
 	for _, tc := range tests {
