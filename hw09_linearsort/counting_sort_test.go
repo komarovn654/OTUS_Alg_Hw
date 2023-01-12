@@ -11,6 +11,7 @@ import (
 
 // go test -run TestCountingSort -timeout 120s -v
 func TestCountingSort(t *testing.T) {
+	max := uint16(999)
 	tests := []struct {
 		len int
 	}{
@@ -24,10 +25,10 @@ func TestCountingSort(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run("Length = "+strconv.Itoa(tc.len), func(t *testing.T) {
-			array := GenerateArray(tc.len)
+			array := GenerateArray(tc.len, max)
 
 			tm := time.Now()
-			sorted := CountingSort(array, MAX_VALUE)
+			sorted := CountingSort(array, max)
 			fmt.Println("Sorted time = ", time.Since(tm))
 			require.True(t, IsSorted(sorted))
 		})

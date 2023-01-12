@@ -1,6 +1,6 @@
 package hw09linearsort
 
-func CountingSort(array []int64, max int) []int64 {
+func CountingSort(array []uint16, max uint16) []uint16 {
 	indexes := make([]int, max)
 	for _, v := range array {
 		indexes[v]++
@@ -10,7 +10,7 @@ func CountingSort(array []int64, max int) []int64 {
 		indexes[i] += indexes[i-1]
 	}
 
-	sorted := make([]int64, len(array))
+	sorted := make([]uint16, len(array))
 	for i := len(array) - 1; i >= 0; i-- {
 		indexes[array[i]]--
 		sorted[indexes[array[i]]] = array[i]

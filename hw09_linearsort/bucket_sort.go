@@ -1,77 +1,70 @@
 package hw09linearsort
 
-import "fmt"
-
 type Buckets struct {
-	buck []List
-	len  int
+	buck []bucket
 }
 
-func BucketSort(array []int64) []int64 {
+func BucketSort(array []uint16, max uint16) []uint16 {
 	buckets := initBuckets(len(array))
 
-	for _, v := range array {
-		buckets.storeValue(v, calculateListIndex(v, len(array)))
+	for i, v := range array {
+		buckets.buck[getBuckNum(v, len(array), max)].insert(array[i])
 	}
 
-	sorted := make([]int64, 0)
-	for i := range buckets.buck {
-		sorted = append(sorted, buckets.getBucketArray(i)...)
+	sorted := make([]uint16, 0)
+	for _, b := range buckets.buck {
+		sorted = append(sorted, b.getAll()...)
 	}
 	return sorted
 }
 
-func calculateListIndex(value int64, len int) int64 {
-	return value * int64(len) / (MAX_VALUE + 1)
+func getBuckNum(value uint16, len int, max uint16) int {
+	return int(value) * len / (int(max) + 1)
 }
 
 func initBuckets(len int) Buckets {
 	b := Buckets{}
-	b.buck = make([]List, len)
-	b.len = len
-	for i := range b.buck {
-		b.buck[i] = NewList()
-	}
-
+	b.buck = make([]bucket, len)
 	return b
 }
 
-func (b *Buckets) storeValue(value int64, bucketNum int64) {
-	l := b.buck[bucketNum]
-	item := l.Front()
-
-	for i := 0; i < l.Len(); i++ {
-		fv, ok := item.Value.(int64)
-		if !ok {
-			return
-		}
-		if value < fv {
-			b.buck[bucketNum].Insert(i, value)
-			return
-		}
-		item = item.Next
-	}
-	b.buck[bucketNum].PushBack(value)
+type bucketItem struct {
+	value    uint16
+	nextItem *bucketItem
 }
 
-func (b *Buckets) getBucketArray(bucketNum int) []int64 {
-	l := b.buck[bucketNum]
-	array := make([]int64, l.Len())
-
-	item := l.Front()
-	for i := range array {
-		v, _ := item.Value.(int64)
-		array[i] = v
-		item = item.Next
-	}
-	return array
+type bucket struct {
+	frontItem *bucketItem
+	len       int
 }
 
-func (b *Buckets) printBucket(index int) {
-	l := b.buck[index]
-	item := l.Front()
-	for i := 0; i < l.Len(); i++ {
-		fmt.Println(item.Value)
-		item = item.Next
+func (b *bucket) insert(item uint16) {
+	b.len++
+
+	if b.frontItem == nil {
+		b.frontItem = &bucketItem{value: item, nextItem: nil}
+		return
 	}
+
+	if item <= b.frontItem.value {
+		b.frontItem = &bucketItem{value: item, nextItem: b.frontItem}
+		return
+	}
+
+	for current := b.frontItem; ; current = current.nextItem {
+		if current.nextItem == nil || item <= current.nextItem.value {
+			current.nextItem = &bucketItem{value: item, nextItem: current.nextItem}
+			return
+		}
+	}
+}
+
+func (b *bucket) getAll() []uint16 {
+	items := make([]uint16, b.len)
+	current := b.frontItem
+	for i := 0; current != nil; i++ {
+		items[i] = current.value
+		current = current.nextItem
+	}
+	return items
 }

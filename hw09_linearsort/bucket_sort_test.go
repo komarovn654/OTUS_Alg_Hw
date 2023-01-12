@@ -11,6 +11,7 @@ import (
 
 // go test -run TestBucketSort -timeout 120s -v
 func TestBucketSort(t *testing.T) {
+	max := uint16(999)
 	tests := []struct {
 		len int
 	}{
@@ -24,59 +25,26 @@ func TestBucketSort(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run("Length = "+strconv.Itoa(tc.len), func(t *testing.T) {
-			array := GenerateArray(tc.len)
+			array := GenerateArray(tc.len, max)
 
 			tm := time.Now()
-			sorted := BucketSort(array)
+			sorted := BucketSort(array, max)
 			fmt.Println("Sorted time = ", time.Since(tm))
 			require.True(t, IsSorted(sorted))
 		})
 	}
 }
 
-func TestStoreValue(t *testing.T) {
-	array := []int64{108, 277, 463, 673}
-	tests := []struct {
-		v      int64
-		array  []int64
-		expect []int64
-	}{
-		{
-			v:      90,
-			array:  array,
-			expect: []int64{90, 108, 277, 463, 673},
-		},
-		{
-			v:      150,
-			array:  array,
-			expect: []int64{108, 150, 277, 463, 673},
-		},
-		{
-			v:      300,
-			array:  array,
-			expect: []int64{108, 277, 300, 463, 673},
-		},
-		{
-			v:      500,
-			array:  array,
-			expect: []int64{108, 277, 463, 500, 673},
-		},
-		{
-			v:      700,
-			array:  array,
-			expect: []int64{108, 277, 463, 673, 700},
-		},
-	}
+func TestBucket(t *testing.T) {
+	array := []uint16{868, 285, 508, 957, 496, 488, 715, 435, 185, 496}
+	expect := []uint16{185, 285, 435, 488, 496, 496, 508, 715, 868, 957}
+	t.Run("Bucket Insert/Get test", func(t *testing.T) {
+		bucket := bucket{}
+		for _, v := range array {
+			bucket.insert(v)
+		}
 
-	for i, tc := range tests {
-		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			buckets := initBuckets(10)
-			for _, v := range tc.array {
-				buckets.buck[0].PushBack(v)
-			}
+		require.Equal(t, expect, bucket.getAll())
+	})
 
-			buckets.storeValue(tc.v, 0)
-			require.Equal(t, tc.expect, buckets.getBucketArray(0))
-		})
-	}
 }
