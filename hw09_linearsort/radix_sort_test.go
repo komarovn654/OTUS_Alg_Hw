@@ -21,9 +21,6 @@ func TestRadixSort(t *testing.T) {
 		{len: 10000},
 		{len: 100000},
 		{len: 1000000},
-		{len: 10000000},
-		{len: 100000000},
-		{len: 1000000000},
 	}
 
 	for _, tc := range tests {

@@ -44,7 +44,9 @@ func TestBucket(t *testing.T) {
 			bucket.insert(v)
 		}
 
-		require.Equal(t, expect, bucket.getAll())
+		slice, len := bucket.getAll()
+		require.Equal(t, 10, len)
+		require.Equal(t, expect, slice)
 	})
 
 }

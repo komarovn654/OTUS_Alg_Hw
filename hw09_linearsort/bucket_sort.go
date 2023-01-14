@@ -1,5 +1,7 @@
 package hw09linearsort
 
+import "log"
+
 type Buckets struct {
 	buck []bucket
 }
@@ -7,13 +9,28 @@ type Buckets struct {
 func BucketSort(array []uint16, max uint16) []uint16 {
 	buckets := initBuckets(len(array))
 
+	cnt := 0
 	for i, v := range array {
 		buckets.buck[getBuckNum(v, len(array), max)].insert(array[i])
+		if cnt == 1_000_000 {
+			log.Printf("Buckets %v\n", i)
+			cnt = 0
+		}
+		cnt++
 	}
 
-	sorted := make([]uint16, 0)
-	for _, b := range buckets.buck {
-		sorted = append(sorted, b.getAll()...)
+	sorted := make([]uint16, len(array))
+	ptr := 0
+	for j, b := range buckets.buck {
+		slice, len := b.getAll()
+		for i, v := range slice {
+			sorted[ptr+i] = v
+		}
+		ptr += len
+		if cnt == 1_000_000 {
+			log.Printf("Sorted %v\n", j)
+			cnt = 0
+		}
 	}
 	return sorted
 }
@@ -59,12 +76,13 @@ func (b *bucket) insert(item uint16) {
 	}
 }
 
-func (b *bucket) getAll() []uint16 {
+func (b *bucket) getAll() ([]uint16, int) {
 	items := make([]uint16, b.len)
 	current := b.frontItem
-	for i := 0; current != nil; i++ {
+	i := 0
+	for ; current != nil; i++ {
 		items[i] = current.value
 		current = current.nextItem
 	}
-	return items
+	return items, i
 }

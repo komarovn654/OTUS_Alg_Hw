@@ -34,6 +34,22 @@ func GenerateFile(name string, size int, max uint16) error {
 	return err
 }
 
+func GetArray(file string) ([]uint16, error) {
+	byteArray, err := os.ReadFile(file)
+	if err != nil {
+		return nil, err
+	}
+
+	intArray := make([]uint16, 1_000_000_000)
+	bi := 0
+	for ii := 0; ii < len(intArray); ii++ {
+		intArray[ii] = uint16(byteArray[bi])
+		intArray[ii] = intArray[ii]<<8 | uint16(byteArray[bi+1])
+		bi += 2
+	}
+	return intArray, nil
+}
+
 func IsSorted(array []uint16) bool {
 	for i := 1; i < len(array); i++ {
 		if array[i-1] > array[i] {

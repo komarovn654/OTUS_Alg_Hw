@@ -9,24 +9,16 @@ import (
 
 func TestSortFile(t *testing.T) {
 	filename := "test.txt"
-	GenerateFile("test.txt", 1_000, 0xFFFF)
+	GenerateFile("test.txt", 1_000_000_000, 0xFFFF)
 
 	f, err := os.Open(filename)
 	require.NoError(t, err)
+	defer f.Close()
 
-	byteArray := make([]byte, 2_000)
-	intArray := make([]uint16, 1_000)
-	_, err = f.Read(byteArray)
+	array, err := GetArray(filename)
 	require.NoError(t, err)
 
-	bi := 0
-	for ii := 0; ii < len(intArray); ii++ {
-		intArray[ii] = uint16(byteArray[bi])
-		intArray[ii] = intArray[ii]<<8 | uint16(byteArray[bi+1])
-		bi += 2
-	}
-
-	sorted := BucketSort(intArray, 0xFFFF)
+	sorted := RadixSort(array, 0xFFFF)
 	require.True(t, IsSorted(sorted))
 
 }
