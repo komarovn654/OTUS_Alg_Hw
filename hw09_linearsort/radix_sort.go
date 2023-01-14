@@ -11,19 +11,10 @@ func RadixSort(array []uint16, max uint16) []uint16 {
 	return array
 }
 
-func radixSort(array []uint16, digit int, lastDigit uint16) []uint16 {
-	if digit == int(lastDigit) {
-		return array
-	}
-
-	sorted := countingSortRadix(array, digit)
-	return radixSort(sorted, digit+1, lastDigit)
-}
-
 func countingSortRadix(array []uint16, digit int) []uint16 {
-	digits := make([]int, len(array))
+	digits := make([]uint8, len(array)) // for 1 or 2 digits only!!!
 	for i, v := range array {
-		digits[i] = (int(v) % intPow(10, digit+1)) / intPow(10, digit)
+		digits[i] = uint8(int(v) % intPow(10, digit+1) / intPow(10, digit))
 	}
 
 	indexes := make([]int, 10)

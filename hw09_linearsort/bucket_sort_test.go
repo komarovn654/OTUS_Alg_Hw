@@ -39,14 +39,13 @@ func TestBucket(t *testing.T) {
 	array := []uint16{868, 285, 508, 957, 496, 488, 715, 435, 185, 496}
 	expect := []uint16{185, 285, 435, 488, 496, 496, 508, 715, 868, 957}
 	t.Run("Bucket Insert/Get test", func(t *testing.T) {
-		bucket := bucket{}
+		buck := bucket{}
 		for _, v := range array {
-			bucket.insert(v)
+			buck.insert(v)
 		}
+		buckets := Buckets{buck: []bucket{buck}}
 
-		slice, len := bucket.getAll()
-		require.Equal(t, 10, len)
-		require.Equal(t, expect, slice)
+		require.Equal(t, expect, buckets.getAll(10))
 	})
 
 }
