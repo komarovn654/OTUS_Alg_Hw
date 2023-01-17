@@ -24,7 +24,42 @@ func TestInsert(t *testing.T) {
 				tree.Insert(item)
 			}
 			require.True(t, tree.IsValid())
-			// TODO проверять валидность дерева
+		})
+	}
+}
+
+func TestSearch(t *testing.T) {
+	tests := []struct {
+		name   string
+		tree   bst
+		x      []int
+		expect bool
+	}{
+		{
+			name:   "existing items",
+			tree:   validBST,
+			x:      validBSTItems,
+			expect: true,
+		},
+		{
+			name:   "non-existent items",
+			tree:   validBST,
+			x:      []int{0, 100, 87, 9},
+			expect: false,
+		},
+		{
+			name:   "empty tree",
+			tree:   bst{},
+			x:      []int{0, 100, 87, 9},
+			expect: false,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			for _, i := range tc.x {
+				require.Equal(t, tc.expect, tc.tree.Search(i))
+			}
 		})
 	}
 }

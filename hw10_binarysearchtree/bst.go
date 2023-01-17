@@ -49,8 +49,22 @@ func (b *bst) insert(parent *node, key int) {
 	b.insert(parent.right, key)
 }
 
-func (b *bst) Search(x int) {
+func (b *bst) Search(x int) bool {
+	return b.search(b.root, x)
+}
 
+func (b *bst) search(parent *node, x int) bool {
+	if parent == nil {
+		return false
+	}
+
+	if parent.item.key == x {
+		return true
+	}
+	if !b.search(parent.left, x) {
+		return b.search(parent.right, x)
+	}
+	return true
 }
 
 func (b *bst) Remove(x int) {
@@ -58,7 +72,7 @@ func (b *bst) Remove(x int) {
 }
 
 func (b *bst) IsValid() bool {
-	return b.isValid2(b.root, math.MinInt)
+	return b.isValid(b.root, math.MinInt)
 }
 
 func (b *bst) isValid(parent *node, prev int) bool {
@@ -66,43 +80,14 @@ func (b *bst) isValid(parent *node, prev int) bool {
 		return true
 	}
 
-	if parent.left != nil {
-		if parent.left.item.key >= parent.item.key {
-			return false
-		}
-		if !b.isValid(parent.left, parent.item.key) {
-			return false
-		}
-	}
-
-	if parent.right != nil {
-		if parent.right.item.key <= parent.item.key {
-			return false
-		}
-		if !b.isValid(parent.right, parent.item.key) {
-			return false
-		}
-	}
-
-	return true
-}
-
-func (b *bst) isValid2(parent *node, prev int) bool {
-	if parent == nil {
-		return true
-	}
-
-	b.isValid2(parent.left, 0)
-
-	// if parent.left.item.key >= parent.item.key {
-	// 	return false
-	// }
-
-	b.isValid2(parent.right, 0)
-
-	if parent.right != nil && parent.right.item.key <= parent.item.key {
+	if !b.isValid(parent.left, prev) {
 		return false
 	}
 
-	return true
+	if parent.item.key <= prev {
+		return false
+	}
+
+	prev = parent.item.key
+	return b.isValid(parent.right, prev)
 }

@@ -52,6 +52,7 @@ var (
 			},
 		},
 	}
+	validBSTItems = []int{49, 75, 61, 50, 93, 89, 34, 96, 40, 10, 14, 61, 99}
 
 	invalidBST = bst{
 		&node{
