@@ -1,6 +1,9 @@
 package hw10binarysearchtree
 
-import "math"
+import (
+	"fmt"
+	"math"
+)
 
 type bst struct {
 	root *node
@@ -50,25 +53,36 @@ func (b *bst) insert(parent *node, key int) {
 }
 
 func (b *bst) Search(x int) bool {
-	return b.search(b.root, x)
+	ok, _ := b.search(b.root, x)
+	return ok
 }
 
-func (b *bst) search(parent *node, x int) bool {
+func (b *bst) search(parent *node, x int) (bool, *node) {
 	if parent == nil {
-		return false
+		return false, parent
 	}
 
 	if parent.item.key == x {
-		return true
+		return true, parent
 	}
-	if !b.search(parent.left, x) {
+	ok, res := b.search(parent.left, x)
+	if !ok {
 		return b.search(parent.right, x)
 	}
-	return true
+	return true, res
 }
 
 func (b *bst) Remove(x int) {
+	b.remove(b.root, x)
+}
 
+func (b *bst) remove(parent *node, x int) {
+	if parent == nil {
+		return
+	}
+
+	ok, rNode := b.search(b.root, x)
+	fmt.Println(ok, rNode)
 }
 
 func (b *bst) IsValid() bool {

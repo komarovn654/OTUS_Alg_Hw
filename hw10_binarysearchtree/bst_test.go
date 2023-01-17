@@ -64,6 +64,11 @@ func TestSearch(t *testing.T) {
 	}
 }
 
+func TestRemove(t *testing.T) {
+	tree := validBST
+	tree.Remove(34)
+}
+
 func TestIsValid(t *testing.T) {
 	tests := []struct {
 		name    string
