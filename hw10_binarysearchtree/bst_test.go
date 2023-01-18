@@ -67,12 +67,30 @@ func TestSearch(t *testing.T) {
 
 func TestRemove(t *testing.T) {
 	tree := validBST
+	tree.Insert(12)
+
+	fmt.Println(tree.Search(12))
+	tree.Remove(12)
+	fmt.Println(tree.IsValid())
+	fmt.Println(tree.Search(12))
+
+	// fmt.Println(tree.Search(14))
+	// tree.Remove(14)
+	// fmt.Println(tree.IsValid())
+	// fmt.Println(tree.Search(14))
+
 	tree.Remove(34)
+	fmt.Println(tree.IsValid())
+	fmt.Println(tree.Search(34))
 }
 
 func TestFindMax(t *testing.T) {
 	tree := validBST
-	fmt.Println(tree.findMax(tree.root))
+	tree.Insert(15)
+	tree.Insert(17)
+	tree.Insert(16)
+	tree.Insert(19)
+	fmt.Println(tree.findMax(tree.root.left.left))
 }
 
 func TestIsValid(t *testing.T) {

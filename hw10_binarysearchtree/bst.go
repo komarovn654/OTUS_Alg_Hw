@@ -1,6 +1,7 @@
 package hw10binarysearchtree
 
 import (
+	"fmt"
 	"math"
 )
 
@@ -52,27 +53,87 @@ func (b *bst) insert(parent *node, key int) {
 }
 
 func (b *bst) Search(x int) bool {
-	ok, _ := b.search(b.root, x)
+	ok, _, _ := b.search(b.root, x)
 	return ok
 }
 
-func (b *bst) search(parent *node, x int) (bool, *node) {
-	if parent == nil {
-		return false, parent
+func (b *bst) search(root *node, x int) (ok bool, item *node, parent *node) {
+	if root == nil {
+		return false, nil, nil
 	}
 
-	if parent.item.key == x {
-		return true, parent
+	if root.item.key == x {
+		return true, root, nil
 	}
-	ok, res := b.search(parent.left, x)
-	if !ok {
-		return b.search(parent.right, x)
+
+	if root.left != nil {
+		if root.left.item.key == x {
+			return true, root.left, root
+		}
+		ok, item, parent = b.search(root.left, x)
 	}
-	return true, res
+
+	if root.right != nil && !ok {
+		if root.right.item.key == x {
+			return true, root.right, root
+		}
+		ok, item, parent = b.search(root.right, x)
+	}
+	return ok, item, parent
 }
 
 func (b *bst) Remove(x int) {
-	b.remove(b.root, x)
+	if b.root == nil {
+		return
+	}
+
+	if exist, item, parent := b.search(b.root, x); exist {
+		if item.left != nil && item.right != nil {
+			item, parent = b.swapWithMax(item)
+		}
+
+		if parent.left == item {
+			b.removeSingleNodeRoot(parent.left, item)
+			return
+		}
+		b.removeSingleNodeRoot(parent.right, item)
+		// if item.left != nil {
+		// 	parent.right = item.left
+		// 	return
+		// }
+		// if item.right != nil {
+		// 	parent.right = item.right
+		// 	return
+		// }
+		// parent.right = nil
+		// return
+	}
+}
+
+func (b *bst) removeSingleNodeRoot(parent *node, item *node) {
+	if item.left != nil {
+		parent = item.left
+		return
+	}
+	if item.right != nil {
+		parent = item.right
+		return
+	}
+	parent = nil
+}
+
+// swap with max on left subtree
+func (b *bst) swapWithMax(item *node) (sItem *node, sParent *node) {
+	max, maxParent := b.findMax(item.left)
+	if max == nil {
+		max = item.left
+		maxParent = item
+	}
+
+	item.item = max.item
+	sParent = maxParent
+	sItem = max
+	return sItem, sParent
 }
 
 func (b *bst) remove(parent *node, x int) {
@@ -80,21 +141,22 @@ func (b *bst) remove(parent *node, x int) {
 		return
 	}
 
-	if ok, rNode := b.search(b.root, x); ok {
-		max := b.findMax(rNode)
-		max.left = rNode.left
-		max.right = rNode.right
-	}
+	fmt.Println(b.search(parent, x))
 }
 
-func (b *bst) findMax(parent *node) *node {
-	if parent == nil {
-		return nil
+func (b *bst) findMax(root *node) (item *node, parent *node) {
+	if root == nil {
+		return nil, nil
 	}
-	if parent.right == nil {
-		return parent
+
+	if item, parent = b.findMax(root.right); item == nil {
+		// if root.right == nil {
+		// 	return root, root
+		// }
+		return root.right, root
 	}
-	return b.findMax(parent.right)
+
+	return item, parent
 }
 
 func (b *bst) findMin(parent *node) *node {
