@@ -1,6 +1,7 @@
 package hw10binarysearchtree
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -67,6 +68,11 @@ func TestSearch(t *testing.T) {
 func TestRemove(t *testing.T) {
 	tree := validBST
 	tree.Remove(34)
+}
+
+func TestFindMax(t *testing.T) {
+	tree := validBST
+	fmt.Println(tree.findMax(tree.root))
 }
 
 func TestIsValid(t *testing.T) {

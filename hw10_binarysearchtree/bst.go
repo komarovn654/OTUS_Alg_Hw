@@ -1,7 +1,6 @@
 package hw10binarysearchtree
 
 import (
-	"fmt"
 	"math"
 )
 
@@ -81,8 +80,31 @@ func (b *bst) remove(parent *node, x int) {
 		return
 	}
 
-	ok, rNode := b.search(b.root, x)
-	fmt.Println(ok, rNode)
+	if ok, rNode := b.search(b.root, x); ok {
+		max := b.findMax(rNode)
+		max.left = rNode.left
+		max.right = rNode.right
+	}
+}
+
+func (b *bst) findMax(parent *node) *node {
+	if parent == nil {
+		return nil
+	}
+	if parent.right == nil {
+		return parent
+	}
+	return b.findMax(parent.right)
+}
+
+func (b *bst) findMin(parent *node) *node {
+	if parent == nil {
+		return nil
+	}
+	if parent.left == nil {
+		return parent
+	}
+	return b.findMin(parent.left)
 }
 
 func (b *bst) IsValid() bool {
