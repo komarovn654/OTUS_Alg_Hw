@@ -8,41 +8,81 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func initBSTIncreasing() (bst, int) {
+const (
+	generateTime = time.Second * 60
+)
+
+func initBSTIncreasing() (bst, []int) {
 	tree := InitBST()
+	ar := make([]int, 0)
 	t := time.Now()
-	i := 0
-	for ; time.Since(t) < time.Second*60; i++ {
+	for i := 0; time.Since(t) < generateTime; i++ {
 		tree.Insert(i)
+		ar = append(ar, i)
 	}
-	return tree, i
+	return tree, ar
 }
 
-func initBSTRandom() bst {
+func initBSTRandom() (bst, []int) {
+	ar := make([]int, 0)
 	tree := InitBST()
 	s1 := rand.NewSource(time.Now().UnixNano())
 	r1 := rand.New(s1)
 	t := time.Now()
-	for time.Since(t) < 60*time.Duration(t.Second()) {
+	for i := 0; time.Since(t) < generateTime; i++ {
 		tree.Insert(r1.Int())
+		ar = append(ar, i)
 	}
-	return tree
+	return tree, ar
+}
+
+func initRandomArray(size int) []int {
+	ar := make([]int, size)
+	s1 := rand.NewSource(time.Now().UnixNano())
+	r1 := rand.New(s1)
+
+	for i := 0; i < size; i++ {
+		ar[i] = r1.Int()
+	}
+	return ar
 }
 
 // go test -run TestBST -timeout 600s -v
 func TestBST(t *testing.T) {
-	s1 := rand.NewSource(time.Now().UnixNano())
-	r1 := rand.New(s1)
+	tests := []struct {
+		name     string
+		initFunc func() (bst, []int)
+	}{
+		{
+			name:     "increasing BST",
+			initFunc: initBSTIncreasing,
+		},
+		{
+			name:     "random BST",
+			initFunc: initBSTRandom,
+		},
+	}
 
-	t.Run("increasing BST", func(t *testing.T) {
-		tree, len := initBSTIncreasing()
-		require.True(t, tree.IsValid())
-		t.Log("BST successfully initialized")
-		for i := 0; i < len/10; i++ {
-			tree.Search(r1.Int())
-		}
-	})
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Log("generate " + tc.name)
+			tree, values := tc.initFunc()
+			require.True(t, tree.IsValid())
 
+			t.Log("search " + tc.name)
+			rnd := initRandomArray(len(values) / 10)
+			for _, v := range rnd {
+				tree.Search(v)
+			}
+			require.True(t, tree.IsValid())
+
+			t.Log("remove " + tc.name)
+			for _, v := range rnd {
+				tree.Remove(v)
+			}
+			require.True(t, tree.IsValid())
+		})
+	}
 }
 
 func TestInsert(t *testing.T) {
@@ -91,6 +131,12 @@ func TestSearch(t *testing.T) {
 			name:   "empty tree",
 			tree:   bst{},
 			x:      []int{0, 100, 87, 9},
+			expect: false,
+		},
+		{
+			name:   "random tree",
+			tree:   bst{},
+			x:      []int{},
 			expect: false,
 		},
 	}

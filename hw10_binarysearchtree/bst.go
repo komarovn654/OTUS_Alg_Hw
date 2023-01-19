@@ -52,58 +52,63 @@ func (b *bst) insert(parent *node, key int) {
 }
 
 func (b *bst) Search(x int) bool {
-	if item, _ := b.search(b.root, x); item != nil {
+	if item := b.search(b.root, x); item != nil {
 		return true
 	}
 	return false
 }
 
-func (b *bst) search(root *node, x int) (item *node, parent *node) {
+func (b *bst) search(root *node, x int) *node {
 	if root == nil {
-		return nil, nil
+		return nil
 	}
 
 	if root.item.key == x {
-		return root, nil
+		return root
 	}
 
-	if root.left != nil {
-		if root.left.item.key == x {
-			return root.left, root
-		}
-		item, parent = b.search(root.left, x)
+	if x < root.item.key {
+		return b.search(root.left, x)
 	}
+	return b.search(root.right, x)
 
-	if root.right != nil && item == nil {
-		if root.right.item.key == x {
-			return root.right, root
-		}
-		item, parent = b.search(root.right, x)
-	}
-	return item, parent
+	// if root.item.key < x && root.left != nil {
+	// 	if root.left.item.key == x {
+	// 		return root.left, root
+	// 	}
+	// 	item, parent = b.search(root.left, x)
+	// }
+
+	// if root.right != nil && item == nil {
+	// 	if root.right.item.key == x {
+	// 		return root.right, root
+	// 	}
+	// 	item, parent = b.search(root.right, x)
+	// }
+	// return item, parent
 }
 
 func (b *bst) Remove(x int) {
-	if b.root == nil {
-		return
-	}
+	// if b.root == nil {
+	// 	return
+	// }
 
-	if item, parent := b.search(b.root, x); item != nil {
-		if item.left != nil && item.right != nil {
-			item, parent = b.swapWithMax(item)
-		}
+	// if item, parent := b.search(b.root, x); item != nil {
+	// 	if item.left != nil && item.right != nil {
+	// 		item, parent = b.swapWithMax(item)
+	// 	}
 
-		if parent == nil {
-			b.root = b.singleNodeChild(b.root)
-			return
-		}
+	// 	if parent == nil {
+	// 		b.root = b.singleNodeChild(b.root)
+	// 		return
+	// 	}
 
-		if parent.left == item {
-			parent.left = b.singleNodeChild(item)
-			return
-		}
-		parent.right = b.singleNodeChild(item)
-	}
+	// 	if parent.left == item {
+	// 		parent.left = b.singleNodeChild(item)
+	// 		return
+	// 	}
+	// 	parent.right = b.singleNodeChild(item)
+	// }
 }
 
 func (b *bst) singleNodeChild(item *node) *node {
