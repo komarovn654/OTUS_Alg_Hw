@@ -1,6 +1,7 @@
 package hw10binarysearchtree
 
 import (
+	"math"
 	"math/rand"
 	"testing"
 	"time"
@@ -8,41 +9,36 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const (
-	generateTime = time.Second * 60
-)
-
-func initBSTIncreasing() (bst, []int) {
+func initBSTIncreasing(len int) (bst, []int) {
 	tree := InitBST()
-	ar := make([]int, 0)
-	t := time.Now()
-	for i := 0; time.Since(t) < generateTime; i++ {
+	ar := make([]int, len)
+	for i := 0; i < len; i++ {
 		tree.Insert(i)
-		ar = append(ar, i)
+		ar[i] = i
 	}
 	return tree, ar
 }
 
-func initBSTRandom() (bst, []int) {
-	ar := make([]int, 0)
+func initBSTRandom(len int) (bst, []int) {
+	ar := make([]int, len)
 	tree := InitBST()
 	s1 := rand.NewSource(time.Now().UnixNano())
 	r1 := rand.New(s1)
-	t := time.Now()
-	for i := 0; time.Since(t) < generateTime; i++ {
-		tree.Insert(r1.Int())
-		ar = append(ar, i)
+	for i := 0; i < len; i++ {
+		v := r1.Int()
+		tree.Insert(v)
+		ar[i] = v
 	}
 	return tree, ar
 }
 
-func initRandomArray(size int) []int {
+func initRandomArray(size int, max int) []int {
 	ar := make([]int, size)
-	s1 := rand.NewSource(time.Now().UnixNano())
+	s1 := rand.NewSource(time.Now().UnixNano() + 1)
 	r1 := rand.New(s1)
 
 	for i := 0; i < size; i++ {
-		ar[i] = r1.Int()
+		ar[i] = int(r1.Int31n(int32(max)))
 	}
 	return ar
 }
@@ -51,7 +47,7 @@ func initRandomArray(size int) []int {
 func TestBST(t *testing.T) {
 	tests := []struct {
 		name     string
-		initFunc func() (bst, []int)
+		initFunc func(int) (bst, []int)
 	}{
 		{
 			name:     "increasing BST",
@@ -65,27 +61,34 @@ func TestBST(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			t.Log("generate " + tc.name)
-			tree, values := tc.initFunc()
+			t.Log("insert " + tc.name)
+			start := time.Now()
+			tree, values := tc.initFunc(50_000)
+			t.Logf("insert %v; len = %v; time = %v\n", tc.name, len(values), time.Since(start))
 			require.True(t, tree.IsValid())
 
 			t.Log("search " + tc.name)
-			rnd := initRandomArray(len(values) / 10)
+			rnd := initRandomArray(len(values)/10, math.MaxUint32)
+			start = time.Now()
 			for _, v := range rnd {
 				tree.Search(v)
 			}
+			t.Logf("search %v; len = %v; time: %v\n", tc.name, len(values)/10, time.Since(start))
 			require.True(t, tree.IsValid())
 
 			t.Log("remove " + tc.name)
-			for _, v := range rnd {
-				tree.Remove(v)
+			start = time.Now()
+			i := 0
+			for ; i < len(values); i += 10 {
+				tree.Remove(values[i])
 			}
+			t.Logf("remove %v; len = %v; time: %v\n", tc.name, i/10, time.Since(start))
 			require.True(t, tree.IsValid())
 		})
 	}
 }
 
-func TestInsert(t *testing.T) {
+func TestInsertBST(t *testing.T) {
 	tests := []struct {
 		name string
 		keys []int // node's keys. key == value
@@ -108,7 +111,7 @@ func TestInsert(t *testing.T) {
 	}
 }
 
-func TestSearch(t *testing.T) {
+func TestSearchBST(t *testing.T) {
 	tests := []struct {
 		name   string
 		tree   bst
