@@ -116,24 +116,24 @@ func (an *avlNode) search(x int) *avlNode {
 }
 
 func (an *avlNode) remove(x int) *avlNode {
-	if item := an.search(x); item != nil {
-		if item.left != nil && item.right != nil {
-			item.swapWithLeftMax()
+
+	if an.item.key == x {
+		if an.left != nil && an.right != nil {
+			// swap
 		}
-
-		item.left = item.left.removeMax()
-		if 
-		// 	if parent == nil {
-		// 		return nil
-		// 	}
-
-		// 	if parent.left == item {
-		// 		parent.left = item.singleNodeChild()
-		// 		return an
-		// 	}
-		// 	parent.right = item.singleNodeChild()
-		// }
+		if an.left == nil {
+			return an.right
+		}
+		if an.right == nil {
+			return an.left
+		}
+		return nil
 	}
+
+	if an.item.key < x {
+		an.left = an.left.remove(x)
+	}
+	an.right = an.right.remove(x)
 	return an
 }
 

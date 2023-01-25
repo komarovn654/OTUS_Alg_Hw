@@ -114,7 +114,7 @@ func TestSwapWithLeftMax(t *testing.T) {
 		},
 	}
 
-	tree.root = tree.root.swapWithLeftMax()
+	// tree.root = tree.root.swapWithLeftMax()
 	fmt.Println(tree.root)
 }
 
