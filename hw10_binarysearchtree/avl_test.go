@@ -236,5 +236,5 @@ func TestRemoveAVL(t *testing.T) {
 		},
 	}
 
-	tree.root.remove(311)
+	tree.root = tree.root.remove(321)
 }

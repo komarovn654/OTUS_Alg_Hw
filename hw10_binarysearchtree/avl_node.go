@@ -116,36 +116,29 @@ func (an *avlNode) search(x int) *avlNode {
 }
 
 func (an *avlNode) remove(x int) *avlNode {
+	if an == nil {
+		return nil
+	}
+
+	if x < an.item.key {
+		an.left = an.left.remove(x)
+	}
+	if x > an.item.key {
+		an.right = an.right.remove(x)
+	}
 
 	if an.item.key == x {
 		if an.left != nil && an.right != nil {
-			// swap
+			an = an.swapWithLeftMax()
+			an.left.remove(x)
 		}
+
 		if an.left == nil {
 			return an.right
 		}
-		if an.right == nil {
-			return an.left
-		}
-		return nil
+		return an.left // return left if exist or nil
 	}
-
-	if an.item.key < x {
-		an.left = an.left.remove(x)
-	}
-	an.right = an.right.remove(x)
 	return an
-}
-
-func (an *avlNode) removeMax() *avlNode {
-	if an.right == nil {
-		return nil
-	}
-
-	if an.right.removeMax() == nil {
-		an.right = nil
-	}
-	return an.rebalance()
 }
 
 func (an *avlNode) swapWithLeftMax() *avlNode {
@@ -156,7 +149,7 @@ func (an *avlNode) swapWithLeftMax() *avlNode {
 	an.item = tmp
 	an.calcHeight()
 
-	return max
+	return an
 }
 
 func (an *avlNode) findMax() (max *avlNode) {
