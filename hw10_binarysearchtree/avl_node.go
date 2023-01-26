@@ -131,6 +131,7 @@ func (an *avlNode) remove(x int) *avlNode {
 		if an.left != nil && an.right != nil {
 			an = an.swapWithLeftMax()
 			an.left.remove(x)
+			return an
 		}
 
 		if an.left == nil {
