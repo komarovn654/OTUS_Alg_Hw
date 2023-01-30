@@ -29,81 +29,69 @@ func (bn *bstNode) insert(key int) *bstNode {
 	return bn
 }
 
-func (bn *bstNode) search(x int) (item *bstNode, parent *bstNode) {
+func (bn *bstNode) search(x int) (item *bstNode) {
 	if bn == nil {
-		return nil, nil
+		return nil
 	}
 
 	if bn.item.key == x {
-		return bn, nil
+		return bn
 	}
 
 	if x < bn.item.key {
-		item, parent = bn.left.search(x)
-		if item != nil && parent == nil {
-			parent = bn
-		}
-		return item, parent
+		return bn.left.search(x)
 	}
-	item, parent = bn.right.search(x)
-	if item != nil && parent == nil {
-		parent = bn
-	}
-	return item, parent
+	return bn.right.search(x)
 }
 
 func (bn *bstNode) remove(x int) *bstNode {
-	if item, parent := bn.search(x); item != nil {
-		if item.left != nil && item.right != nil {
-			item, parent = item.swapWithMax()
-		}
+	if bn == nil {
+		return nil
+	}
 
-		if parent == nil {
-			return nil
-		}
+	if x < bn.item.key {
+		bn.left = bn.left.remove(x)
+	}
+	if x > bn.item.key {
+		bn.right = bn.right.remove(x)
+	}
 
-		if parent.left == item {
-			parent.left = item.singleNodeChild()
+	if bn.item.key == x {
+		if bn.left != nil && bn.right != nil {
+			bn = bn.swapWithLeftMax()
+			bn.left = bn.left.remove(x)
 			return bn
 		}
-		parent.right = item.singleNodeChild()
+
+		if bn.left == nil {
+			return bn.right
+		}
+		return bn.left // return left if exist or nil
 	}
+
 	return bn
 }
 
-func (bn *bstNode) singleNodeChild() *bstNode {
-	if bn.left != nil {
-		return bn.left
-	}
-	if bn.right != nil {
-		return bn.right
-	}
-	return nil
-}
-
 // swap with max on left subtree
-func (bn *bstNode) swapWithMax() (node *bstNode, parent *bstNode) {
-	max, maxParent := bn.left.findMax()
-	if max == nil {
-		max = bn.left
-		maxParent = bn
-	}
+func (bn *bstNode) swapWithLeftMax() (node *bstNode) {
+	max := bn.left.findMax()
 
-	bn.item = max.item
-	parent = maxParent
-	node = max
-	return node, parent
+	tmp := max.item
+	max.item = bn.item
+	bn.item = tmp
+
+	return bn
 }
 
-func (bn *bstNode) findMax() (item *bstNode, parent *bstNode) {
+func (bn *bstNode) findMax() (max *bstNode) {
 	if bn == nil {
-		return nil, nil
+		return nil
 	}
 
-	if item, parent = bn.right.findMax(); item == nil {
-		return bn.right, bn
+	if max = bn.right.findMax(); max == nil {
+		return bn
 	}
-	return item, parent
+	return max
 }
 
 func (bn *bstNode) isValid(prev *int) bool {

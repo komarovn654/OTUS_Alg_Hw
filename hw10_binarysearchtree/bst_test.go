@@ -1,13 +1,14 @@
 package hw10binarysearchtree
 
 import (
-	"math"
 	"math/rand"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/require"
 )
+
+const TREE_SIZE = 100_000
 
 func initBSTIncreasing(len int) (bst, []int) {
 	tree := InitBST()
@@ -32,13 +33,13 @@ func initBSTRandom(len int) (bst, []int) {
 	return tree, ar
 }
 
-func initRandomArray(size int, max int) []int {
+func initRandomArray(size int) []int {
 	ar := make([]int, size)
 	s1 := rand.NewSource(time.Now().UnixNano() + 1)
 	r1 := rand.New(s1)
 
 	for i := 0; i < size; i++ {
-		ar[i] = int(r1.Int31n(int32(max)))
+		ar[i] = int(r1.Int31())
 	}
 	return ar
 }
@@ -63,12 +64,12 @@ func TestBST(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Log("insert " + tc.name)
 			start := time.Now()
-			tree, values := tc.initFunc(50_000)
+			tree, values := tc.initFunc(TREE_SIZE)
 			t.Logf("insert %v; len = %v; time = %v\n", tc.name, len(values), time.Since(start))
 			require.True(t, tree.IsValid())
 
 			t.Log("search " + tc.name)
-			rnd := initRandomArray(len(values)/10, math.MaxUint32)
+			rnd := initRandomArray(len(values) / 10)
 			start = time.Now()
 			for _, v := range rnd {
 				tree.Search(v)
@@ -154,11 +155,28 @@ func TestSearchBST(t *testing.T) {
 }
 
 func TestRemove(t *testing.T) {
-	tree := validBST
+	var tree bst
 	items := validBSTItems
+
+	t.Run("remove tree", func(t *testing.T) {
+		for _, v := range items {
+			tree.Insert(v)
+		}
+
+		for _, i := range items {
+			require.True(t, tree.Search(i))
+			tree.Remove(i)
+			require.False(t, tree.Search(i))
+			require.True(t, tree.IsValid())
+		}
+	})
 
 	t.Run("remove items", func(t *testing.T) {
 		for _, i := range items {
+			for _, v := range items {
+				tree.Insert(v)
+			}
+
 			require.True(t, tree.Search(i))
 			tree.Remove(i)
 			require.False(t, tree.Search(i))

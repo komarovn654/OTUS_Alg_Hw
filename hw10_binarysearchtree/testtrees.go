@@ -85,6 +85,7 @@ var (
 			},
 		},
 	}
+
 	UnbalanceSmallRight = avl{
 		&avlNode{
 			item:   nodeItem{key: 49},
@@ -168,6 +169,64 @@ var (
 				height: 1,
 				left:   nil,
 				right:  nil,
+			},
+		},
+	}
+
+	splitTree = treapNode{
+		item: nodeItem{key: 3},
+		left: &treapNode{
+			item: nodeItem{key: 2},
+			left: &treapNode{
+				item:  nodeItem{key: 1},
+				left:  nil,
+				right: nil,
+			},
+			right: nil,
+		},
+		right: &treapNode{
+			item: nodeItem{key: 9},
+			left: &treapNode{
+				item: nodeItem{key: 6},
+				left: &treapNode{
+					item: nodeItem{key: 5},
+					left: &treapNode{
+						item:  nodeItem{key: 4},
+						left:  nil,
+						right: nil,
+					},
+					right: nil,
+				},
+				right: &treapNode{
+					item: nodeItem{key: 8},
+					left: &treapNode{
+						item:  nodeItem{key: 7},
+						left:  nil,
+						right: nil,
+					},
+					right: nil,
+				},
+			},
+			right: &treapNode{
+				item: nodeItem{key: 13},
+				left: &treapNode{
+					item: nodeItem{key: 11},
+					left: &treapNode{
+						item:  nodeItem{key: 10},
+						left:  nil,
+						right: nil,
+					},
+					right: &treapNode{
+						item:  nodeItem{key: 12},
+						left:  nil,
+						right: nil,
+					},
+				},
+				right: &treapNode{
+					item:  nodeItem{key: 14},
+					left:  nil,
+					right: nil,
+				},
 			},
 		},
 	}

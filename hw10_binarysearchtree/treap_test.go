@@ -8,8 +8,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func initAVLIncreasing(len int) (avl, []int) {
-	tree := InitAVL()
+func initTreapIncreasing(len int) (treap, []int) {
+	tree := InitTreap()
 	ar := make([]int, len)
 	for i := 0; i < len; i++ {
 		tree.Insert(i)
@@ -18,9 +18,9 @@ func initAVLIncreasing(len int) (avl, []int) {
 	return tree, ar
 }
 
-func initAVLRandom(len int) (avl, []int) {
+func initTreapRandom(len int) (treap, []int) {
 	ar := make([]int, len)
-	tree := InitAVL()
+	tree := InitTreap()
 	s1 := rand.NewSource(time.Now().UnixNano())
 	r1 := rand.New(s1)
 	for i := 0; i < len; i++ {
@@ -31,19 +31,19 @@ func initAVLRandom(len int) (avl, []int) {
 	return tree, ar
 }
 
-// go test -run TestAVL -timeout 600s -v
-func TestAVL(t *testing.T) {
+// go test -run TestTreap -timeout 600s -v
+func TestTreap(t *testing.T) {
 	tests := []struct {
 		name     string
-		initFunc func(int) (avl, []int)
+		initFunc func(int) (treap, []int)
 	}{
 		{
-			name:     "increasing AVL",
-			initFunc: initAVLIncreasing,
+			name:     "increasing Treap",
+			initFunc: initTreapIncreasing,
 		},
 		{
-			name:     "random AVL",
-			initFunc: initAVLRandom,
+			name:     "random Treap",
+			initFunc: initTreapRandom,
 		},
 	}
 
@@ -75,23 +75,37 @@ func TestAVL(t *testing.T) {
 		})
 	}
 }
+func TestSplit(t *testing.T) {
+	tree := splitTree
+	l, r := tree.split(7)
 
-func TestSmallRightRotationAVL(t *testing.T) {
-	tree := UnbalanceSmallRight
-
-	newRoot := tree.root.smallRightRotation()
-	require.Equal(t, 34, newRoot.item.key)
-	require.Equal(t, 49, newRoot.right.item.key)
-	tree = avl{newRoot}
-	require.True(t, tree.IsValid())
+	require.Less(t, l.findMax().item.key, 7)
+	require.GreaterOrEqual(t, r.findMin().item.key, 7)
 }
 
-func TestBigRightRotationAVL(t *testing.T) {
-	tree := UnbalanceBigRight
-
-	newRoot := tree.root.bigRightRotation()
-	require.Equal(t, 55, newRoot.item.key)
-	require.Equal(t, 80, newRoot.right.item.key)
-	tree = avl{newRoot}
-	require.True(t, tree.IsValid())
+func TestInsert(t *testing.T) {
+	tree := treap{
+		&treapNode{
+			item:     nodeItem{key: 374},
+			priority: 8594448610203129222,
+			left: &treapNode{
+				item:     nodeItem{key: 68},
+				priority: 6526000971620458038,
+				left:     nil,
+				right:    nil,
+			},
+			right: &treapNode{
+				item:     nodeItem{key: 495},
+				priority: 8230938549176605455,
+				left: &treapNode{
+					item:     nodeItem{key: 387},
+					priority: 1747550616550721433,
+					left:     nil,
+					right:    nil,
+				},
+				right: nil,
+			},
+		},
+	}
+	tree.Insert(48)
 }

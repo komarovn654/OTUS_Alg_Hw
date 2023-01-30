@@ -83,6 +83,9 @@ func (an *avlNode) calcHeight() {
 }
 
 func (an *avlNode) rebalance() *avlNode {
+	if an == nil {
+		return an
+	}
 	an.calcHeight()
 
 	if an.left.getHeight()-an.right.getHeight() > 1 {
@@ -130,16 +133,17 @@ func (an *avlNode) remove(x int) *avlNode {
 	if an.item.key == x {
 		if an.left != nil && an.right != nil {
 			an = an.swapWithLeftMax()
-			an.left.remove(x)
-			return an
+			an.left = an.left.remove(x)
+			return an.rebalance()
 		}
 
 		if an.left == nil {
-			return an.right
+			return an.right.rebalance()
 		}
-		return an.left // return left if exist or nil
+		return an.left.rebalance() // return left if exist or nil
 	}
-	return an
+
+	return an.rebalance()
 }
 
 func (an *avlNode) swapWithLeftMax() *avlNode {

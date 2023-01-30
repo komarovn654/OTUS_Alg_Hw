@@ -17,7 +17,7 @@ func (b *bst) Insert(x int) {
 }
 
 func (b *bst) Search(x int) bool {
-	if item, _ := b.root.search(x); item != nil {
+	if item := b.root.search(x); item != nil {
 		return true
 	}
 	return false
