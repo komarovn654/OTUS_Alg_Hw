@@ -1,4 +1,4 @@
-						  | Insert 100_000 |  Search 10_000 | Remove 10_000 |  
+Tree name                 | Insert 100_000 |  Search 10_000 | Remove 10_000 |  
 --------------------------|----------------|----------------|---------------|
 Random Binary Search Tree | 34.9708ms      | 1.0003ms       | 3.0008ms      |
 Sorted Binary Search Tree | 1m6.4369811s   | 4.8191668s     | 2.2180155s    |
