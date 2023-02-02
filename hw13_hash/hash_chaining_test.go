@@ -20,6 +20,10 @@ func nodeFromKeys(keys []key) node {
 	return head
 }
 
+func TestGet(t *testing.T) {
+
+}
+
 func TestSet(t *testing.T) {
 	tests := []struct {
 		name      string
@@ -142,7 +146,11 @@ func TestIsKeyExists(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			node := nodeFromKeys(tc.nodeKeys)
 
-			require.Equal(t, tc.res, node.isKeyExist(tc.k))
+			item, ok := node.isKeyExist(tc.k)
+			require.Equal(t, tc.res, ok)
+			if ok {
+				require.Equal(t, tableItem{tc.k, 0}, item)
+			}
 		})
 	}
 }
