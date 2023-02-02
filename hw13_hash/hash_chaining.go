@@ -1,5 +1,9 @@
 package hw13hash
 
+import "fmt"
+
+const initialTableSize = 10
+
 type key string
 type value int
 
@@ -26,18 +30,31 @@ func (k *key) getHashCode() (code int) {
 }
 
 // return true if key exists
-func (ht *hashTable) set(item tableItem) bool {
+func (ht *hashTable) Set(item tableItem) bool {
 	// check for rehash
 
 	index := item.k.getHashCode() % ht.size
+	fmt.Println(index)
 
-	if !ht.table[index].isKeyExist(item.k) {
-		newNode := node{item: item, next: ht.table[index]}
-		ht.table[index] = &newNode
-		return false
+	if ht.table[index].isKeyExist(item.k) {
+		ht.table[index].replace(item.v)
+		return true
 	}
 
-	return true
+	ht.table[index] = ht.table[index].add(item)
+	return false
+}
+
+func (n *node) replace(v value) {
+	n.item.v = v
+}
+
+func (n *node) add(item tableItem) *node {
+	if n == nil {
+		return &node{item: item, next: nil}
+	}
+
+	return &node{item: item, next: &node{n.item, n.next}}
 }
 
 func (n *node) isKeyExist(k key) bool {
@@ -50,5 +67,5 @@ func (n *node) isKeyExist(k key) bool {
 }
 
 func initChainigHashTable() hashTable {
-	return hashTable{make([]*node, 100), 100}
+	return hashTable{make([]*node, initialTableSize), initialTableSize}
 }
