@@ -1,6 +1,8 @@
 package hw13hash
 
-const initialTableSize = 10
+const (
+	rehashLoadFactor = 10
+)
 
 type key string
 type value int
@@ -8,6 +10,7 @@ type value int
 type hashTable struct {
 	table []*node
 	size  int
+	items int
 }
 
 type tableItem struct {
@@ -27,19 +30,32 @@ func (k *key) getHashCode() (code int) {
 	return code
 }
 
-// return true if key exist
-func (ht *hashTable) Set(item tableItem) bool {
-	// check for rehash
+func (ht *hashTable) rehash() *hashTable {
+	newSize := 2*ht.size + 1
+	newHt := InitChainigHashTable(newSize)
+
+	for _, node := range ht.table {
+		for ; node != nil; node = node.next {
+			newHt.Set(node.item)
+		}
+	}
+
+	return &newHt
+}
+
+func (ht *hashTable) Set(item tableItem) {
+	if ht.items/ht.size >= rehashLoadFactor {
+		*ht = *ht.rehash()
+	}
 
 	index := item.k.getHashCode() % ht.size
 
 	if _, ok := ht.table[index].isKeyExist(item.k); ok {
 		ht.table[index].replace(item.v)
-		return true
 	}
 
 	ht.table[index] = ht.table[index].add(item)
-	return false
+	ht.items++
 }
 
 func (ht *hashTable) Get(k key) (v value, exist bool) {
@@ -52,8 +68,18 @@ func (ht *hashTable) Get(k key) (v value, exist bool) {
 	return 0, false
 }
 
-func (ht *hashTable) Remove(item tableItem) bool {
-	return false
+func (ht *hashTable) Remove(k key) {
+	index := k.getHashCode() % ht.size
+	ht.table[index] = ht.table[index].remove(k)
+}
+
+func (n *node) remove(k key) *node {
+	for ; n != nil; n = n.next {
+		if n.next != nil && n.next.item.k == k {
+			n.next = n.next.next
+		}
+	}
+	return n
 }
 
 func (n *node) replace(v value) {
@@ -77,6 +103,10 @@ func (n *node) isKeyExist(k key) (tableItem, bool) {
 	return tableItem{}, false
 }
 
-func initChainigHashTable() hashTable {
-	return hashTable{make([]*node, initialTableSize), initialTableSize}
+func InitChainigHashTable(size int) hashTable {
+	return hashTable{
+		table: make([]*node, size),
+		size:  size,
+		items: 0,
+	}
 }

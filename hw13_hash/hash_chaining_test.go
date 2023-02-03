@@ -1,7 +1,11 @@
 package hw13hash
 
 import (
+	"fmt"
+	"math/rand"
+	"strconv"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
 )
@@ -20,8 +24,133 @@ func nodeFromKeys(keys []key) node {
 	return head
 }
 
-func TestGet(t *testing.T) {
+func generateRandomItems(len int) []tableItem {
+	ar := make([]tableItem, len)
+	s1 := rand.NewSource(time.Now().UnixNano())
+	r1 := rand.New(s1)
+	for i := range ar {
+		k := key(strconv.Itoa(r1.Intn(10_000)))
+		v := value(r1.Intn(10_000))
 
+		ar[i] = tableItem{k, v}
+	}
+
+	return ar
+}
+
+func TestChainingHashTable(t *testing.T) {
+	t.Run("", func(t *testing.T) {
+		items := generateRandomItems(1000)
+		checked := make(map[key]bool)
+		ht := InitChainigHashTable(10)
+
+		for _, item := range items {
+			ht.Set(item)
+		}
+
+		for i := len(items) - 1; i > 0; i-- {
+			if checked[items[i].k] {
+				// Item был перезаписан
+				continue
+			}
+
+			v, ok := ht.Get(items[i].k)
+			require.True(t, ok)
+			if items[i].v != v {
+				for i, item := range items {
+					fmt.Println(i, item, v)
+				}
+			}
+			require.Equal(t, items[i].v, v)
+			checked[items[i].k] = true
+		}
+
+		for _, item := range items {
+			ht.Remove(item.k)
+			v, ok := ht.Get(item.k)
+			require.False(t, ok)
+			require.Equal(t, value(0), v)
+		}
+	})
+}
+
+func TestRemove(t *testing.T) {
+	tests := []struct {
+		name  string
+		items []tableItem
+		exist bool
+	}{
+		{
+			name:  "no collisions",
+			items: []tableItem{{"a", 46}, {"b", 68}, {"c", 9}, {"d", 2}, {"e", 5}},
+			exist: true,
+		},
+		{
+			name:  "collisions",
+			items: []tableItem{{"abc", 46}, {"b", 68}, {"bac", 9}, {"cab", 2}},
+			exist: true,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			ht := InitChainigHashTable(10)
+			for _, item := range tc.items {
+				ht.Set(item)
+			}
+
+			for _, item := range tc.items {
+				ht.Remove(item.k)
+				_, ok := ht.Get(item.k)
+				require.False(t, ok)
+			}
+		})
+	}
+}
+
+func TestGet(t *testing.T) {
+	tests := []struct {
+		name  string
+		items []tableItem
+		exist bool
+	}{
+		{
+			name:  "no collisions",
+			items: []tableItem{{"a", 46}, {"b", 68}, {"c", 9}, {"d", 2}, {"e", 5}},
+			exist: true,
+		},
+		{
+			name:  "collisions",
+			items: []tableItem{{"abc", 46}, {"b", 68}, {"bac", 9}, {"cab", 2}},
+			exist: true,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			ht := InitChainigHashTable(10)
+			for _, item := range tc.items {
+				ht.Set(item)
+			}
+
+			for _, item := range tc.items {
+				value, ok := ht.Get(item.k)
+				require.True(t, ok)
+				require.Equal(t, item.v, value)
+			}
+		})
+	}
+
+	t.Run("doesnt exist key", func(t *testing.T) {
+		ht := InitChainigHashTable(10)
+		for _, item := range tests[0].items {
+			ht.Set(item)
+		}
+
+		val, ok := ht.Get("lkj")
+		require.False(t, ok)
+		require.Equal(t, value(0), val)
+	})
 }
 
 func TestSet(t *testing.T) {
@@ -33,28 +162,24 @@ func TestSet(t *testing.T) {
 		{
 			name:      "no collisions",
 			items:     []tableItem{{"a", 46}, {"b", 68}, {"c", 9}, {"d", 2}, {"e", 5}},
-			tableSize: initialTableSize,
+			tableSize: 10,
 		},
 		{
 			name:      "collisions",
 			items:     []tableItem{{"abc", 46}, {"b", 68}, {"bac", 9}, {"cab", 2}},
-			tableSize: initialTableSize,
+			tableSize: 10,
 		},
 		{
 			name:      "same keys",
 			items:     []tableItem{{"abc", 46}, {"abc", 68}, {"abc", 9}, {"abc", 2}},
-			tableSize: initialTableSize,
+			tableSize: 10,
 		},
-		// {
-		// 	name:      "rehash",
-		// 	items:     []tableItem{},
-		// 	tableSize: ,
-		// },
 	}
 
+	// testcases without rehash
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			ht := initChainigHashTable()
+			ht := InitChainigHashTable(tc.tableSize)
 			for _, item := range tc.items {
 				index := item.k.getHashCode() % ht.size
 
@@ -65,6 +190,29 @@ func TestSet(t *testing.T) {
 			}
 		})
 	}
+
+	// rehash
+	t.Run("rehash", func(t *testing.T) {
+		initSize := 2
+		expectSize := 5 // 2n + 1
+
+		ht := InitChainigHashTable(initSize)
+		for i := 0; i < rehashLoadFactor+1; i++ {
+			ht.Set(tableItem{key(strconv.Itoa(i)), value(i)})
+			ht.Set(tableItem{key(strconv.Itoa(i + 10)), value(i + 10)})
+		}
+
+		require.Equal(t, expectSize, ht.size)
+
+		for i := 0; i < rehashLoadFactor+1; i++ {
+			item := tableItem{key(strconv.Itoa(i)), value(i)}
+			index := item.k.getHashCode() % ht.size
+
+			i, ok := ht.table[index].isKeyExist(item.k)
+			require.True(t, ok)
+			require.Equal(t, item, i)
+		}
+	})
 }
 
 func TestGetHashCode(t *testing.T) {
