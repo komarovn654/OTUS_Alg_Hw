@@ -1,7 +1,6 @@
-package chaining
+package hw13_hash
 
 import (
-	"fmt"
 	"math/rand"
 	"strconv"
 	"testing"

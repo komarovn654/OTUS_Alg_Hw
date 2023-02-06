@@ -1,6 +1,6 @@
-module github.com/komarovn654/OTUS_Alg_Hw/hw13_hash/chaining
+module github.com/komarovn654/OTUS_Alg_Hw/hw13_hash
 
-go 1.18
+go 1.19
 
 require github.com/stretchr/testify v1.8.1
 

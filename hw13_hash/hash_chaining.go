@@ -1,4 +1,4 @@
-package chaining
+package hw13_hash
 
 const (
 	rehashLoadFactor = 1
