@@ -1,4 +1,4 @@
-module github.com/komarovn654/OTUS_Alg_Hw/hw13_hash
+module github.com/komarovn654/OTUS_Alg_Hw/hw13_hash/chaining
 
 go 1.18
 

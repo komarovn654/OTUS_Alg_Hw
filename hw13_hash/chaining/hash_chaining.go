@@ -1,7 +1,7 @@
-package hw13hash
+package chaining
 
 const (
-	rehashLoadFactor = 10
+	rehashLoadFactor = 1
 )
 
 type key string
@@ -40,6 +40,7 @@ func (ht *hashTable) rehash() *hashTable {
 		}
 	}
 
+	newHt.items = ht.items
 	return &newHt
 }
 
@@ -50,8 +51,8 @@ func (ht *hashTable) Set(item tableItem) {
 
 	index := item.k.getHashCode() % ht.size
 
-	if _, ok := ht.table[index].isKeyExist(item.k); ok {
-		ht.table[index].replace(item.v)
+	if ok := ht.table[index].replaceIfExist(item); ok {
+		return
 	}
 
 	ht.table[index] = ht.table[index].add(item)
@@ -69,21 +70,40 @@ func (ht *hashTable) Get(k key) (v value, exist bool) {
 }
 
 func (ht *hashTable) Remove(k key) {
+	ok := false
 	index := k.getHashCode() % ht.size
-	ht.table[index] = ht.table[index].remove(k)
+	if ht.table[index], ok = ht.table[index].remove(k); ok {
+		ht.items--
+	}
 }
 
-func (n *node) remove(k key) *node {
+func (n *node) remove(k key) (*node, bool) {
+	if n == nil {
+		return nil, false
+	}
+
+	if n.item.k == k {
+		return n.next, true
+	}
+
+	for node := n; node != nil; {
+		if node.next != nil && node.next.item.k == k {
+			node.next = node.next.next
+			return n, true
+		}
+		node = node.next
+	}
+	return n, false
+}
+
+func (n *node) replaceIfExist(item tableItem) bool {
 	for ; n != nil; n = n.next {
-		if n.next != nil && n.next.item.k == k {
-			n.next = n.next.next
+		if n.item.k == item.k {
+			n.item.v = item.v
+			return true
 		}
 	}
-	return n
-}
-
-func (n *node) replace(v value) {
-	n.item.v = v
+	return false
 }
 
 func (n *node) add(item tableItem) *node {

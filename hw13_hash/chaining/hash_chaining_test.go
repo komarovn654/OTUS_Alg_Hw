@@ -1,4 +1,4 @@
-package hw13hash
+package chaining
 
 import (
 	"fmt"
@@ -39,8 +39,8 @@ func generateRandomItems(len int) []tableItem {
 }
 
 func TestChainingHashTable(t *testing.T) {
-	t.Run("", func(t *testing.T) {
-		items := generateRandomItems(1000)
+	t.Run("Chaining hash table", func(t *testing.T) {
+		items := generateRandomItems(10_000)
 		checked := make(map[key]bool)
 		ht := InitChainigHashTable(10)
 
@@ -51,16 +51,13 @@ func TestChainingHashTable(t *testing.T) {
 		for i := len(items) - 1; i > 0; i-- {
 			if checked[items[i].k] {
 				// Item был перезаписан
+				_, ok := ht.Get(items[i].k)
+				require.True(t, ok)
 				continue
 			}
 
 			v, ok := ht.Get(items[i].k)
 			require.True(t, ok)
-			if items[i].v != v {
-				for i, item := range items {
-					fmt.Println(i, item, v)
-				}
-			}
 			require.Equal(t, items[i].v, v)
 			checked[items[i].k] = true
 		}
@@ -71,6 +68,8 @@ func TestChainingHashTable(t *testing.T) {
 			require.False(t, ok)
 			require.Equal(t, value(0), v)
 		}
+
+		require.Zero(t, ht.items)
 	})
 }
 
@@ -83,12 +82,10 @@ func TestRemove(t *testing.T) {
 		{
 			name:  "no collisions",
 			items: []tableItem{{"a", 46}, {"b", 68}, {"c", 9}, {"d", 2}, {"e", 5}},
-			exist: true,
 		},
 		{
 			name:  "collisions",
 			items: []tableItem{{"abc", 46}, {"b", 68}, {"bac", 9}, {"cab", 2}},
-			exist: true,
 		},
 	}
 
