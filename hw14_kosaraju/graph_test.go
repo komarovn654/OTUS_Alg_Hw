@@ -5,21 +5,6 @@ import (
 	"testing"
 )
 
-func TestGraph(t *testing.T) {
-	g := Graph{
-		Vertice{2, 0, 0},
-		Vertice{3, 6, 5},
-		Vertice{4, 7, 0},
-		Vertice{3, 8, 0},
-		Vertice{1, 6, 0},
-		Vertice{7, 0, 0},
-		Vertice{6, 8, 0},
-		Vertice{4, 0, 0},
-	}
-
-	fmt.Println(g)
-}
-
 func TestInvert(t *testing.T) {
 	g := Graph{
 		Vertice{1, -1, -1},
