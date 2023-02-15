@@ -1,7 +1,5 @@
 package hw14_kosaraju
 
-import "fmt"
-
 type stack struct {
 	head *node
 }
@@ -33,7 +31,6 @@ func (s *stack) forEach(f func(any)) {
 	tmp := s.head
 
 	for ; tmp != nil; tmp = tmp.next {
-		fmt.Printf("%p\n", &tmp.item)
-		f(&tmp.item)
+		f(tmp.item)
 	}
 }

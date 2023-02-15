@@ -14,7 +14,6 @@ func TestPush(t *testing.T) {
 	}
 
 	f := func(item any) {
-		// i, ok := item.(int)
 		fmt.Println(*(&item))
 	}
 
@@ -23,6 +22,4 @@ func TestPush(t *testing.T) {
 	for range test {
 		fmt.Println(stack.Pop())
 	}
-
-	// fmt.Println(stack)
 }
