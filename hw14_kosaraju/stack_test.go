@@ -1,25 +1,83 @@
 package hw14_kosaraju
 
 import (
-	"fmt"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
-func TestPush(t *testing.T) {
-	test := []int{1, 2, 3, 4, 5, 6, 7}
-	stack := Stack()
-
-	for _, v := range test {
-		stack.Push(v)
+func TestPushPop(t *testing.T) {
+	tests := []struct {
+		name   string
+		array  []int
+		expect []int
+	}{
+		{
+			name:   "empty",
+			array:  nil,
+			expect: nil,
+		},
+		{
+			name:   "common",
+			array:  []int{1, 2, 3, 4, 5, 6, 7}, // reverse when push
+			expect: []int{7, 6, 5, 4, 3, 2, 1},
+		},
+		{
+			name:   "single node",
+			array:  []int{1},
+			expect: []int{1},
+		},
 	}
 
-	f := func(item any) {
-		fmt.Println(*(&item))
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			stack := Stack()
+
+			for _, v := range tc.array {
+				stack.Push(v)
+			}
+
+			for _, v := range tc.expect {
+				require.Equal(t, v, stack.Pop())
+			}
+		})
+	}
+}
+
+func TestReverse(t *testing.T) {
+	tests := []struct {
+		name   string
+		array  []int
+		expect []int
+	}{
+		{
+			name:   "empty",
+			array:  nil,
+			expect: nil,
+		},
+		{
+			name:   "common",
+			array:  []int{1, 2, 3, 4, 5, 6, 7}, // reverse when push
+			expect: []int{1, 2, 3, 4, 5, 6, 7},
+		},
+		{
+			name:   "single node",
+			array:  []int{1},
+			expect: []int{1},
+		},
 	}
 
-	stack.forEach(f)
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			stack := Stack()
+			for _, v := range tc.array {
+				stack.Push(v)
+			}
+			stack.Reverse()
 
-	for range test {
-		fmt.Println(stack.Pop())
+			for _, v := range tc.expect {
+				require.Equal(t, v, stack.Pop())
+			}
+		})
 	}
 }

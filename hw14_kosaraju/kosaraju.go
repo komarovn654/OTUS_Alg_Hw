@@ -10,11 +10,6 @@ type Vertices []int
 type Vertex int
 type Graph []Vertices // Vertices nums begins with 0
 
-type ms struct {
-	vertice int
-	color   int
-}
-
 func (g *Graph) search() {
 	invert := g.reverse()
 	fmt.Println(invert.TarjanDFS(2))
@@ -32,7 +27,7 @@ func (g *Graph) reverse() *Graph {
 		invert[i] = make(Vertices, 0)
 	}
 
-	// invert graph
+	// reverse graph
 	for i, vertice := range *g {
 		for _, value := range vertice {
 			if value == -1 {
