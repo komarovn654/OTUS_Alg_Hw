@@ -10,9 +10,19 @@ type Vertices []int
 type Vertex int
 type Graph []Vertices // Vertices nums begins with 0
 
-func (g *Graph) search() {
-	invert := g.reverse()
-	fmt.Println(invert.TarjanDFS(2))
+type kosarajuGraph struct {
+	graph    Graph
+	vertices stack
+	visited  tarjanVerts // { vertex: tarjan's color }
+}
+
+func (kg *kosarajuGraph) Kosaraju() {
+	invert := kosarajuGraph{graph: *kg.graph.reverse()}
+
+	stack := invert.TarjanDFS(FIRST_VERTEX)
+	stack.forEach(func(a any) {
+		fmt.Println(a)
+	})
 }
 
 // reverse graph
@@ -41,11 +51,10 @@ func (g *Graph) reverse() *Graph {
 }
 
 // Tarjan depth-first search. Return map{visited vertex: tarjan's color}.
-func (g *Graph) TarjanDFS(start Vertex) vertices {
-	if g == nil {
-		return vertices{}
+func (kg *kosarajuGraph) TarjanDFS(start Vertex) stack {
+	if kg.graph == nil {
+		return stack{}
 	}
 
-	tg := tarjanGraph{g: *g}
-	return tg.DFS(start)
+	return kg.DFS(start)
 }

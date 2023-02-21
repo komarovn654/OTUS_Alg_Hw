@@ -6,41 +6,38 @@ const (
 	BLACK
 )
 
-type vertices map[Vertex]int // { vertex: tarjan's color}
+type tarjanVerts map[Vertex]int // { vertex: tarjan's color}
 
-type tarjanGraph struct {
-	g       Graph
-	visited vertices
-}
-
-func (tg *tarjanGraph) DFS(start Vertex) vertices {
-	if tg == nil {
-		return vertices{}
+func (kg *kosarajuGraph) DFS(start Vertex) stack {
+	if kg == nil {
+		return kg.vertices
 	}
 
-	if len(tg.g) == 0 {
-		return vertices{}
+	if len(kg.graph) == 0 {
+		return kg.vertices
 	}
 
-	tg.visited = make(vertices)
+	kg.vertices = Stack()
+	kg.visited = make(map[Vertex]int)
 
-	tg.tarjanDFS(start)
-	return tg.visited
+	kg.tarjanDFS(start)
+	return kg.vertices
 }
 
-func (tg *tarjanGraph) tarjanDFS(v Vertex) {
-	if color := tg.visited[v]; color == GREY || color == BLACK {
+func (kg *kosarajuGraph) tarjanDFS(v Vertex) {
+	if color := kg.visited[v]; color == GREY || color == BLACK {
 		return
 	}
 
-	tg.visited[v] = GREY
+	kg.visited[v] = GREY
 
-	for _, vertex := range tg.g[v] {
+	for _, vertex := range kg.graph[v] {
 		if vertex == -1 {
 			continue
 		}
-		tg.tarjanDFS(Vertex(vertex))
+		kg.tarjanDFS(Vertex(vertex))
 	}
 
-	tg.visited[v] = BLACK
+	kg.visited[v] = BLACK
+	kg.vertices.Push(v)
 }
