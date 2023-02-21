@@ -1,13 +1,7 @@
 package hw14_kosaraju
 
-import "fmt"
-
-const (
-	FIRST_VERTEX = 0
-)
-
-type Vertices []int
 type Vertex int
+type Vertices []Vertex
 type Graph []Vertices // Vertices nums begins with 0
 
 type kosarajuGraph struct {
@@ -16,13 +10,37 @@ type kosarajuGraph struct {
 	visited  tarjanVerts // { vertex: tarjan's color }
 }
 
-func (kg *kosarajuGraph) Kosaraju() {
-	invert := kosarajuGraph{graph: *kg.graph.reverse()}
+// Return strongly connected components in ordered graph
+func (g *Graph) Kosaraju() (strConnected []stack) {
+	// init direct and reverse graphs
+	kg := kosarajuGraph{graph: *g, visited: make(tarjanVerts), vertices: Stack()}
+	invert := kosarajuGraph{graph: *g.reverse(), visited: make(tarjanVerts), vertices: Stack()}
+	var order stack // vertices after DFS in reverse graph
 
-	stack := invert.TarjanDFS(FIRST_VERTEX)
-	stack.forEach(func(a any) {
-		fmt.Println(a)
-	})
+	// get vertices via tarjan DFS in reverse graph
+	for vertex := range invert.graph {
+		if color, ok := invert.visited[Vertex(vertex)]; !ok || color != BLACK {
+			order = invert.TarjanDFS(Vertex(vertex))
+		}
+	}
+
+	// DFS in direct graph
+	for {
+		vertex, ok := order.Pop()
+		if !ok {
+			return strConnected // empty stack
+		}
+
+		v, ok := vertex.(Vertex)
+		if !ok {
+			panic("type cast error")
+		}
+
+		if color, ok := kg.visited[v]; !ok || color != BLACK {
+			strConnected = append(strConnected, kg.TarjanDFS(v))
+			kg.vertices = Stack() // refresh stack
+		}
+	}
 }
 
 // reverse graph
@@ -43,18 +61,9 @@ func (g *Graph) reverse() *Graph {
 			if value == -1 {
 				continue
 			}
-			invert[value] = append(invert[value], i)
+			invert[value] = append(invert[value], Vertex(i))
 		}
 	}
 
 	return &invert
-}
-
-// Tarjan depth-first search. Return map{visited vertex: tarjan's color}.
-func (kg *kosarajuGraph) TarjanDFS(start Vertex) stack {
-	if kg.graph == nil {
-		return stack{}
-	}
-
-	return kg.DFS(start)
 }

@@ -17,14 +17,14 @@ func (s *stack) Push(new any) {
 	s.head = &node{item: new, next: s.head}
 }
 
-func (s *stack) Pop() any {
+func (s *stack) Pop() (any, bool) {
 	if s.head == nil {
-		return nil
+		return nil, false
 	}
 
 	tmp := s.head.item
 	s.head = s.head.next
-	return tmp
+	return tmp, true
 }
 
 func (s *stack) Reverse() *stack {

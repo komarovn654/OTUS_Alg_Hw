@@ -8,7 +8,7 @@ const (
 
 type tarjanVerts map[Vertex]int // { vertex: tarjan's color}
 
-func (kg *kosarajuGraph) DFS(start Vertex) stack {
+func (kg *kosarajuGraph) TarjanDFS(start Vertex) stack {
 	if kg == nil {
 		return kg.vertices
 	}
@@ -16,9 +16,6 @@ func (kg *kosarajuGraph) DFS(start Vertex) stack {
 	if len(kg.graph) == 0 {
 		return kg.vertices
 	}
-
-	kg.vertices = Stack()
-	kg.visited = make(map[Vertex]int)
 
 	kg.tarjanDFS(start)
 	return kg.vertices

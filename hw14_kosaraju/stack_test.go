@@ -38,7 +38,8 @@ func TestPushPop(t *testing.T) {
 			}
 
 			for _, v := range tc.expect {
-				require.Equal(t, v, stack.Pop())
+				value, _ := stack.Pop()
+				require.Equal(t, v, value)
 			}
 		})
 	}
@@ -76,7 +77,8 @@ func TestReverse(t *testing.T) {
 			stack.Reverse()
 
 			for _, v := range tc.expect {
-				require.Equal(t, v, stack.Pop())
+				value, _ := stack.Pop()
+				require.Equal(t, v, value)
 			}
 		})
 	}
