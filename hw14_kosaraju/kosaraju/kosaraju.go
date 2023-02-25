@@ -1,4 +1,8 @@
-package hw14_kosaraju
+package kosaraju
+
+import (
+	hw14 "github.com/komarovn654/OTUS_Alg_Hw/hw14_kosaraju"
+)
 
 type Vertex int
 type Vertices []Vertex
@@ -6,16 +10,16 @@ type Graph []Vertices // Vertices nums begins with 0
 
 type kosarajuGraph struct {
 	graph    Graph
-	vertices stack
+	vertices hw14.Stack
 	visited  tarjanVerts // { vertex: tarjan's color }
 }
 
 // Return strongly connected components in ordered graph
-func (g *Graph) Kosaraju() (strConnected []stack) {
+func (g *Graph) Kosaraju() (strConnected []hw14.Stack) {
 	// init direct and reverse graphs
-	kg := kosarajuGraph{graph: *g, visited: make(tarjanVerts), vertices: Stack()}
-	invert := kosarajuGraph{graph: *g.reverse(), visited: make(tarjanVerts), vertices: Stack()}
-	var order stack // vertices after DFS in reverse graph
+	kg := kosarajuGraph{graph: *g, visited: make(tarjanVerts), vertices: hw14.New()}
+	invert := kosarajuGraph{graph: *g.reverse(), visited: make(tarjanVerts), vertices: hw14.New()}
+	var order hw14.Stack // vertices after DFS in reverse graph
 
 	// get vertices via tarjan DFS in reverse graph
 	for vertex := range invert.graph {
@@ -38,7 +42,7 @@ func (g *Graph) Kosaraju() (strConnected []stack) {
 
 		if color, ok := kg.visited[v]; !ok || color != BLACK {
 			strConnected = append(strConnected, kg.TarjanDFS(v))
-			kg.vertices = Stack() // refresh stack
+			kg.vertices = hw14.New() // refresh stack
 		}
 	}
 }

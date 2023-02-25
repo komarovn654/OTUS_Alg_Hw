@@ -1,6 +1,6 @@
-package hw14_kosaraju
+package stack
 
-type stack struct {
+type Stack struct {
 	head *node
 }
 
@@ -9,15 +9,15 @@ type node struct {
 	next *node
 }
 
-func Stack() stack {
-	return stack{}
+func New() Stack {
+	return Stack{}
 }
 
-func (s *stack) Push(new any) {
+func (s *Stack) Push(new any) {
 	s.head = &node{item: new, next: s.head}
 }
 
-func (s *stack) Pop() (any, bool) {
+func (s *Stack) Pop() (any, bool) {
 	if s.head == nil {
 		return nil, false
 	}
@@ -27,7 +27,7 @@ func (s *stack) Pop() (any, bool) {
 	return tmp, true
 }
 
-func (s *stack) Reverse() *stack {
+func (s *Stack) Reverse() *Stack {
 	if s.head == nil {
 		return nil
 	}
@@ -47,7 +47,7 @@ func (s *stack) Reverse() *stack {
 	return s
 }
 
-func (s *stack) forEach(f func(any)) {
+func (s *Stack) ForEach(f func(any)) {
 	tmp := s.head
 
 	for ; tmp != nil; tmp = tmp.next {

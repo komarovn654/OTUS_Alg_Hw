@@ -1,4 +1,8 @@
-package hw14_kosaraju
+package kosaraju
+
+import (
+	hw14 "github.com/komarovn654/OTUS_Alg_Hw/hw14_kosaraju"
+)
 
 const (
 	WHITE = iota
@@ -8,7 +12,7 @@ const (
 
 type tarjanVerts map[Vertex]int // { vertex: tarjan's color}
 
-func (kg *kosarajuGraph) TarjanDFS(start Vertex) stack {
+func (kg *kosarajuGraph) TarjanDFS(start Vertex) hw14.Stack {
 	if kg == nil {
 		return kg.vertices
 	}

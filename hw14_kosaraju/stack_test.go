@@ -1,4 +1,4 @@
-package hw14_kosaraju
+package stack
 
 import (
 	"testing"
@@ -31,7 +31,7 @@ func TestPushPop(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			stack := Stack()
+			stack := New()
 
 			for _, v := range tc.array {
 				stack.Push(v)
@@ -70,7 +70,7 @@ func TestReverse(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			stack := Stack()
+			stack := New()
 			for _, v := range tc.array {
 				stack.Push(v)
 			}
