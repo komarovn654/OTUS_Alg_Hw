@@ -1,23 +1,33 @@
 package bridges
 
-import (
-	"fmt"
-)
+import "fmt"
 
-type Vertex struct {
-	num  int
-	time int
-	min  int // min time
+type Vertex int
+type Bridge struct {
+	from Vertex
+	to   Vertex
 }
-
-type Vertices []Vertex
 type Graph struct {
-	graph   []Vertices
-	visited map[int]bool
+	graph   [][]Vertex
+	visited map[Vertex]bool
+	tin     map[Vertex]int
+	tup     map[Vertex]int
+	bridges []Bridge
 }
 
-func (g *Graph) Bridges() {
+func InitGraph(g *[][]Vertex) Graph {
+	return Graph{
+		graph:   *g,
+		visited: make(map[Vertex]bool),
+		tin:     make(map[Vertex]int),
+		tup:     make(map[Vertex]int),
+		bridges: make([]Bridge, 0),
+	}
+}
 
+func (g *Graph) FindBridges() []Bridge {
+	g.DFS()
+	return g.bridges
 }
 
 func (g *Graph) DFS() {
@@ -25,21 +35,33 @@ func (g *Graph) DFS() {
 		return
 	}
 
-	g.dfs(&g.graph[0][0], 0)
+	g.dfs(0, -1, 0)
 }
 
-func (g *Graph) dfs(v *Vertex, time int) {
-	if g.visited[v.num] {
-		return
+func (g *Graph) dfs(v Vertex, parent Vertex, time int) int {
+	fmt.Printf("%v tin = %v\n", v, g.tin[v])
+	time++
+	g.tin[v] = time
+	g.tup[v] = time
+	g.visited[v] = true
+
+	for _, vertex := range g.graph[v] {
+		if vertex == parent {
+			continue
+		}
+		if g.visited[vertex] {
+			// vertex is reverse edge from v
+			g.tup[v] = MinInt(g.tin[v], g.tup[vertex])
+			continue
+		}
+		g.dfs(vertex, v, time)
+		g.tup[v] = MinInt(g.tup[v], g.tup[vertex])
+		if g.tin[v] < g.tup[vertex] {
+			g.bridges = append(g.bridges, Bridge{v, vertex})
+		}
 	}
 
-	time++
-	v.time += time
-	g.visited[v.num] = true
-	fmt.Println(v)
-	for _, vertex := range g.graph[v.num] {
-		g.dfs(&vertex, vertex.time)
-	}
+	return g.tup[v]
 }
 
 func MinInt(a int, b int) int {
