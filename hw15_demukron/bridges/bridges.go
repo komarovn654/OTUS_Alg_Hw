@@ -51,7 +51,7 @@ func (g *Graph) dfs(v Vertex, parent Vertex, time int) int {
 		}
 		if g.visited[vertex] {
 			// vertex is reverse edge from v
-			g.tup[v] = MinInt(g.tin[v], g.tup[vertex])
+			g.tup[v] = MinInt(g.tin[vertex], g.tup[v])
 			continue
 		}
 		g.dfs(vertex, v, time)
