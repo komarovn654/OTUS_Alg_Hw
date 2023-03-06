@@ -1,96 +1,68 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+	"math/rand"
+	"time"
 
-const (
-	EMPTY = iota
-	PREFIX
-	WORD
+	trie_map "github.com/komarovn654/OTUS_Alg_Hw/hw16_trie/map"
 )
 
-type Trie struct {
-	prefix [128]*layer
-}
+const (
+	charSet = "abcdefghijklmnopqrstuvwxyz"
+)
 
-type layer struct {
-	prefix [128]*layer
-	exist  uint8
-}
+var (
+	stringSeed = rand.New(rand.NewSource(time.Now().UnixNano()))
+)
 
-func Constructor() Trie {
-	return Trie{}
-}
-
-func (this *Trie) Insert(word string) {
-	l := &this.prefix
-
-	for i, char := range word {
-		if l[char] == nil {
-			l[char] = new(layer)
-		}
-
-		if l[char].exist == EMPTY {
-			l[char].exist = PREFIX
-		}
-
-		if i == len(word)-1 {
-			l[char].exist = WORD
-			return
-		}
-
-		l = &l[char].prefix
+func GenerateRandomString(length int, charset string) string {
+	b := make([]byte, length)
+	stringSeed = rand.New(rand.NewSource(time.Now().UnixNano()))
+	for i := range b {
+		b[i] = charset[stringSeed.Intn(len(charset)-1)]
 	}
+	return string(b)
 }
 
-func (this *Trie) Search(word string) bool {
-	l := this.prefix
+func GenerateRandomItems(len int) []trie_map.Item {
+	res := make([]trie_map.Item, len)
+	s := rand.NewSource(time.Now().UnixNano())
+	r := rand.New(s)
 
-	for i, char := range word {
-		if l[char] == nil {
-			return false
-		}
-
-		if i == len(word)-1 {
-			return l[char].exist == WORD
-		}
-
-		if l[char].exist == EMPTY {
-			return false
-		}
-
-		l = l[char].prefix
+	for i := range res {
+		res[i].Key = GenerateRandomString(r.Intn(10)+1, charSet)
+		res[i].Value = r.Intn(500)
 	}
 
-	return true
+	return res
 }
-
-func (this *Trie) StartsWith(prefix string) bool {
-	var char rune
-	l := this.prefix
-
-	for _, char = range prefix {
-		if l[char] == nil {
-			return false
-		}
-		if l[char].exist == EMPTY {
-			return false
-		}
-		l = l[char].prefix
-	}
-
-	return true
-}
-
-/**
- * Your Trie object will be instantiated and called as such:
- * obj := Constructor();
- * obj.Insert(word);
- * param_2 := obj.Search(word);
- * param_3 := obj.StartsWith(prefix);
- */
 
 func main() {
-	t := Constructor()
-	t.Insert("apple")
-	fmt.Println(t.Search("apple"))
+	goMap := make(map[string]any)
+	trieMap := trie_map.Constructor()
+	items := GenerateRandomItems(100_000)
+
+	tmr := time.Now()
+	for _, i := range items {
+		trieMap.Insert(i)
+	}
+	for _, i := range items {
+		if _, ok := trieMap.Search(i.Key); !ok {
+			log.Fatalf("trieMap: key doesnt exist")
+		}
+	}
+	fmt.Println(time.Since(tmr))
+
+	tmr = time.Now()
+	for _, i := range items {
+		goMap[i.Key] = i.Value
+	}
+	for _, i := range items {
+		if _, ok := goMap[i.Key]; !ok {
+			log.Fatalf("goMap: key doesnt exist")
+		}
+	}
+	fmt.Println(time.Since(tmr))
 }

@@ -1,24 +1,55 @@
 package trie_map
 
-import (
-	trie "github.com/komarovn654/OTUS_Alg_Hw/hw16_trie"
-)
-
 type trieMap struct {
-	trie trie.Trie
+	prefix [128]*layer
+}
+
+type layer struct {
+	prefix  [128]*layer
+	isExist bool
+	value   any
 }
 
 type Item struct {
+	Key   string
+	Value any
 }
 
-func Init() trieMap {
+func Constructor() trieMap {
 	return trieMap{}
 }
 
-func (m *trieMap) Add(item Item) {
+func (this *trieMap) Insert(item Item) {
+	l := &this.prefix
 
+	for i, char := range item.Key {
+		if l[char] == nil {
+			l[char] = new(layer)
+		}
+
+		if i == len(item.Key)-1 {
+			l[char].value = item.Value
+			return
+		}
+
+		l = &l[char].prefix
+	}
 }
 
-func (m *trieMap) Get() (exist bool, value any) {
-	return false, nil
+func (this *trieMap) Search(key string) (value any, exist bool) {
+	l := this.prefix
+
+	for i, char := range key {
+		if l[char] == nil {
+			return nil, false
+		}
+
+		if i == len(key)-1 {
+			return l[char].value, true
+		}
+
+		l = l[char].prefix
+	}
+
+	return nil, false
 }
