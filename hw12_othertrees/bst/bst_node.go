@@ -10,11 +10,6 @@ type bstNode struct {
 	right *bstNode
 }
 
-// type nodeItem struct {
-// 	key   node.Node
-// 	value []int
-// }
-
 func (bn *bstNode) insert(item node.Node) *bstNode {
 	if bn == nil {
 		return &bstNode{item, nil, nil}
@@ -96,4 +91,21 @@ func (bn *bstNode) findMax() (max *bstNode) {
 		return bn
 	}
 	return max
+}
+
+func (bn *bstNode) isValid(prev *int) bool {
+	if bn == nil {
+		return true
+	}
+
+	if !bn.left.isValid(prev) {
+		return false
+	}
+
+	if bn.item.GetKey() <= *prev {
+		return false
+	}
+
+	*prev = bn.item.GetKey()
+	return bn.right.isValid(prev)
 }

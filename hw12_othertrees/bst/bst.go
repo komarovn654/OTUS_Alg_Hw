@@ -2,6 +2,7 @@ package bst
 
 import (
 	"container/list"
+	"math"
 
 	node "github.com/komarovn654/OTUS_Alg_Hw/hw12_othertrees/node"
 )
@@ -53,4 +54,9 @@ func (b *BST) Remove(x node.Node) {
 
 func InitBST() BST {
 	return BST{}
+}
+
+func (b *BST) IsValid() bool {
+	min := math.MinInt
+	return b.root.isValid(&min)
 }
