@@ -30,14 +30,21 @@ func TestTrieMap(t *testing.T) {
 		t.Run("common", func(t *testing.T) {
 			m := Constructor()
 
-			for _, i := range tc.items {
-				m.Insert(i)
+			for _, item := range tc.items {
+				m.Insert(item)
 			}
 
-			for i, s := range tc.search {
-				value, exist := m.Search(s)
+			for i, key := range tc.search {
+				value, exist := m.Search(key)
 				require.Equal(t, tc.expect[i].exist, exist)
 				require.Equal(t, tc.expect[i].value, value)
+			}
+
+			for _, key := range tc.search {
+				m.Remove(key)
+				value, exist := m.Search(key)
+				require.False(t, exist)
+				require.Nil(t, value)
 			}
 		})
 	}

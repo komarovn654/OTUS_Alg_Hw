@@ -40,29 +40,37 @@ func GenerateRandomItems(len int) []trie_map.Item {
 }
 
 func main() {
-	goMap := make(map[string]any)
-	trieMap := trie_map.Constructor()
-	items := GenerateRandomItems(100_000)
+	for i := 10; i <= 1_000_000; i *= 10 {
+		goMap := make(map[string]any)
+		trieMap := trie_map.Constructor()
+		items := GenerateRandomItems(i)
 
-	tmr := time.Now()
-	for _, i := range items {
-		trieMap.Insert(i)
-	}
-	for _, i := range items {
-		if _, ok := trieMap.Search(i.Key); !ok {
-			log.Fatalf("trieMap: key doesnt exist")
+		tmr := time.Now()
+		for _, i := range items {
+			trieMap.Insert(i)
 		}
-	}
-	fmt.Println(time.Since(tmr))
+		for _, i := range items {
+			if _, ok := trieMap.Search(i.Key); !ok {
+				log.Fatalf("trieMap: key doesnt exist")
+			}
+		}
+		for _, i := range items {
+			trieMap.Remove(i.Key)
+		}
+		fmt.Printf("TrieMap test. Items: %v, Time: %v\n", len(items), time.Since(tmr))
 
-	tmr = time.Now()
-	for _, i := range items {
-		goMap[i.Key] = i.Value
-	}
-	for _, i := range items {
-		if _, ok := goMap[i.Key]; !ok {
-			log.Fatalf("goMap: key doesnt exist")
+		tmr = time.Now()
+		for _, i := range items {
+			goMap[i.Key] = i.Value
 		}
+		for _, i := range items {
+			if _, ok := goMap[i.Key]; !ok {
+				log.Fatalf("goMap: key doesnt exist")
+			}
+		}
+		for _, i := range items {
+			delete(goMap, i.Key)
+		}
+		fmt.Printf("GoMap test. Items: %v, Time: %v\n", len(items), time.Since(tmr))
 	}
-	fmt.Println(time.Since(tmr))
 }

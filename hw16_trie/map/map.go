@@ -5,9 +5,8 @@ type trieMap struct {
 }
 
 type layer struct {
-	prefix  [128]*layer
-	isExist bool
-	value   any
+	prefix [128]*layer
+	value  any
 }
 
 type Item struct {
@@ -45,11 +44,30 @@ func (this *trieMap) Search(key string) (value any, exist bool) {
 		}
 
 		if i == len(key)-1 {
-			return l[char].value, true
+			return l[char].value, l[char].value != nil
 		}
 
 		l = l[char].prefix
 	}
 
 	return nil, false
+}
+
+func (this *trieMap) Remove(key string) {
+	l := this.prefix
+
+	for i, char := range key {
+		if l[char] == nil {
+			return
+		}
+
+		if i == len(key)-1 {
+			l[char].value = nil
+			return
+		}
+
+		l = l[char].prefix
+	}
+
+	return
 }
