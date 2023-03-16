@@ -1,7 +1,6 @@
 package alg2
 
 import (
-	"fmt"
 	"sort"
 
 	bst "github.com/komarovn654/OTUS_Alg_Hw/hw12_othertrees/bst"
@@ -25,11 +24,6 @@ func buildBST(tree *bst.BST, nodes []node.Node, left int, right int) {
 	if r == nil {
 		return
 	}
-	for _, node := range nodes {
-		fmt.Printf("%v ", node)
-	}
-	fmt.Println()
-	fmt.Println(r, pos)
 
 	tree.Insert(r)
 	buildBST(tree, nodes, left, pos-1)

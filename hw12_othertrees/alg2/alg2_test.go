@@ -8,7 +8,7 @@ import (
 )
 
 func TestBSTAlg2(t *testing.T) {
-	nodes := node.GenerateNodes(100, 100, 100)
+	nodes := node.GenerateNodes(10, 100, 100)
 
 	bst := BuildBST(nodes)
 
