@@ -1,5 +1,7 @@
 package graph
 
+import "math"
+
 type AdjacentVertex struct {
 	Num    int
 	Weight int
@@ -55,4 +57,16 @@ func (g *Graph) GetEdges() []Edge {
 	}
 
 	return edges
+}
+
+func (g *Graph) MinWeightEdge(sourceVertex int) Edge {
+	min := Edge{Weight: math.MaxInt, Vertex1: sourceVertex, Vertex2: -1}
+	for _, vertex := range g.vertices[sourceVertex] {
+		if vertex.Weight < min.Weight {
+			min.Weight = vertex.Weight
+			min.Vertex2 = vertex.Num
+		}
+	}
+
+	return min
 }

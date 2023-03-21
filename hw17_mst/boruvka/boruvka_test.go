@@ -1,7 +1,6 @@
 package boruvka
 
 import (
-	"fmt"
 	"testing"
 
 	graph "github.com/komarovn654/OTUS_Alg_Hw/hw17_mst"
@@ -21,8 +20,5 @@ func TestFindMST(t *testing.T) {
 		g.AddAdjacentVector(v)
 	}
 
-	edges := FindMST(&g)
-	for _, edge := range edges {
-		fmt.Printf("%+v\n", edge)
-	}
+	FindMST(&g)
 }
