@@ -8,26 +8,22 @@ import (
 )
 
 func FindMST(g *graph.Graph) []graph.Edge {
-	roots := make(map[any]graph.Edge) // {union's root: min weight union's edge}
-	set := uf.Init(g.GetVertices())
+	// visited := make(map[graph.Edge]bool)
 
-	set.Union(0, 1)
-	set.Union(2, 3)
+	trees := uf.Init(g.GetVertices())
+	fmt.Printf("Unions - vertex:root %+v\n", trees.GetPairs())
 
-	// av := g.GetAdjacentVectors()
-	for vertex := range set.GetPairs() {
-		fmt.Printf("Vertex: %v, Vertex min edge: %+v, Vertex root: %v\n", vertex, g.MinWeightEdge(vertex.(int)), set.Find(vertex))
-		if _, ok := roots[set.Find(vertex)]; !ok {
-			roots[set.Find(vertex)] = g.MinWeightEdge(vertex.(int))
-			continue
+	for roots := trees.GetRoots(); len(roots) > 1; roots = trees.GetRoots() {
+		fmt.Printf("Roots: %+v\n", roots)
+		cheapest := make([]graph.Edge, len(roots))
+		for i, root := range roots {
+			cheapest[i] = g.CheapestEdge(root)
 		}
-		if g.MinWeightEdge(vertex.(int)).Weight < roots[set.Find(vertex)].Weight {
-			roots[set.Find(vertex)] = g.MinWeightEdge(vertex.(int))
-		}
-	}
+		fmt.Printf("Cheapest edges: %+v\n", cheapest)
 
-	for key := range roots {
-		fmt.Printf("Root: %v, Edge: %+v\n", key, roots[key])
+		for _, edge := range cheapest {
+			trees.Union(edge.Src, edge.Dst)
+		}
 	}
 
 	return nil

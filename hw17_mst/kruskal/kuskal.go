@@ -19,8 +19,8 @@ func FindMST(g *graph.Graph) (mst []graph.Edge) {
 
 	// Save edges without cycles and with the lowest weights
 	for i, edge := range edges {
-		if pairs.Find(edge.Vertex1) != pairs.Find(edge.Vertex2) {
-			pairs.Union(edge.Vertex1, edge.Vertex2)
+		if pairs.Find(edge.Src) != pairs.Find(edge.Dst) {
+			pairs.Union(edge.Src, edge.Dst)
 			mst[i] = edge
 		}
 	}

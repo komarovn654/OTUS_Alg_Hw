@@ -29,8 +29,8 @@ func (turn *nextTurn) getMinWeightEdge() (edge graph.Edge) {
 		if (*turn)[v].weight < min {
 			min = (*turn)[v].weight
 			edge.Weight = min
-			edge.Vertex1 = (*turn)[v].src
-			edge.Vertex2 = v
+			edge.Src = (*turn)[v].src
+			edge.Dst = v
 		}
 	}
 
@@ -53,8 +53,8 @@ func FindMST(g *graph.Graph) []graph.Edge {
 		}
 
 		edge := turns.getMinWeightEdge()
-		visited[edge.Vertex2] = true // Vertex2 - destination
-		delete(turns, edge.Vertex2)
+		visited[edge.Dst] = true
+		delete(turns, edge.Dst)
 
 		mst = append(mst, edge)
 		if len(mst) >= (len(vertices) - 1) {

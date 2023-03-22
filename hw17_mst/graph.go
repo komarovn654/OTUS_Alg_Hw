@@ -14,9 +14,9 @@ type Graph struct {
 }
 
 type Edge struct {
-	Weight  int
-	Vertex1 int
-	Vertex2 int
+	Weight int
+	Src    int
+	Dst    int
 }
 
 func Init() Graph {
@@ -50,7 +50,7 @@ func (g *Graph) GetEdges() []Edge {
 	for vertex1, adjVector := range g.vertices {
 		for _, adjVertex := range adjVector {
 			if _, ok := visited[adjVertex.Num]; !ok {
-				edges = append(edges, Edge{Weight: adjVertex.Weight, Vertex1: vertex1, Vertex2: adjVertex.Num})
+				edges = append(edges, Edge{Weight: adjVertex.Weight, Src: vertex1, Dst: adjVertex.Num})
 			}
 		}
 		visited[vertex1] = true
@@ -59,12 +59,12 @@ func (g *Graph) GetEdges() []Edge {
 	return edges
 }
 
-func (g *Graph) MinWeightEdge(sourceVertex int) Edge {
-	min := Edge{Weight: math.MaxInt, Vertex1: sourceVertex, Vertex2: -1}
+func (g *Graph) CheapestEdge(sourceVertex int) Edge {
+	min := Edge{Weight: math.MaxInt, Src: sourceVertex, Dst: -1}
 	for _, vertex := range g.vertices[sourceVertex] {
 		if vertex.Weight < min.Weight {
 			min.Weight = vertex.Weight
-			min.Vertex2 = vertex.Num
+			min.Dst = vertex.Num
 		}
 	}
 

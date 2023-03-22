@@ -19,8 +19,8 @@ func TestInit(t *testing.T) {
 func TestAddPair(t *testing.T) {
 	// 0->1 1->1 2->3 3->1 4->4 5->4 9->0 6->7
 	pairs := []struct {
-		vert any
-		root any
+		vert int
+		root int
 	}{
 		{0, 1},
 		{1, 1},
@@ -48,9 +48,9 @@ func TestAddPair(t *testing.T) {
 func TestFind(t *testing.T) {
 	// 0->1 1->1 2->3 3->1 4->4 5->4 9->0 6->7
 	pairs := []struct {
-		vert      any
-		root      any
-		superroot any
+		vert      int
+		root      int
+		superroot int
 	}{
 		{0, 1, 1},
 		{1, 1, 1},
@@ -59,7 +59,7 @@ func TestFind(t *testing.T) {
 		{4, 4, 4},
 		{5, 4, 4},
 		{9, 0, 1},
-		{6, 7, nil},
+		{6, 7, -1},
 	}
 
 	uf := Init(nil)
@@ -79,8 +79,8 @@ func TestFind(t *testing.T) {
 func TestUnion(t *testing.T) {
 	// 0->1 1->1 2->3 3->1 4->4 5->4 9->0 6->7
 	pairs := []struct {
-		vert any
-		root any
+		vert int
+		root int
 	}{
 		{0, 1},
 		{1, 1},
