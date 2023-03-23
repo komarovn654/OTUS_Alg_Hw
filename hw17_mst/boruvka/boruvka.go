@@ -22,8 +22,11 @@ func FindMST(g *graph.Graph) []graph.Edge {
 		fmt.Printf("Cheapest edges: %+v\n", cheapest)
 
 		for _, edge := range cheapest {
+			fmt.Printf("Union: %v:%v and %v:%v, weight: %v\n", edge.Src, trees.Find(edge.Src), edge.Dst, trees.Find(edge.Dst), edge.Weight)
 			trees.Union(edge.Src, edge.Dst)
+			fmt.Printf("Unions - vertex:root %+v\n\n", trees.GetPairs())
 		}
+		fmt.Println()
 	}
 
 	return nil

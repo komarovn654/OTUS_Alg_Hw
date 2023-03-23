@@ -24,16 +24,15 @@ func (u *UnionFind) AddPair(vertex int, root int) {
 }
 
 func (u *UnionFind) GetRoots() []int {
-	roots := make([]int, 0)
 	added := make(map[int]bool)
 	for _, root := range u.vertices {
-		if exist, ok := added[root]; ok && exist {
-			continue
-		}
-		added[root] = true
-		roots = append(roots, root)
+		added[u.Find(root)] = true
 	}
 
+	roots := make([]int, 0)
+	for root := range added {
+		roots = append(roots, root)
+	}
 	return roots
 }
 
@@ -64,7 +63,8 @@ func (u *UnionFind) find(vertex int) (root int) {
 
 func (u *UnionFind) Union(v1 int, v2 int) (root int) {
 	root = u.Find(v1)
+	r2 := u.Find(v2)
 
-	u.vertices[v2] = root
+	u.vertices[r2] = root
 	return root
 }
