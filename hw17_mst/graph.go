@@ -59,14 +59,25 @@ func (g *Graph) GetEdges() []Edge {
 	return edges
 }
 
-func (g *Graph) CheapestEdge(sourceVertex int) Edge {
+func (g *Graph) CheapestEdge(sourceVertex int, visited map[Edge]bool) Edge {
 	min := Edge{Weight: math.MaxInt, Src: sourceVertex, Dst: -1}
 	for _, vertex := range g.vertices[sourceVertex] {
-		if vertex.Weight < min.Weight {
-			min.Weight = vertex.Weight
-			min.Dst = vertex.Num
+		directEdge := Edge{Weight: vertex.Weight, Src: sourceVertex, Dst: vertex.Num}
+
+		if vertex.Weight < min.Weight && !directEdge.isVisited(visited) {
+			min = directEdge
 		}
 	}
 
 	return min
+}
+
+func (this *Edge) isVisited(visited map[Edge]bool) bool {
+	reverseEdge := Edge{Weight: this.Weight, Src: this.Dst, Dst: this.Src}
+
+	if visited[*this] || visited[reverseEdge] {
+		return true
+	}
+
+	return false
 }

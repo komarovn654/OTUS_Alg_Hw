@@ -8,7 +8,7 @@ import (
 )
 
 func FindMST(g *graph.Graph) []graph.Edge {
-	// visited := make(map[graph.Edge]bool)
+	visited := make(map[graph.Edge]bool)
 
 	trees := uf.Init(g.GetVertices())
 	fmt.Printf("Unions - vertex:root %+v\n", trees.GetPairs())
@@ -17,7 +17,7 @@ func FindMST(g *graph.Graph) []graph.Edge {
 		fmt.Printf("Roots: %+v\n", roots)
 		cheapest := make([]graph.Edge, len(roots))
 		for i, root := range roots {
-			cheapest[i] = g.CheapestEdge(root)
+			cheapest[i] = g.CheapestEdge(root, visited)
 		}
 		fmt.Printf("Cheapest edges: %+v\n", cheapest)
 
