@@ -1,33 +1,56 @@
 package boruvka
 
 import (
-	"fmt"
+	"math"
 
 	graph "github.com/komarovn654/OTUS_Alg_Hw/hw17_mst"
 	uf "github.com/komarovn654/OTUS_Alg_Hw/hw17_mst/union-find"
 )
 
+func initCheapestEdges(roots []int) map[int]graph.Edge {
+	cheapest := make(map[int]graph.Edge) // tree's cheapest edge
+	for _, root := range roots {
+		cheapest[root] = graph.Edge{Weight: math.MaxInt}
+	}
+
+	return cheapest
+}
+
 func FindMST(g *graph.Graph) []graph.Edge {
 	visited := make(map[graph.Edge]bool)
 
 	trees := uf.Init(g.GetVertices())
-	fmt.Printf("Unions - vertex:root %+v\n", trees.GetPairs())
 
 	for roots := trees.GetRoots(); len(roots) > 1; roots = trees.GetRoots() {
-		fmt.Printf("Roots: %+v\n", roots)
-		cheapest := make([]graph.Edge, len(roots))
-		for i, root := range roots {
-			cheapest[i] = g.CheapestEdge(root, visited)
-		}
-		fmt.Printf("Cheapest edges: %+v\n", cheapest)
+		cheapest := initCheapestEdges(roots)
 
-		for _, edge := range cheapest {
-			fmt.Printf("Union: %v:%v and %v:%v, weight: %v\n", edge.Src, trees.Find(edge.Src), edge.Dst, trees.Find(edge.Dst), edge.Weight)
-			trees.Union(edge.Src, edge.Dst)
-			fmt.Printf("Unions - vertex:root %+v\n\n", trees.GetPairs())
+		// update cheapest edges map
+		for vertex := range trees.GetPairs() {
+			edge := g.CheapestEdge(vertex, visited)
+			if edge.Weight < cheapest[trees.Find(vertex)].Weight {
+				cheapest[trees.Find(vertex)] = edge
+			}
 		}
-		fmt.Println()
+
+		// merging vertices in the cheapest edges
+		for _, edge := range cheapest {
+			trees.Union(edge.Src, edge.Dst)
+			visited[edge] = true
+		}
 	}
 
-	return nil
+	mst := make([]graph.Edge, 0)
+	for edge := range visited {
+		mst = append(mst, edge)
+		deleteEdge(visited, edge, true)
+	}
+	return mst
+}
+
+func deleteEdge(edges map[graph.Edge]bool, key graph.Edge, deleteReverse bool) {
+	delete(edges, key)
+	if deleteReverse {
+		reverse := graph.Edge{Weight: key.Weight, Src: key.Dst, Dst: key.Src}
+		delete(edges, reverse)
+	}
 }
