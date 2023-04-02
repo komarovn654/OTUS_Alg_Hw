@@ -7,16 +7,16 @@ type AdjacentVertex struct {
 	Weight int
 }
 
-type AdjacentVector []AdjacentVertex
-
-type Graph struct {
-	vertices []AdjacentVector
-}
-
 type Edge struct {
 	Weight int
 	Src    int
 	Dst    int
+}
+
+type AdjacentVector []AdjacentVertex
+
+type Graph struct {
+	vertices []AdjacentVector
 }
 
 func Init() Graph {
