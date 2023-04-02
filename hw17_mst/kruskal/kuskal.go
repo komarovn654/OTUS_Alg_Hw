@@ -1,7 +1,6 @@
 package kruskal
 
 import (
-	"fmt"
 	"sort"
 
 	graph "github.com/komarovn654/OTUS_Alg_Hw/hw17_mst"
@@ -25,7 +24,6 @@ func FindMST(g *graph.Graph) (mst []graph.Edge) {
 			pairs.Union(edge.Src, edge.Dst)
 			mst[i] = edge
 			i++
-			fmt.Println(mst)
 		}
 	}
 

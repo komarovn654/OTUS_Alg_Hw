@@ -1,7 +1,6 @@
 package prim
 
 import (
-	"fmt"
 	"math"
 
 	graph "github.com/komarovn654/OTUS_Alg_Hw/hw17_mst"
@@ -37,38 +36,6 @@ func (turn *nextTurn) getMinWeightEdge() (edge graph.Edge) {
 
 	return
 }
-
-// func FindMST(g *graph.Graph) []graph.Edge {
-// 	mst := make([]graph.Edge, 0)
-// 	vertices := g.GetVertices()
-// 	visited := make(map[int]bool) // visited vertices
-// 	visited[0] = true
-
-// 	cheapest := make(map[int]graph.Edge) // tree's cheapest edge
-// 	for _, vertex := range vertices {
-// 		cheapest[vertex] = graph.Edge{Weight: math.MaxInt}
-// 	}
-
-// 	for srcVertNum, vector := range g.GetAdjacentVectors() {
-// 		for _, dstVert := range vector {
-// 			edge := graph.Edge{Weight: dstVert.Weight, Src: srcVertNum, Dst: dstVert.Num}
-// 			if !visited[dstVert.Num] && (dstVert.Weight < turns[dstVert.Num].weight) {
-// 				turns[dstVert.Num] = turnStat{weight: dstVert.Weight, src: srcVert}
-// 			}
-// 		}
-
-// 		edge := turns.getMinWeightEdge()
-// 		visited[edge.Dst] = true
-// 		delete(turns, edge.Dst)
-
-// 		mst = append(mst, edge)
-// 		if len(mst) >= (len(vertices) - 1) {
-// 			break
-// 		}
-// 	}
-
-// 	return mst
-// }
 
 type edgeStatus struct {
 	edge    graph.Edge
@@ -135,7 +102,6 @@ func FindMST(g *graph.Graph) []graph.Edge {
 		}
 
 		mst = append(mst, edge)
-		fmt.Println(mst)
 	}
 
 	return mst
