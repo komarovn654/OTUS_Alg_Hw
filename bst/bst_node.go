@@ -94,6 +94,17 @@ func (bn *bstNode) findMax() (max *bstNode) {
 	return max
 }
 
+func (bn *bstNode) findMin() (max *bstNode) {
+	if bn == nil {
+		return nil
+	}
+
+	if max = bn.left.findMin(); max == nil {
+		return bn
+	}
+	return max
+}
+
 func (bn *bstNode) isValid(prev *int) bool {
 	if bn == nil {
 		return true

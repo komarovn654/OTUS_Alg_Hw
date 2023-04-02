@@ -34,6 +34,13 @@ func (b *bst) Remove(key int) {
 	b.root = b.root.remove(key)
 }
 
+func (b *bst) Min() []Item {
+	if b.root == nil {
+		return nil
+	}
+	return b.root.findMin().item.value
+}
+
 func (b *bst) IsValid() bool {
 	min := math.MinInt
 	return b.root.isValid(&min)
