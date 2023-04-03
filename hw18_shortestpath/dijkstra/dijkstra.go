@@ -31,6 +31,7 @@ func FindPath(g *graph.Graph, src int, dst int) []graph.Edge {
 	}
 	shortest := initPathways(len(g.GetAdjacentVectors()))
 
+	// Init the queue with reachable vertices from first vertex
 	reachable := queue.NewQueue()
 	for _, vertex := range g.GetAdjacentVectors()[src] {
 		shortest[vertex.Dst].weight = vertex.Weight
@@ -41,6 +42,7 @@ func FindPath(g *graph.Graph, src int, dst int) []graph.Edge {
 	}
 	shortest[src].visited = true
 
+	// while queue is not empty
 	for edge, ok := reachable.Dequeue(); ok; edge, ok = reachable.Dequeue() {
 		e, ok := edge.(graph.Edge)
 		if !ok {
